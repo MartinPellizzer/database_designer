@@ -32,8 +32,9 @@ nodes = []
 
 interaction = {
     'action': None,
-    'node': None,
+    'node_drag': None,
     'node_focus': None,
+    'field_focus': None,
     'drag_offset_x': 0,
     'drag_offset_y': 0,
     'camera_x_start': 0,
@@ -134,7 +135,15 @@ def draw_node(node):
     pygame.draw.rect(screen, border_color, (screen_x, screen_y, screen_w, screen_h), 1*int(camera['scale']))
 
     # SELECTED
-    if node == interaction['node_focus']:
+    if node == interaction['node_focus'] and interaction['field_focus'] == 'title':
+        pygame.draw.rect(screen, (0, 0, 255), (screen_x, screen_y, screen_w, 30), 2*int(camera['scale']))
+    elif node == interaction['node_focus'] and interaction['field_i_focus'] != None:
+        pygame.draw.rect(
+            screen, (0, 0, 255), 
+            (screen_x, screen_y + 30*interaction['field_i_focus'], screen_w, 30), 
+            2*int(camera['scale'])
+        )
+    elif node == interaction['node_focus']:
         pygame.draw.rect(screen, (0, 0, 255), (screen_x, screen_y, screen_w, screen_h), 2*int(camera['scale']))
 
     ### TEXT
@@ -168,6 +177,8 @@ while running:
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 interaction['node_focus'] = None
+                interaction['field_focus'] = None
+                interaction['field_i_focus'] = None
                 for node in reversed(nodes):
                     if (
                         mouse['world_x'] >= node['world_x'] and 
@@ -177,9 +188,30 @@ while running:
                     ):
                         nodes.remove(node)
                         nodes.append(node)
-                        interaction['action'] = 'drag'
-                        interaction['node'] = node
                         interaction['node_focus'] = node
+                        if (
+                            mouse['world_x'] >= node['world_x'] and 
+                            mouse['world_y'] >= node['world_y'] and 
+                            mouse['world_x'] <= node['world_x'] + node['world_w']//2 and 
+                            mouse['world_y'] <= node['world_y'] + 30
+                        ):
+                            interaction['field_focus'] = 'title'
+                            break
+                        found = False
+                        for field_i in range(len(node['fields'])+1):
+                            if (
+                                mouse['world_x'] >= node['world_x'] and 
+                                mouse['world_y'] >= node['world_y'] + 30 and 
+                                mouse['world_x'] <= node['world_x'] + node['world_w']//2 and 
+                                mouse['world_y'] <= node['world_y'] + 30 + (30*field_i)
+                            ):
+                                interaction['field_i_focus'] = field_i
+                                print(interaction['field_i_focus'])
+                                found = True
+                                break
+                        if found: break
+                        interaction['action'] = 'drag'
+                        interaction['node_drag'] = node
                         interaction['drag_offset_x'] = mouse['world_x'] - node['world_x']
                         interaction['drag_offset_y'] = mouse['world_y'] - node['world_y']
                         break
@@ -203,10 +235,10 @@ while running:
         elif event.type == pygame.MOUSEBUTTONUP:
             if event.button == 1:
                 interaction['action'] = None
-                interaction['node'] = None
+                interaction['node_drag'] = None
             elif event.button == 2:
                 interaction['action'] = None
-                interaction['node'] = None
+                interaction['node_drag'] = None
 
         elif event.type == pygame.MOUSEWHEEL:
             if event.y == 1:
@@ -231,13 +263,23 @@ while running:
                     print("nodes.json not found")
             # Editor
             elif event.key == pygame.K_BACKSPACE:
-                interaction['node_focus']['title'] = interaction['node_focus']['title'][:-1]
+                if interaction['node_focus'] != None:
+                    if interaction['field_focus'] == 'title':
+                        interaction['node_focus']['title'] = interaction['node_focus']['title'][:-1]
+                    else:
+                        if interaction['field_i_focus'] != None:
+                            i = interaction['field_i_focus']-1
+                            interaction['node_focus']['fields'][i]['name'] = interaction['node_focus']['fields'][i]['name'][:-1]
             else:
-                # interaction['node_focus']['title'] += event.unicode
                 if pygame.K_a <= event.key <= pygame.K_z:
                     letter = chr(event.key)
                     if interaction['node_focus'] != None:
-                        interaction['node_focus']['title'] += letter
+                        if interaction['field_focus'] == 'title':
+                            interaction['node_focus']['title'] += letter
+                        else:
+                            if interaction['field_i_focus'] != None:
+                                i = interaction['field_i_focus']-1
+                                interaction['node_focus']['fields'][i]['name'] += letter
 
     mouse['screen_x'], mouse['screen_y'] = pygame.mouse.get_pos()
 
@@ -249,8 +291,8 @@ while running:
         camera['world_y'] = interaction['camera_y_start'] - dy / camera['scale']
 
     if interaction['action'] == 'drag':
-        interaction['node']['world_x'] = mouse['world_x'] - interaction['drag_offset_x']
-        interaction['node']['world_y'] = mouse['world_y'] - interaction['drag_offset_y']
+        interaction['node_drag']['world_x'] = mouse['world_x'] - interaction['drag_offset_x']
+        interaction['node_drag']['world_y'] = mouse['world_y'] - interaction['drag_offset_y']
 
 
 
