@@ -1,7 +1,7 @@
 [
     {
-        "world_x": -140.0,
-        "world_y": -14.0,
+        "world_x": -401.0,
+        "world_y": -223.0,
         "world_w": 200,
         "world_h": 100,
         "title": "species",
@@ -9,10 +9,54 @@
         "description": "",
         "fields": [
             {
-                "name": "idsadf"
+                "name": "work_id"
             },
             {
-                "name": "name"
+                "name": "genus_id"
+            },
+            {
+                "name": "work_genus"
+            },
+            {
+                "name": "work_species"
+            },
+            {
+                "name": "work_author"
+            },
+            {
+                "name": "work_species_norm"
+            }
+        ]
+    },
+    {
+        "world_x": -68.0,
+        "world_y": -222.0,
+        "world_w": 200,
+        "world_h": 100,
+        "title": "traits",
+        "kind": "data",
+        "description": "",
+        "fields": [
+            {
+                "name": "work_id"
+            },
+            {
+                "name": "trait_id"
+            },
+            {
+                "name": "trait_value"
+            },
+            {
+                "name": "agreement"
+            },
+            {
+                "name": "coeff_var"
+            },
+            {
+                "name": "n"
+            },
+            {
+                "name": "refs"
             }
         ]
     }

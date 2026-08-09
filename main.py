@@ -1,6 +1,7 @@
+import os
 import json
 import pygame
-
+import subprocess
 
 pygame.init()
 
@@ -14,6 +15,10 @@ running = True
 
 font = pygame.font.Font(None, 24)
 font_debug = pygame.font.Font(None, 24)
+
+current_file = None
+
+row_h = 34
 
 camera = {
     'world_x': 0,
@@ -124,23 +129,25 @@ def draw_node(node):
 
     screen_x, screen_y = world_to_screen(node['world_x'], node['world_y'])
     screen_w = node['world_w'] * camera['scale']
-    screen_h = node['world_h'] * camera['scale']
+    # screen_h = node['world_h'] * camera['scale']
+    screen_h = row_h * (len(node['fields'])+1) * camera['scale']
 
     pygame.draw.rect(screen, background_color, (screen_x, screen_y, screen_w, screen_h))
 
-    screen_h = 30 * camera['scale']
+    screen_h = row_h * camera['scale']
     pygame.draw.rect(screen, (0, 128, 0), (screen_x, screen_y, screen_w, screen_h))
 
-    screen_h = node['world_h'] * camera['scale']
+    # screen_h = node['world_h'] * camera['scale']
+    screen_h = row_h * (len(node['fields'])+1) * camera['scale']
     pygame.draw.rect(screen, border_color, (screen_x, screen_y, screen_w, screen_h), 1*int(camera['scale']))
 
     # SELECTED
     if node == interaction['node_focus'] and interaction['field_focus'] == 'title':
-        pygame.draw.rect(screen, (0, 0, 255), (screen_x, screen_y, screen_w, 30), 2*int(camera['scale']))
+        pygame.draw.rect(screen, (0, 0, 255), (screen_x, screen_y, screen_w, row_h), 2*int(camera['scale']))
     elif node == interaction['node_focus'] and interaction['field_i_focus'] != None:
         pygame.draw.rect(
             screen, (0, 0, 255), 
-            (screen_x, screen_y + 30*interaction['field_i_focus'], screen_w, 30), 
+            (screen_x, screen_y + row_h*interaction['field_i_focus'], screen_w, row_h), 
             2*int(camera['scale'])
         )
     elif node == interaction['node_focus']:
@@ -159,11 +166,66 @@ def draw_node(node):
     for field in node['fields']:
         i += 1
         world_x = node['world_x'] + 10
-        world_y = node['world_y'] + 10 + (i * 30)
+        world_y = node['world_y'] + 10 + (i * row_h)
         screen_x, screen_y = world_to_screen(world_x, world_y)
 
         text = font.render(field['name'], True, (255, 255, 255))
         screen.blit(text, (screen_x, screen_y))
+
+    '''
+    pygame.draw.rect(screen, (0, 128, 0), (screen_x, screen_y + row_h*(i-1), row_h, row_h))
+    text = font.render('+', True, (255, 255, 255))
+    screen.blit(text, (screen_x, screen_y))
+    '''
+
+def project_new():
+    global current_file
+    global nodes
+    filename = subprocess.run(
+        [
+            "zenity",
+            "--file-selection",
+            "--save",
+            "--confirm-overwrite",
+            "--file-filter=JSON files | *.json",
+            "--filename=project.json",
+        ],
+        capture_output=True,
+        text=True
+    ).stdout.strip()
+    if filename:
+        if not filename.endswith(".json"):
+            filename += ".json"
+        nodes = []
+        current_file = filename
+        with open(filename, "w") as f:
+            json.dump(nodes, f, indent=4)
+
+def project_save():
+    if current_file:
+        with open(current_file, "w") as f:
+            json.dump(nodes, f, indent=4)
+    else:
+        project_new()
+
+def project_open():
+    global current_file
+    global nodes
+    project_dir = os.path.dirname(os.path.abspath(__file__))
+    filename = subprocess.run(
+        [
+            "zenity",
+            "--file-selection",
+            f"--filename=file://{project_dir}/",
+            "--file-filter=JSON files | *.json",
+        ],
+        capture_output=True,
+        text=True
+    ).stdout.strip()
+    if filename:
+        with open(filename, "r") as f:
+            nodes = json.load(f)
+        current_file = filename
 
 # ============================================================
 # MAIN LOOP
@@ -184,7 +246,8 @@ while running:
                         mouse['world_x'] >= node['world_x'] and 
                         mouse['world_y'] >= node['world_y'] and 
                         mouse['world_x'] <= node['world_x'] + node['world_w'] and 
-                        mouse['world_y'] <= node['world_y'] + node['world_h']
+                        # mouse['world_y'] <= node['world_y'] + node['world_h']
+                        mouse['world_y'] <= node['world_y'] + row_h * (len(node['fields'])+1)
                     ):
                         nodes.remove(node)
                         nodes.append(node)
@@ -193,20 +256,21 @@ while running:
                             mouse['world_x'] >= node['world_x'] and 
                             mouse['world_y'] >= node['world_y'] and 
                             mouse['world_x'] <= node['world_x'] + node['world_w']//2 and 
-                            mouse['world_y'] <= node['world_y'] + 30
+                            mouse['world_y'] <= node['world_y'] + row_h
                         ):
                             interaction['field_focus'] = 'title'
                             break
                         found = False
+                        # print(len(node['fields']))
                         for field_i in range(len(node['fields'])+1):
                             if (
                                 mouse['world_x'] >= node['world_x'] and 
-                                mouse['world_y'] >= node['world_y'] + 30 and 
+                                mouse['world_y'] >= node['world_y'] + row_h and 
                                 mouse['world_x'] <= node['world_x'] + node['world_w']//2 and 
-                                mouse['world_y'] <= node['world_y'] + 30 + (30*field_i)
+                                mouse['world_y'] <= node['world_y'] + row_h + (row_h*field_i)
                             ):
                                 interaction['field_i_focus'] = field_i
-                                print(interaction['field_i_focus'])
+                                # print(interaction['field_i_focus'])
                                 found = True
                                 break
                         if found: break
@@ -250,17 +314,18 @@ while running:
             font = pygame.font.Font(None, 24*int(camera['scale']))
 
         elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_n and pygame.key.get_mods() & pygame.KMOD_CTRL:
+                project_new()
             # Ctrl+S
-            if event.key == pygame.K_s and (pygame.key.get_mods() & pygame.KMOD_CTRL):
-                with open("nodes.json", "w") as f:
-                    json.dump(nodes, f, indent=4)
+            elif event.key == pygame.K_s and (pygame.key.get_mods() & pygame.KMOD_CTRL):
+                project_save()
             # Ctrl+O
             elif event.key == pygame.K_o and (pygame.key.get_mods() & pygame.KMOD_CTRL):
-                try:
-                    with open("nodes.json", "r") as f:
-                        nodes = json.load(f)
-                except FileNotFoundError:
-                    print("nodes.json not found")
+                project_open()
+            # Editor
+            elif event.unicode == '+':
+                if interaction['node_focus'] != None:
+                    interaction['node_focus']['fields'].append({'name': 'field'})
             # Editor
             elif event.key == pygame.K_BACKSPACE:
                 if interaction['node_focus'] != None:
@@ -271,8 +336,8 @@ while running:
                             i = interaction['field_i_focus']-1
                             interaction['node_focus']['fields'][i]['name'] = interaction['node_focus']['fields'][i]['name'][:-1]
             else:
-                if pygame.K_a <= event.key <= pygame.K_z:
-                    letter = chr(event.key)
+                if pygame.K_a <= event.key <= pygame.K_z or event.unicode == '_':
+                    letter = event.unicode
                     if interaction['node_focus'] != None:
                         if interaction['field_focus'] == 'title':
                             interaction['node_focus']['title'] += letter

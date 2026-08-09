@@ -1,0 +1,19 @@
+[
+    {
+        "world_x": -540.0,
+        "world_y": -185.0,
+        "world_w": 200,
+        "world_h": 100,
+        "title": "table_name",
+        "kind": "data",
+        "description": "",
+        "fields": [
+            {
+                "name": "id"
+            },
+            {
+                "name": "name"
+            }
+        ]
+    }
+]
