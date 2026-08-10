@@ -162,6 +162,7 @@ def draw_node(node):
     text = font.render(node['title'], True, (255, 255, 255))
     screen.blit(text, (screen_x, screen_y))
 
+
     i = 0
     for field in node['fields']:
         i += 1
@@ -171,6 +172,16 @@ def draw_node(node):
 
         text = font.render(field['name'], True, (255, 255, 255))
         screen.blit(text, (screen_x, screen_y))
+
+        world_x = node['world_x'] + node['world_w'] - 35
+        screen_x, screen_y = world_to_screen(world_x, world_y)
+        if 'key' not in field: field['key'] = ''
+        if field['key'] == 'primary_key':
+            text = font.render('PK', True, (255, 255, 255))
+            screen.blit(text, (screen_x, screen_y))
+        elif field['key'] == 'foreign_key':
+            text = font.render('FK', True, (255, 255, 255))
+            screen.blit(text, (screen_x, screen_y))
 
     '''
     pygame.draw.rect(screen, (0, 128, 0), (screen_x, screen_y + row_h*(i-1), row_h, row_h))
@@ -293,7 +304,10 @@ while running:
                 title = 'table_name'
                 kind = 'data'
                 description = ''
-                fields = [{'name': 'id'}, {'name': 'name'}]
+                fields = [
+                    {'name': 'id', 'key': 'none'}, 
+                    {'name': 'name', 'key': 'none'}, 
+                ]
                 node_create(x, y, w, h, title, kind, description, fields)
 
         elif event.type == pygame.MOUSEBUTTONUP:
@@ -314,6 +328,7 @@ while running:
             font = pygame.font.Font(None, 24*int(camera['scale']))
 
         elif event.type == pygame.KEYDOWN:
+            # Ctrl+N
             if event.key == pygame.K_n and pygame.key.get_mods() & pygame.KMOD_CTRL:
                 project_new()
             # Ctrl+S
@@ -322,6 +337,37 @@ while running:
             # Ctrl+O
             elif event.key == pygame.K_o and (pygame.key.get_mods() & pygame.KMOD_CTRL):
                 project_open()
+            # Ctrl+P
+            elif event.key == pygame.K_p and (pygame.key.get_mods() & pygame.KMOD_CTRL):
+                if interaction['field_i_focus'] != None:
+                    i = interaction['field_i_focus']-1
+                    if interaction['node_focus']['fields'][i]['key'] != 'primary_key':
+                        interaction['node_focus']['fields'][i]['key'] = 'primary_key'
+                    else:
+                        interaction['node_focus']['fields'][i]['key'] = ''
+            # Ctrl+F
+            elif event.key == pygame.K_f and (pygame.key.get_mods() & pygame.KMOD_CTRL):
+                if interaction['field_i_focus'] != None:
+                    i = interaction['field_i_focus']-1
+                    if interaction['node_focus']['fields'][i]['key'] != 'foreign_key':
+                        interaction['node_focus']['fields'][i]['key'] = 'foreign_key'
+                    else:
+                        interaction['node_focus']['fields'][i]['key'] = ''
+            # Reorder Fields
+            elif event.key == pygame.K_UP and pygame.key.get_mods() & pygame.KMOD_CTRL:
+                if interaction['field_i_focus'] != None:
+                    i = interaction['field_i_focus']-1
+                    if i > 0:
+                        node = interaction['node_focus']
+                        node['fields'][i], node['fields'][i-1] = node['fields'][i-1], node['fields'][i]
+                        interaction['field_i_focus'] = i
+            elif event.key == pygame.K_DOWN and pygame.key.get_mods() & pygame.KMOD_CTRL:
+                if interaction['field_i_focus'] != None:
+                    i = interaction['field_i_focus']-1
+                    if i < len(node['fields'])-1:
+                        node = interaction['node_focus']
+                        node['fields'][i], node['fields'][i+1] = node['fields'][i+1], node['fields'][i]
+                        interaction['field_i_focus'] = i + 2
             # Editor
             elif event.unicode == '+':
                 if interaction['node_focus'] != None:

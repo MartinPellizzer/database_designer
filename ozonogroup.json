@@ -1,18 +1,450 @@
 [
     {
-        "world_x": -238.0,
-        "world_y": -95.0,
+        "world_x": -49.0,
+        "world_y": -195.0,
         "world_w": 200,
         "world_h": 100,
-        "title": "table_name",
+        "title": "processes",
         "kind": "data",
         "description": "",
         "fields": [
             {
-                "name": "id"
+                "name": "process_id",
+                "key": ""
             },
             {
-                "name": "name"
+                "name": "process_name",
+                "key": ""
+            }
+        ]
+    },
+    {
+        "world_x": -47.0,
+        "world_y": -71.0,
+        "world_w": 200,
+        "world_h": 100,
+        "title": "symptoms",
+        "kind": "data",
+        "description": "",
+        "fields": [
+            {
+                "name": "symptom_id",
+                "key": ""
+            },
+            {
+                "name": "symptom_name",
+                "key": ""
+            }
+        ]
+    },
+    {
+        "world_x": -47.0,
+        "world_y": 48.0,
+        "world_w": 200,
+        "world_h": 100,
+        "title": "problems",
+        "kind": "data",
+        "description": "",
+        "fields": [
+            {
+                "name": "problem_id",
+                "key": ""
+            },
+            {
+                "name": "problem_name",
+                "key": ""
+            }
+        ]
+    },
+    {
+        "world_x": -42.0,
+        "world_y": 172.0,
+        "world_w": 200,
+        "world_h": 100,
+        "title": "outcomes",
+        "kind": "data",
+        "description": "",
+        "fields": [
+            {
+                "name": "outcome_id",
+                "key": ""
+            },
+            {
+                "name": "outcome_name",
+                "key": ""
+            }
+        ]
+    },
+    {
+        "world_x": 188.0,
+        "world_y": -188.0,
+        "world_w": 200,
+        "world_h": 100,
+        "title": "applications",
+        "kind": "data",
+        "description": "",
+        "fields": [
+            {
+                "name": "application_id",
+                "key": ""
+            },
+            {
+                "name": "application_name",
+                "key": ""
+            }
+        ]
+    },
+    {
+        "world_x": 188.0,
+        "world_y": -66.0,
+        "world_w": 200,
+        "world_h": 100,
+        "title": "technologies",
+        "kind": "data",
+        "description": "",
+        "fields": [
+            {
+                "name": "technology_id",
+                "key": ""
+            },
+            {
+                "name": "technology_name",
+                "key": ""
+            }
+        ]
+    },
+    {
+        "world_x": 187.0,
+        "world_y": 47.0,
+        "world_w": 200,
+        "world_h": 100,
+        "title": "systems",
+        "kind": "data",
+        "description": "",
+        "fields": [
+            {
+                "name": "system_id",
+                "key": ""
+            },
+            {
+                "name": "system_name",
+                "key": ""
+            }
+        ]
+    },
+    {
+        "world_x": 190.0,
+        "world_y": 171.0,
+        "world_w": 200,
+        "world_h": 100,
+        "title": "components",
+        "kind": "data",
+        "description": "",
+        "fields": [
+            {
+                "name": "component_id",
+                "key": ""
+            },
+            {
+                "name": "component_name",
+                "key": ""
+            }
+        ]
+    },
+    {
+        "world_x": 482.0,
+        "world_y": -186.0,
+        "world_w": 200,
+        "world_h": 100,
+        "title": "engineering_concept",
+        "kind": "data",
+        "description": "",
+        "fields": [
+            {
+                "name": "engineering_id",
+                "key": ""
+            },
+            {
+                "name": "engineering_name",
+                "key": ""
+            }
+        ]
+    },
+    {
+        "world_x": 482.0,
+        "world_y": -60.0,
+        "world_w": 200,
+        "world_h": 100,
+        "title": "services",
+        "kind": "data",
+        "description": "",
+        "fields": [
+            {
+                "name": "service_id",
+                "key": ""
+            },
+            {
+                "name": "service_name",
+                "key": ""
+            }
+        ]
+    },
+    {
+        "world_x": 483.0,
+        "world_y": 67.0,
+        "world_w": 200,
+        "world_h": 100,
+        "title": "regulations",
+        "kind": "data",
+        "description": "",
+        "fields": [
+            {
+                "name": "regulation_id",
+                "key": ""
+            },
+            {
+                "name": "regulation_name",
+                "key": ""
+            }
+        ]
+    },
+    {
+        "world_x": 1060.0,
+        "world_y": -195.0,
+        "world_w": 200,
+        "world_h": 100,
+        "title": "case_studies",
+        "kind": "data",
+        "description": "",
+        "fields": [
+            {
+                "name": "case_study_id",
+                "key": ""
+            },
+            {
+                "name": "case_study_name",
+                "key": ""
+            }
+        ]
+    },
+    {
+        "world_x": 1050.0,
+        "world_y": -63.0,
+        "world_w": 200,
+        "world_h": 100,
+        "title": "studies",
+        "kind": "data",
+        "description": "",
+        "fields": [
+            {
+                "name": "study_id",
+                "key": ""
+            },
+            {
+                "name": "study_name",
+                "key": ""
+            }
+        ]
+    },
+    {
+        "world_x": 724.0,
+        "world_y": -189.0,
+        "world_w": 200,
+        "world_h": 100,
+        "title": "chemicals",
+        "kind": "data",
+        "description": "",
+        "fields": [
+            {
+                "name": "chemical_id",
+                "key": ""
+            },
+            {
+                "name": "chemical_name",
+                "key": ""
+            }
+        ]
+    },
+    {
+        "world_x": 723.0,
+        "world_y": -61.0,
+        "world_w": 200,
+        "world_h": 100,
+        "title": "microorganisms",
+        "kind": "data",
+        "description": "",
+        "fields": [
+            {
+                "name": "microorganism_id",
+                "key": ""
+            },
+            {
+                "name": "microorganism_name",
+                "key": ""
+            }
+        ]
+    },
+    {
+        "world_x": 721.0,
+        "world_y": 59.0,
+        "world_w": 200,
+        "world_h": 100,
+        "title": "contaminants",
+        "kind": "data",
+        "description": "",
+        "fields": [
+            {
+                "name": "contaminant_id",
+                "key": ""
+            },
+            {
+                "name": "contaminant_name",
+                "key": ""
+            }
+        ]
+    },
+    {
+        "world_x": 716.0,
+        "world_y": 175.0,
+        "world_w": 200,
+        "world_h": 100,
+        "title": "materials",
+        "kind": "data",
+        "description": "",
+        "fields": [
+            {
+                "name": "material_id",
+                "key": ""
+            },
+            {
+                "name": "material_name",
+                "key": ""
+            }
+        ]
+    },
+    {
+        "world_x": 730.0,
+        "world_y": 304.0,
+        "world_w": 200,
+        "world_h": 100,
+        "title": "measurements",
+        "kind": "data",
+        "description": "",
+        "fields": [
+            {
+                "name": "measurement_id",
+                "key": ""
+            },
+            {
+                "name": "measurement_name",
+                "key": ""
+            }
+        ]
+    },
+    {
+        "world_x": -43.0,
+        "world_y": 302.0,
+        "world_w": 200,
+        "world_h": 100,
+        "title": "requirements",
+        "kind": "data",
+        "description": "",
+        "fields": [
+            {
+                "name": "requirement_id",
+                "key": ""
+            },
+            {
+                "name": "requrement_name",
+                "key": ""
+            }
+        ]
+    },
+    {
+        "world_x": -902.0,
+        "world_y": -203.0,
+        "world_w": 200,
+        "world_h": 100,
+        "title": "segments",
+        "kind": "data",
+        "description": "",
+        "fields": [
+            {
+                "name": "segment_id",
+                "key": "primary_key"
+            },
+            {
+                "name": "sector_id",
+                "key": "foreign_key"
+            },
+            {
+                "name": "segment_name",
+                "key": ""
+            }
+        ]
+    },
+    {
+        "world_x": -598.0,
+        "world_y": -198.0,
+        "world_w": 200,
+        "world_h": 100,
+        "title": "facilities",
+        "kind": "data",
+        "description": "",
+        "fields": [
+            {
+                "name": "facility_id",
+                "key": "primary_key"
+            },
+            {
+                "name": "segment_id",
+                "key": "foreign_key"
+            },
+            {
+                "name": "facility_name",
+                "key": ""
+            }
+        ]
+    },
+    {
+        "world_x": -1197.0,
+        "world_y": -200.0,
+        "world_w": 200,
+        "world_h": 100,
+        "title": "sectors",
+        "kind": "data",
+        "description": "",
+        "fields": [
+            {
+                "name": "sector_id",
+                "key": "primary_key"
+            },
+            {
+                "name": "sector_name",
+                "key": ""
+            }
+        ]
+    },
+    {
+        "world_x": -300.0,
+        "world_y": -203.0,
+        "world_w": 200,
+        "world_h": 100,
+        "title": "locations",
+        "kind": "data",
+        "description": "",
+        "fields": [
+            {
+                "name": "location_id",
+                "key": "primary_key"
+            },
+            {
+                "name": "facility_id",
+                "key": "foreign_key"
+            },
+            {
+                "name": "location_name",
+                "key": ""
             }
         ]
     }
