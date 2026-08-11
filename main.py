@@ -265,10 +265,11 @@ def edge_start():
                     mouse['world_x'] <= node['world_x'] + node['world_w']//2 and 
                     mouse['world_y'] <= node['world_y'] + row_h + (row_h*field_i)
                 ):
-                    interaction['field_i_focus'] = field_i
                     interaction['action'] = 'edge'
                     interaction['edge_x1'] = mouse['screen_x']
                     interaction['edge_y1'] = mouse['screen_y']
+                    interaction['node_start'] = node
+                    interaction['field_start_i'] = field_i
                     found = True
                     break
 
@@ -297,9 +298,105 @@ def edge_end():
                 ):
                     interaction['field_i_focus'] = field_i
                     print(f'''edge created: {interaction['field_i_focus']}''')
-                    found = True
+                    ###
+                    interaction['node_end'] = node
+                    interaction['field_end_i'] = field_i
+                    edge = {
+                        'edge_start': {
+                            'node': interaction['node_start'],
+                            'field_i': interaction['field_start_i'],
+                        },
+                        'edge_end': {
+                            'node': interaction['node_end'],
+                            'field_i': interaction['field_end_i'],
+                        },
+                    }
+                    edges.append(edge)
                     break
 
+################################################################################
+# TEST
+################################################################################
+
+x = -200
+y = 0
+w = 200
+h = 100
+title = 'table_name'
+kind = 'data'
+description = ''
+fields = [
+    {'name': 'id', 'key': 'none'}, 
+    {'name': 'name', 'key': 'none'}, 
+]
+node_create(x, y, w, h, title, kind, description, fields)
+
+x = 100
+y = 0
+w = 200
+h = 100
+title = 'table_name'
+kind = 'data'
+description = ''
+fields = [
+    {'name': 'id', 'key': 'none'}, 
+    {'name': 'name', 'key': 'none'}, 
+]
+node_create(x, y, w, h, title, kind, description, fields)
+
+edge_1 = {
+    'edge_start': {
+        'node': nodes[0],
+        'field_i': 1,
+    },
+    'edge_end': {
+        'node': nodes[1],
+        'field_i': 1,
+    },
+}
+
+edge_2 = {
+    'edge_start': {
+        'node': nodes[0],
+        'field_i': 2,
+    },
+    'edge_end': {
+        'node': nodes[1],
+        'field_i': 2,
+    },
+}
+
+edges = []
+# edges.append(edge_1)
+# edges.append(edge_2)
+
+def draw_edge(edge):
+    ### LINE
+    node_start_x = edge['edge_start']['node']['world_x']
+    node_start_y = edge['edge_start']['node']['world_y'] + (row_h/2) + (edge['edge_start']['field_i'] * row_h)
+    node_end_x = edge['edge_end']['node']['world_x']
+    node_end_y = edge['edge_end']['node']['world_y'] + (row_h/2) + (edge['edge_end']['field_i'] * row_h)
+    if node_start_x < node_end_x:
+        node_start_x += edge['edge_start']['node']['world_w']
+    else:
+        node_end_x += edge['edge_end']['node']['world_w']
+    screen_x1, screen_y1 = world_to_screen(node_start_x, node_start_y)
+    screen_x4, screen_y4 = world_to_screen(node_end_x, node_end_y)
+    screen_x2 = (screen_x1 + screen_x4) / 2
+    screen_y2 = screen_y1
+    screen_x3 = (screen_x1 + screen_x4) / 2
+    screen_y3 = screen_y4
+    points = [
+        (screen_x1, screen_y1),
+        (screen_x2, screen_y2),
+        (screen_x3, screen_y3),
+        (screen_x4, screen_y4),
+    ]
+    pygame.draw.lines(screen, (255, 255, 255), False, points)
+    ### RELATIONSHIP TEXT
+    text = font.render('1:N', True, (255, 255, 255))
+    screen.blit(text, (screen_x2, (screen_y2 + screen_y3) / 2))
+    
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -482,6 +579,9 @@ while running:
     if interaction['action'] == 'edge':
         pygame.draw.line(screen, (255, 255, 255), (interaction['edge_x1'], interaction['edge_y1']), (mouse['screen_x'], mouse['screen_y']))
 
+    for edge in edges:
+        draw_edge(edge)
+
     for node in nodes:
         draw_node(node)
 
@@ -512,3 +612,6 @@ while running:
     clock.tick(60)
 
 pygame.quit()
+
+### TODO: create 2 nodes manually on startup, include a demo edge in the nodes struct between 2 fields, draw the edge
+
