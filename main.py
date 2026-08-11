@@ -297,7 +297,6 @@ def edge_end():
                     mouse['world_y'] <= node['world_y'] + row_h + (row_h*field_i)
                 ):
                     interaction['field_i_focus'] = field_i
-                    print(f'''edge created: {interaction['field_i_focus']}''')
                     ###
                     interaction['node_end'] = node
                     interaction['field_end_i'] = field_i
@@ -313,6 +312,18 @@ def edge_end():
                     }
                     edges.append(edge)
                     break
+
+def edge_delete():
+    if interaction['field_i_focus'] != None:
+        for edge in edges:
+            if edge['edge_start']['node'] == interaction['node_focus']:
+                if edge['edge_start']['field_i'] == interaction['field_i_focus']:
+                    edges.remove(edge)
+                    return
+            if edge['edge_end']['node'] == interaction['node_focus']:
+                if edge['edge_end']['field_i'] == interaction['field_i_focus']:
+                    edges.remove(edge)
+                    return
 
 ################################################################################
 # TEST
@@ -497,6 +508,9 @@ while running:
             # Ctrl+O
             elif event.key == pygame.K_o and (pygame.key.get_mods() & pygame.KMOD_CTRL):
                 project_open()
+            # Ctrl+D
+            elif event.key == pygame.K_d and (pygame.key.get_mods() & pygame.KMOD_CTRL):
+                edge_delete()
             # Ctrl+P
             elif event.key == pygame.K_p and (pygame.key.get_mods() & pygame.KMOD_CTRL):
                 if interaction['field_i_focus'] != None:
