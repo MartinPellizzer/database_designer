@@ -242,6 +242,64 @@ def project_open():
 # MAIN LOOP
 # ============================================================
 
+def edge_start():
+    interaction['node_focus'] = None
+    interaction['field_focus'] = None
+    interaction['field_i_focus'] = None
+    ### CLICKED ON NODE?
+    for node in reversed(nodes):
+        if (
+            mouse['world_x'] >= node['world_x'] and 
+            mouse['world_y'] >= node['world_y'] and 
+            mouse['world_x'] <= node['world_x'] + node['world_w'] and 
+            mouse['world_y'] <= node['world_y'] + row_h * (len(node['fields'])+1)
+        ):
+            nodes.remove(node)
+            nodes.append(node)
+            interaction['node_focus'] = node
+            ### CLICKED ON FIELD?
+            for field_i in range(len(node['fields'])+1):
+                if (
+                    mouse['world_x'] >= node['world_x'] and 
+                    mouse['world_y'] >= node['world_y'] + row_h and 
+                    mouse['world_x'] <= node['world_x'] + node['world_w']//2 and 
+                    mouse['world_y'] <= node['world_y'] + row_h + (row_h*field_i)
+                ):
+                    interaction['field_i_focus'] = field_i
+                    interaction['action'] = 'edge'
+                    interaction['edge_x1'] = mouse['screen_x']
+                    interaction['edge_y1'] = mouse['screen_y']
+                    found = True
+                    break
+
+def edge_end():
+    interaction['node_focus'] = None
+    interaction['field_focus'] = None
+    interaction['field_i_focus'] = None
+    ### CLICKED ON NODE?
+    for node in reversed(nodes):
+        if (
+            mouse['world_x'] >= node['world_x'] and 
+            mouse['world_y'] >= node['world_y'] and 
+            mouse['world_x'] <= node['world_x'] + node['world_w'] and 
+            mouse['world_y'] <= node['world_y'] + row_h * (len(node['fields'])+1)
+        ):
+            nodes.remove(node)
+            nodes.append(node)
+            interaction['node_focus'] = node
+            ### CLICKED ON FIELD?
+            for field_i in range(len(node['fields'])+1):
+                if (
+                    mouse['world_x'] >= node['world_x'] and 
+                    mouse['world_y'] >= node['world_y'] + row_h and 
+                    mouse['world_x'] <= node['world_x'] + node['world_w']//2 and 
+                    mouse['world_y'] <= node['world_y'] + row_h + (row_h*field_i)
+                ):
+                    interaction['field_i_focus'] = field_i
+                    print(f'''edge created: {interaction['field_i_focus']}''')
+                    found = True
+                    break
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -249,47 +307,50 @@ while running:
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
-                interaction['node_focus'] = None
-                interaction['field_focus'] = None
-                interaction['field_i_focus'] = None
-                for node in reversed(nodes):
-                    if (
-                        mouse['world_x'] >= node['world_x'] and 
-                        mouse['world_y'] >= node['world_y'] and 
-                        mouse['world_x'] <= node['world_x'] + node['world_w'] and 
-                        # mouse['world_y'] <= node['world_y'] + node['world_h']
-                        mouse['world_y'] <= node['world_y'] + row_h * (len(node['fields'])+1)
-                    ):
-                        nodes.remove(node)
-                        nodes.append(node)
-                        interaction['node_focus'] = node
+                if pygame.key.get_mods() & pygame.KMOD_CTRL:
+                    edge_start()
+                else:
+                    interaction['node_focus'] = None
+                    interaction['field_focus'] = None
+                    interaction['field_i_focus'] = None
+                    for node in reversed(nodes):
                         if (
                             mouse['world_x'] >= node['world_x'] and 
                             mouse['world_y'] >= node['world_y'] and 
-                            mouse['world_x'] <= node['world_x'] + node['world_w']//2 and 
-                            mouse['world_y'] <= node['world_y'] + row_h
+                            mouse['world_x'] <= node['world_x'] + node['world_w'] and 
+                            # mouse['world_y'] <= node['world_y'] + node['world_h']
+                            mouse['world_y'] <= node['world_y'] + row_h * (len(node['fields'])+1)
                         ):
-                            interaction['field_focus'] = 'title'
-                            break
-                        found = False
-                        # print(len(node['fields']))
-                        for field_i in range(len(node['fields'])+1):
+                            nodes.remove(node)
+                            nodes.append(node)
+                            interaction['node_focus'] = node
                             if (
                                 mouse['world_x'] >= node['world_x'] and 
-                                mouse['world_y'] >= node['world_y'] + row_h and 
+                                mouse['world_y'] >= node['world_y'] and 
                                 mouse['world_x'] <= node['world_x'] + node['world_w']//2 and 
-                                mouse['world_y'] <= node['world_y'] + row_h + (row_h*field_i)
+                                mouse['world_y'] <= node['world_y'] + row_h
                             ):
-                                interaction['field_i_focus'] = field_i
-                                # print(interaction['field_i_focus'])
-                                found = True
+                                interaction['field_focus'] = 'title'
                                 break
-                        if found: break
-                        interaction['action'] = 'drag'
-                        interaction['node_drag'] = node
-                        interaction['drag_offset_x'] = mouse['world_x'] - node['world_x']
-                        interaction['drag_offset_y'] = mouse['world_y'] - node['world_y']
-                        break
+                            found = False
+                            # print(len(node['fields']))
+                            for field_i in range(len(node['fields'])+1):
+                                if (
+                                    mouse['world_x'] >= node['world_x'] and 
+                                    mouse['world_y'] >= node['world_y'] + row_h and 
+                                    mouse['world_x'] <= node['world_x'] + node['world_w']//2 and 
+                                    mouse['world_y'] <= node['world_y'] + row_h + (row_h*field_i)
+                                ):
+                                    interaction['field_i_focus'] = field_i
+                                    # print(interaction['field_i_focus'])
+                                    found = True
+                                    break
+                            if found: break
+                            interaction['action'] = 'drag'
+                            interaction['node_drag'] = node
+                            interaction['drag_offset_x'] = mouse['world_x'] - node['world_x']
+                            interaction['drag_offset_y'] = mouse['world_y'] - node['world_y']
+                            break
             elif event.button == 2:
                 interaction['action'] = 'pan'
                 interaction['camera_x_start'] = camera['world_x']
@@ -312,6 +373,8 @@ while running:
 
         elif event.type == pygame.MOUSEBUTTONUP:
             if event.button == 1:
+                if interaction['action'] == 'edge':
+                    edge_end()
                 interaction['action'] = None
                 interaction['node_drag'] = None
             elif event.button == 2:
@@ -415,6 +478,9 @@ while running:
 
     draw_grid()
     # draw_objects()
+
+    if interaction['action'] == 'edge':
+        pygame.draw.line(screen, (255, 255, 255), (interaction['edge_x1'], interaction['edge_y1']), (mouse['screen_x'], mouse['screen_y']))
 
     for node in nodes:
         draw_node(node)
