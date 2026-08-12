@@ -40,6 +40,7 @@ interaction = {
     'node_drag': None,
     'node_focus': None,
     'field_focus': None,
+    'field_i_focus': None,
     'drag_offset_x': 0,
     'drag_offset_y': 0,
     'camera_x_start': 0,
@@ -192,6 +193,7 @@ def draw_node(node):
 def project_new():
     global current_file
     global nodes
+    global edges
     filename = subprocess.run(
         [
             "zenity",
@@ -208,20 +210,30 @@ def project_new():
         if not filename.endswith(".json"):
             filename += ".json"
         nodes = []
+        edges = []
         current_file = filename
         with open(filename, "w") as f:
-            json.dump(nodes, f, indent=4)
+            output = {
+                'nodes': nodes,
+                'edges': edges,
+            }
+            json.dump(output, f, indent=4)
 
 def project_save():
     if current_file:
         with open(current_file, "w") as f:
-            json.dump(nodes, f, indent=4)
+            output = {
+                'nodes': nodes,
+                'edges': edges,
+            }
+            json.dump(output, f, indent=4)
     else:
         project_new()
 
 def project_open():
     global current_file
     global nodes
+    global edges
     project_dir = os.path.dirname(os.path.abspath(__file__))
     filename = subprocess.run(
         [
@@ -235,8 +247,18 @@ def project_open():
     ).stdout.strip()
     if filename:
         with open(filename, "r") as f:
-            nodes = json.load(f)
+            data = json.load(f)
+            nodes = data['nodes']
+            edges = data['edges']
         current_file = filename
+    for edge in edges:
+        for node in nodes: 
+            if edge['edge_start']['node'] == node:
+                edge['edge_start']['node'] = node
+                edge['edge_start']['node']['fields'] = node['fields']
+            if edge['edge_end']['node'] == node:
+                edge['edge_end']['node'] = node
+                edge['edge_end']['node']['fields'] = node['fields']
 
 # ============================================================
 # MAIN LOOP
@@ -300,6 +322,8 @@ def edge_end():
                     ###
                     interaction['node_end'] = node
                     interaction['field_end_i'] = field_i
+                    if interaction['node_start'] == interaction['node_end']:
+                        break
                     edge = {
                         'edge_start': {
                             'node': interaction['node_start'],
@@ -356,6 +380,7 @@ fields = [
 node_create(x, y, w, h, title, kind, description, fields)
 
 edge_1 = {
+    'edge_type': '1:N',
     'edge_start': {
         'node': nodes[0],
         'field_i': 1,
@@ -378,7 +403,7 @@ edge_2 = {
 }
 
 edges = []
-# edges.append(edge_1)
+edges.append(edge_1)
 # edges.append(edge_2)
 
 def draw_edge(edge):
@@ -404,10 +429,109 @@ def draw_edge(edge):
         (screen_x4, screen_y4),
     ]
     pygame.draw.lines(screen, (255, 255, 255), False, points)
+    if 'edge_type' not in edge: edge['edge_type'] = '1:N'
+
+    ### DRAW 1:N
+    if edge['edge_type'] == '1:N':
+        line_start_x = node_start_x
+        line_start_y = node_start_y
+        line_end_x = node_end_x
+        line_end_y = node_end_y
+        if node_start_x < node_end_x:
+            line_start_x1 = line_start_x + 20
+            line_start_y1 = line_start_y + 10
+            line_start_x2 = line_start_x + 20
+            line_start_y2 = line_start_y - 10
+            line_end_x1_1 = line_end_x - 20
+            line_end_y1_1 = line_end_y
+            line_end_x2_1 = line_end_x
+            line_end_y2_1 = line_end_y + 10
+            line_end_x1_2 = line_end_x - 20
+            line_end_y1_2 = line_end_y
+            line_end_x2_2 = line_end_x
+            line_end_y2_2 = line_end_y - 10
+        else:
+            line_start_x1 = line_start_x - 20
+            line_start_y1 = line_start_y + 10
+            line_start_x2 = line_start_x - 20
+            line_start_y2 = line_start_y - 10
+            line_end_x1_1 = line_end_x + 20
+            line_end_y1_1 = line_end_y
+            line_end_x2_1 = line_end_x
+            line_end_y2_1 = line_end_y + 10
+            line_end_x1_2 = line_end_x + 20
+            line_end_y1_2 = line_end_y
+            line_end_x2_2 = line_end_x
+            line_end_y2_2 = line_end_y - 10
+        ### TODO
+        screen_line_start_x1, screen_line_start_y1 = world_to_screen(line_start_x1, line_start_y1)
+        screen_line_start_x2, screen_line_start_y2 = world_to_screen(line_start_x2, line_start_y2)
+        screen_line_end_x1_1, screen_line_end_y1_1 = world_to_screen(line_end_x1_1, line_end_y1_1)
+        screen_line_end_x2_1, screen_line_end_y2_1 = world_to_screen(line_end_x2_1, line_end_y2_1)
+        screen_line_end_x1_2, screen_line_end_y1_2 = world_to_screen(line_end_x1_2, line_end_y1_2)
+        screen_line_end_x2_2, screen_line_end_y2_2 = world_to_screen(line_end_x2_2, line_end_y2_2)
+        points = [
+            (screen_line_start_x1, screen_line_start_y1),
+            (screen_line_start_x2, screen_line_start_y2),
+        ]
+        pygame.draw.lines(screen, (255, 255, 255), False, points)
+        points = [
+            (screen_line_end_x1_1, screen_line_end_y1_1),
+            (screen_line_end_x2_1, screen_line_end_y2_1),
+        ]
+        pygame.draw.lines(screen, (255, 255, 255), False, points)
+        points = [
+            (screen_line_end_x1_2, screen_line_end_y1_2),
+            (screen_line_end_x2_2, screen_line_end_y2_2),
+        ]
+        pygame.draw.lines(screen, (255, 255, 255), False, points)
     ### RELATIONSHIP TEXT
-    text = font.render('1:N', True, (255, 255, 255))
+    text = font.render(edge['edge_type'], True, (255, 255, 255))
     screen.blit(text, (screen_x2, (screen_y2 + screen_y3) / 2))
-    
+
+    ### DRAW 1:1
+    if edge['edge_type'] == '1:1':
+        line_start_x = node_start_x
+        line_start_y = node_start_y
+        line_end_x = node_end_x
+        line_end_y = node_end_y
+        if node_start_x < node_end_x:
+            line_start_x1 = line_start_x + 20
+            line_start_y1 = line_start_y + 10
+            line_start_x2 = line_start_x + 20
+            line_start_y2 = line_start_y - 10
+            line_end_x1 = line_end_x - 20
+            line_end_y1 = line_end_y + 10
+            line_end_x2 = line_end_x - 20
+            line_end_y2 = line_end_y - 10
+        else:
+            line_start_x1 = line_start_x - 20
+            line_start_y1 = line_start_y + 10
+            line_start_x2 = line_start_x - 20
+            line_start_y2 = line_start_y - 10
+            line_end_x1 = line_end_x + 20
+            line_end_y1 = line_end_y + 10
+            line_end_x2 = line_end_x + 20
+            line_end_y2 = line_end_y - 10
+        ### TODO
+        screen_line_start_x1, screen_line_start_y1 = world_to_screen(line_start_x1, line_start_y1)
+        screen_line_start_x2, screen_line_start_y2 = world_to_screen(line_start_x2, line_start_y2)
+        screen_line_end_x1, screen_line_end_y1 = world_to_screen(line_end_x1, line_end_y1)
+        screen_line_end_x2, screen_line_end_y2 = world_to_screen(line_end_x2, line_end_y2)
+        points = [
+            (screen_line_start_x1, screen_line_start_y1),
+            (screen_line_start_x2, screen_line_start_y2),
+        ]
+        pygame.draw.lines(screen, (255, 255, 255), False, points)
+        points = [
+            (screen_line_end_x1, screen_line_end_y1),
+            (screen_line_end_x2, screen_line_end_y2),
+        ]
+        pygame.draw.lines(screen, (255, 255, 255), False, points)
+    ### RELATIONSHIP TEXT
+    text = font.render(edge['edge_type'], True, (255, 255, 255))
+    screen.blit(text, (screen_x2, (screen_y2 + screen_y3) / 2))
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -417,7 +541,7 @@ while running:
             if event.button == 1:
                 if pygame.key.get_mods() & pygame.KMOD_CTRL:
                     edge_start()
-                else:
+                    ####
                     interaction['node_focus'] = None
                     interaction['field_focus'] = None
                     interaction['field_i_focus'] = None
@@ -426,7 +550,6 @@ while running:
                             mouse['world_x'] >= node['world_x'] and 
                             mouse['world_y'] >= node['world_y'] and 
                             mouse['world_x'] <= node['world_x'] + node['world_w'] and 
-                            # mouse['world_y'] <= node['world_y'] + node['world_h']
                             mouse['world_y'] <= node['world_y'] + row_h * (len(node['fields'])+1)
                         ):
                             nodes.remove(node)
@@ -440,20 +563,20 @@ while running:
                             ):
                                 interaction['field_focus'] = 'title'
                                 break
-                            found = False
-                            # print(len(node['fields']))
-                            for field_i in range(len(node['fields'])+1):
-                                if (
-                                    mouse['world_x'] >= node['world_x'] and 
-                                    mouse['world_y'] >= node['world_y'] + row_h and 
-                                    mouse['world_x'] <= node['world_x'] + node['world_w']//2 and 
-                                    mouse['world_y'] <= node['world_y'] + row_h + (row_h*field_i)
-                                ):
-                                    interaction['field_i_focus'] = field_i
-                                    # print(interaction['field_i_focus'])
-                                    found = True
-                                    break
-                            if found: break
+                else:
+                    interaction['node_focus'] = None
+                    interaction['field_focus'] = None
+                    interaction['field_i_focus'] = None
+                    for node in reversed(nodes):
+                        if (
+                            mouse['world_x'] >= node['world_x'] and 
+                            mouse['world_y'] >= node['world_y'] and 
+                            mouse['world_x'] <= node['world_x'] + node['world_w'] and 
+                            mouse['world_y'] <= node['world_y'] + row_h * (len(node['fields'])+1)
+                        ):
+                            nodes.remove(node)
+                            nodes.append(node)
+                            interaction['node_focus'] = node
                             interaction['action'] = 'drag'
                             interaction['node_drag'] = node
                             interaction['drag_offset_x'] = mouse['world_x'] - node['world_x']
@@ -527,6 +650,19 @@ while running:
                         interaction['node_focus']['fields'][i]['key'] = 'foreign_key'
                     else:
                         interaction['node_focus']['fields'][i]['key'] = ''
+
+            # Ctrl+Q
+            elif event.key == pygame.K_q and (pygame.key.get_mods() & pygame.KMOD_CTRL):
+                print('################################################################')
+                for node in nodes:
+                    print(json.dumps(node, indent=4))
+                    print('---')
+                print('------------------------------------------------------------------')
+                for node in nodes:
+                    print(json.dumps(node, indent=4))
+                    print('---')
+                print('################################################################')
+
             # Reorder Fields
             elif event.key == pygame.K_UP and pygame.key.get_mods() & pygame.KMOD_CTRL:
                 if interaction['field_i_focus'] != None:
@@ -542,6 +678,30 @@ while running:
                         node = interaction['node_focus']
                         node['fields'][i], node['fields'][i+1] = node['fields'][i+1], node['fields'][i]
                         interaction['field_i_focus'] = i + 2
+            # Ctrl+RIGHT
+            elif event.key == pygame.K_RIGHT and pygame.key.get_mods() & pygame.KMOD_CTRL:
+                if interaction['field_i_focus'] != None:
+                    i = interaction['field_i_focus']
+                    node = interaction['node_focus']
+                    print(i)
+                    for edge in edges:
+                        found = False
+                        if not found:
+                            if edge['edge_end']['node'] == node and edge['edge_end']['field_i'] == i:
+                                found = True
+                                print('here 1')
+                        if not found:
+                            if edge['edge_start']['node'] == node and edge['edge_start']['field_i'] == i:
+                                found = True
+                                print('here 2')
+                        if found:
+                            if edge['edge_type'] == '1:1':
+                                edge['edge_type'] = '1:N'
+                            elif edge['edge_type'] == '1:N':
+                                edge['edge_type'] = 'M:N'
+                            elif edge['edge_type'] == 'M:N':
+                                edge['edge_type'] = '1:1'
+                            break
             # Editor
             elif event.unicode == '+':
                 if interaction['node_focus'] != None:
@@ -556,7 +716,10 @@ while running:
                             i = interaction['field_i_focus']-1
                             interaction['node_focus']['fields'][i]['name'] = interaction['node_focus']['fields'][i]['name'][:-1]
             else:
-                if pygame.K_a <= event.key <= pygame.K_z or event.unicode == '_':
+                if (pygame.K_a <= event.key <= pygame.K_z or 
+                    pygame.K_0 <= event.key <= pygame.K_9 or 
+                    event.unicode == '_'
+                ):
                     letter = event.unicode
                     if interaction['node_focus'] != None:
                         if interaction['field_focus'] == 'title':

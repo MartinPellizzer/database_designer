@@ -1,21 +1,67 @@
 {
     "nodes": [
         {
-            "world_x": -540.0,
-            "world_y": -185.0,
+            "world_x": -481.0,
+            "world_y": -156.0,
             "world_w": 200,
             "world_h": 100,
-            "title": "table_name",
+            "title": "businesses",
             "kind": "data",
             "description": "",
             "fields": [
                 {
-                    "name": "id",
-                    "key": ""
+                    "name": "business_id",
+                    "key": "primary_key"
                 },
                 {
-                    "name": "name",
-                    "key": ""
+                    "name": "business_name",
+                    "key": "none"
+                }
+            ]
+        },
+        {
+            "world_x": -91.0,
+            "world_y": 101.0,
+            "world_w": 200,
+            "world_h": 100,
+            "title": "plants",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "plant_id",
+                    "key": "primary_key"
+                },
+                {
+                    "name": "business_id",
+                    "key": "foreign_key"
+                },
+                {
+                    "name": "plant_name",
+                    "key": "none"
+                }
+            ]
+        },
+        {
+            "world_x": -82.0,
+            "world_y": -187.0,
+            "world_w": 200,
+            "world_h": 100,
+            "title": "locations",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "location_id",
+                    "key": "primary_key"
+                },
+                {
+                    "name": "business_id",
+                    "key": "foreign_key"
+                },
+                {
+                    "name": "location_name",
+                    "key": "none"
                 }
             ]
         }

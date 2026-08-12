@@ -1,63 +1,127 @@
-[
-    {
-        "world_x": -401.0,
-        "world_y": -223.0,
-        "world_w": 200,
-        "world_h": 100,
-        "title": "species",
-        "kind": "data",
-        "description": "",
-        "fields": [
-            {
-                "name": "work_id"
+{
+    "nodes": [
+        {
+            "world_x": -401.0,
+            "world_y": -223.0,
+            "world_w": 200,
+            "world_h": 100,
+            "title": "species",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "work_id",
+                    "key": ""
+                },
+                {
+                    "name": "genus_id",
+                    "key": ""
+                },
+                {
+                    "name": "work_genus",
+                    "key": ""
+                },
+                {
+                    "name": "work_species",
+                    "key": ""
+                },
+                {
+                    "name": "work_author",
+                    "key": ""
+                },
+                {
+                    "name": "work_species_norm",
+                    "key": ""
+                }
+            ]
+        },
+        {
+            "world_x": 79.0,
+            "world_y": -284.0,
+            "world_w": 200,
+            "world_h": 100,
+            "title": "traits",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "work_id",
+                    "key": ""
+                },
+                {
+                    "name": "trait_id",
+                    "key": ""
+                },
+                {
+                    "name": "trait_value",
+                    "key": ""
+                },
+                {
+                    "name": "agreement",
+                    "key": ""
+                },
+                {
+                    "name": "coeff_var",
+                    "key": ""
+                },
+                {
+                    "name": "n",
+                    "key": ""
+                },
+                {
+                    "name": "refs",
+                    "key": ""
+                }
+            ]
+        }
+    ],
+    "edges": [
+        {
+            "edge_type": "1:N",
+            "edge_start": {
+                "node": {
+                    "world_x": -200,
+                    "world_y": 0,
+                    "world_w": 200,
+                    "world_h": 100,
+                    "title": "table_name",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "id",
+                            "key": "none"
+                        },
+                        {
+                            "name": "name",
+                            "key": "none"
+                        }
+                    ]
+                },
+                "field_i": 1
             },
-            {
-                "name": "genus_id"
-            },
-            {
-                "name": "work_genus"
-            },
-            {
-                "name": "work_species"
-            },
-            {
-                "name": "work_author"
-            },
-            {
-                "name": "work_species_norm"
+            "edge_end": {
+                "node": {
+                    "world_x": 100,
+                    "world_y": 0,
+                    "world_w": 200,
+                    "world_h": 100,
+                    "title": "table_name",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "id",
+                            "key": "none"
+                        },
+                        {
+                            "name": "name",
+                            "key": "none"
+                        }
+                    ]
+                },
+                "field_i": 1
             }
-        ]
-    },
-    {
-        "world_x": -68.0,
-        "world_y": -222.0,
-        "world_w": 200,
-        "world_h": 100,
-        "title": "traits",
-        "kind": "data",
-        "description": "",
-        "fields": [
-            {
-                "name": "work_id"
-            },
-            {
-                "name": "trait_id"
-            },
-            {
-                "name": "trait_value"
-            },
-            {
-                "name": "agreement"
-            },
-            {
-                "name": "coeff_var"
-            },
-            {
-                "name": "n"
-            },
-            {
-                "name": "refs"
-            }
-        ]
-    }
-]
+        }
+    ]
+}

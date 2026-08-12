@@ -1,0 +1,360 @@
+{
+    "nodes": [
+        {
+            "world_x": -452.0,
+            "world_y": -129.0,
+            "world_w": 200,
+            "world_h": 100,
+            "title": "species",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "work_id",
+                    "key": "primary_key"
+                },
+                {
+                    "name": "genus_id",
+                    "key": "none"
+                },
+                {
+                    "name": "work_genus",
+                    "key": ""
+                },
+                {
+                    "name": "work_species",
+                    "key": ""
+                },
+                {
+                    "name": "work_author",
+                    "key": ""
+                },
+                {
+                    "name": "work_species_norm",
+                    "key": ""
+                }
+            ]
+        },
+        {
+            "world_x": -74.0,
+            "world_y": -49.0,
+            "world_w": 200,
+            "world_h": 100,
+            "title": "traits",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "trait_id",
+                    "key": "primary_key"
+                },
+                {
+                    "name": "work_id",
+                    "key": "foreign_key"
+                },
+                {
+                    "name": "trait_value",
+                    "key": ""
+                },
+                {
+                    "name": "agreement",
+                    "key": ""
+                },
+                {
+                    "name": "coeff_var",
+                    "key": ""
+                },
+                {
+                    "name": "n",
+                    "key": ""
+                },
+                {
+                    "name": "refs",
+                    "key": ""
+                }
+            ]
+        },
+        {
+            "world_x": 342.0,
+            "world_y": -155.0,
+            "world_w": 200,
+            "world_h": 100,
+            "title": "traits_meta",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "lvl1",
+                    "key": "none"
+                },
+                {
+                    "name": "category",
+                    "key": "none"
+                },
+                {
+                    "name": "lvl2",
+                    "key": ""
+                },
+                {
+                    "name": "trait1",
+                    "key": ""
+                },
+                {
+                    "name": "lvl3",
+                    "key": "primary_key"
+                },
+                {
+                    "name": "trait2",
+                    "key": ""
+                },
+                {
+                    "name": "units",
+                    "key": ""
+                },
+                {
+                    "name": "type",
+                    "key": ""
+                },
+                {
+                    "name": "comment",
+                    "key": ""
+                },
+                {
+                    "name": "count",
+                    "key": ""
+                }
+            ]
+        }
+    ],
+    "edges": [
+        {
+            "edge_type": "1:N",
+            "edge_start": {
+                "node": {
+                    "world_x": -200,
+                    "world_y": 0,
+                    "world_w": 200,
+                    "world_h": 100,
+                    "title": "table_name",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "id",
+                            "key": "none"
+                        },
+                        {
+                            "name": "name",
+                            "key": "none"
+                        }
+                    ]
+                },
+                "field_i": 1
+            },
+            "edge_end": {
+                "node": {
+                    "world_x": 100,
+                    "world_y": 0,
+                    "world_w": 200,
+                    "world_h": 100,
+                    "title": "table_name",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "id",
+                            "key": "none"
+                        },
+                        {
+                            "name": "name",
+                            "key": "none"
+                        }
+                    ]
+                },
+                "field_i": 1
+            }
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": -452.0,
+                    "world_y": -129.0,
+                    "world_w": 200,
+                    "world_h": 100,
+                    "title": "species",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "work_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "genus_id",
+                            "key": "none"
+                        },
+                        {
+                            "name": "work_genus",
+                            "key": ""
+                        },
+                        {
+                            "name": "work_species",
+                            "key": ""
+                        },
+                        {
+                            "name": "work_author",
+                            "key": ""
+                        },
+                        {
+                            "name": "work_species_norm",
+                            "key": ""
+                        }
+                    ]
+                },
+                "field_i": 1
+            },
+            "edge_end": {
+                "node": {
+                    "world_x": -74.0,
+                    "world_y": -49.0,
+                    "world_w": 200,
+                    "world_h": 100,
+                    "title": "traits",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "trait_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "work_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "trait_value",
+                            "key": ""
+                        },
+                        {
+                            "name": "agreement",
+                            "key": ""
+                        },
+                        {
+                            "name": "coeff_var",
+                            "key": ""
+                        },
+                        {
+                            "name": "n",
+                            "key": ""
+                        },
+                        {
+                            "name": "refs",
+                            "key": ""
+                        }
+                    ]
+                },
+                "field_i": 2
+            },
+            "edge_type": "1:N"
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": -74.0,
+                    "world_y": -49.0,
+                    "world_w": 200,
+                    "world_h": 100,
+                    "title": "traits",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "trait_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "work_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "trait_value",
+                            "key": ""
+                        },
+                        {
+                            "name": "agreement",
+                            "key": ""
+                        },
+                        {
+                            "name": "coeff_var",
+                            "key": ""
+                        },
+                        {
+                            "name": "n",
+                            "key": ""
+                        },
+                        {
+                            "name": "refs",
+                            "key": ""
+                        }
+                    ]
+                },
+                "field_i": 1
+            },
+            "edge_end": {
+                "node": {
+                    "world_x": 342.0,
+                    "world_y": -155.0,
+                    "world_w": 200,
+                    "world_h": 100,
+                    "title": "traits_meta",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "lvl1",
+                            "key": "none"
+                        },
+                        {
+                            "name": "category",
+                            "key": "none"
+                        },
+                        {
+                            "name": "lvl2",
+                            "key": ""
+                        },
+                        {
+                            "name": "trait1",
+                            "key": ""
+                        },
+                        {
+                            "name": "lvl3",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "trait2",
+                            "key": ""
+                        },
+                        {
+                            "name": "units",
+                            "key": ""
+                        },
+                        {
+                            "name": "type",
+                            "key": ""
+                        },
+                        {
+                            "name": "comment",
+                            "key": ""
+                        },
+                        {
+                            "name": "count",
+                            "key": ""
+                        }
+                    ]
+                },
+                "field_i": 5
+            },
+            "edge_type": "1:1"
+        }
+    ]
+}

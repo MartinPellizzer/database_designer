@@ -1,8 +1,8 @@
 {
     "nodes": [
         {
-            "world_x": -540.0,
-            "world_y": -185.0,
+            "world_x": -321.0,
+            "world_y": -40.0,
             "world_w": 200,
             "world_h": 100,
             "title": "table_name",
@@ -11,22 +11,40 @@
             "fields": [
                 {
                     "name": "id",
-                    "key": ""
+                    "key": "none"
                 },
                 {
                     "name": "name",
-                    "key": ""
+                    "key": "none"
+                }
+            ]
+        },
+        {
+            "world_x": 86.0,
+            "world_y": -6.0,
+            "world_w": 200,
+            "world_h": 100,
+            "title": "table_name",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "key": "none"
+                },
+                {
+                    "name": "name",
+                    "key": "none"
                 }
             ]
         }
     ],
     "edges": [
         {
-            "edge_type": "1:N",
             "edge_start": {
                 "node": {
-                    "world_x": -200,
-                    "world_y": 0,
+                    "world_x": -321.0,
+                    "world_y": -40.0,
                     "world_w": 200,
                     "world_h": 100,
                     "title": "table_name",
@@ -47,8 +65,8 @@
             },
             "edge_end": {
                 "node": {
-                    "world_x": 100,
-                    "world_y": 0,
+                    "world_x": 86.0,
+                    "world_y": -6.0,
                     "world_w": 200,
                     "world_h": 100,
                     "title": "table_name",
@@ -66,7 +84,8 @@
                     ]
                 },
                 "field_i": 1
-            }
+            },
+            "edge_type": "1:N"
         }
     ]
 }
