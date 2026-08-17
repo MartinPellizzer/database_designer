@@ -1,27 +1,8 @@
 {
     "nodes": [
         {
-            "world_x": -481.0,
-            "world_y": -156.0,
-            "world_w": 200,
-            "world_h": 100,
-            "title": "businesses",
-            "kind": "data",
-            "description": "",
-            "fields": [
-                {
-                    "name": "business_id",
-                    "key": "primary_key"
-                },
-                {
-                    "name": "business_name",
-                    "key": "none"
-                }
-            ]
-        },
-        {
-            "world_x": -91.0,
-            "world_y": 101.0,
+            "world_x": 100.0,
+            "world_y": -200.0,
             "world_w": 200,
             "world_h": 100,
             "title": "plants",
@@ -38,21 +19,21 @@
                 },
                 {
                     "name": "plant_name",
-                    "key": "none"
+                    "key": ""
                 }
             ]
         },
         {
-            "world_x": -82.0,
-            "world_y": -187.0,
+            "world_x": 100.0,
+            "world_y": 0.0,
             "world_w": 200,
             "world_h": 100,
-            "title": "locations",
+            "title": "products",
             "kind": "data",
             "description": "",
             "fields": [
                 {
-                    "name": "location_id",
+                    "name": "product_id",
                     "key": "primary_key"
                 },
                 {
@@ -60,32 +41,114 @@
                     "key": "foreign_key"
                 },
                 {
-                    "name": "location_name",
+                    "name": "product_name",
+                    "key": ""
+                }
+            ]
+        },
+        {
+            "world_x": -400.0,
+            "world_y": -200.0,
+            "world_w": 300,
+            "world_h": 100,
+            "title": "businesses",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "business_id",
+                    "key": "primary_key"
+                },
+                {
+                    "name": "business_name_official",
                     "key": "none"
+                },
+                {
+                    "name": "business_name_legal",
+                    "key": ""
+                },
+                {
+                    "name": "business_name_trade",
+                    "key": ""
+                },
+                {
+                    "name": "business_name_brand",
+                    "key": ""
+                },
+                {
+                    "name": "business_address",
+                    "key": ""
+                },
+                {
+                    "name": "business_website",
+                    "key": ""
+                },
+                {
+                    "name": "business_phone",
+                    "key": ""
+                },
+                {
+                    "name": "source_name",
+                    "key": ""
+                },
+                {
+                    "name": "source_acronym",
+                    "key": ""
                 }
             ]
         }
     ],
     "edges": [
         {
-            "edge_type": "1:N",
             "edge_start": {
                 "node": {
-                    "world_x": -200,
-                    "world_y": 0,
-                    "world_w": 200,
+                    "world_x": -400.0,
+                    "world_y": -200.0,
+                    "world_w": 300,
                     "world_h": 100,
-                    "title": "table_name",
+                    "title": "businesses",
                     "kind": "data",
                     "description": "",
                     "fields": [
                         {
-                            "name": "id",
+                            "name": "business_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "business_name_official",
                             "key": "none"
                         },
                         {
-                            "name": "name",
-                            "key": "none"
+                            "name": "business_name_legal",
+                            "key": ""
+                        },
+                        {
+                            "name": "business_name_trade",
+                            "key": ""
+                        },
+                        {
+                            "name": "business_name_brand",
+                            "key": ""
+                        },
+                        {
+                            "name": "business_address",
+                            "key": ""
+                        },
+                        {
+                            "name": "business_website",
+                            "key": ""
+                        },
+                        {
+                            "name": "business_phone",
+                            "key": ""
+                        },
+                        {
+                            "name": "source_name",
+                            "key": ""
+                        },
+                        {
+                            "name": "source_acronym",
+                            "key": ""
                         }
                     ]
                 },
@@ -93,26 +156,114 @@
             },
             "edge_end": {
                 "node": {
-                    "world_x": 100,
-                    "world_y": 0,
+                    "world_x": 100.0,
+                    "world_y": -200.0,
                     "world_w": 200,
                     "world_h": 100,
-                    "title": "table_name",
+                    "title": "plants",
                     "kind": "data",
                     "description": "",
                     "fields": [
                         {
-                            "name": "id",
+                            "name": "plant_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "business_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "plant_name",
+                            "key": ""
+                        }
+                    ]
+                },
+                "field_i": 2
+            },
+            "edge_type": "1:N"
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": -400.0,
+                    "world_y": -200.0,
+                    "world_w": 300,
+                    "world_h": 100,
+                    "title": "businesses",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "business_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "business_name_official",
                             "key": "none"
                         },
                         {
-                            "name": "name",
-                            "key": "none"
+                            "name": "business_name_legal",
+                            "key": ""
+                        },
+                        {
+                            "name": "business_name_trade",
+                            "key": ""
+                        },
+                        {
+                            "name": "business_name_brand",
+                            "key": ""
+                        },
+                        {
+                            "name": "business_address",
+                            "key": ""
+                        },
+                        {
+                            "name": "business_website",
+                            "key": ""
+                        },
+                        {
+                            "name": "business_phone",
+                            "key": ""
+                        },
+                        {
+                            "name": "source_name",
+                            "key": ""
+                        },
+                        {
+                            "name": "source_acronym",
+                            "key": ""
                         }
                     ]
                 },
                 "field_i": 1
-            }
+            },
+            "edge_end": {
+                "node": {
+                    "world_x": 100.0,
+                    "world_y": 0.0,
+                    "world_w": 200,
+                    "world_h": 100,
+                    "title": "products",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "product_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "business_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "product_name",
+                            "key": ""
+                        }
+                    ]
+                },
+                "field_i": 2
+            },
+            "edge_type": "1:N"
         }
     ]
 }

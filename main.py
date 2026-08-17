@@ -234,7 +234,7 @@ def project_open():
     global current_file
     global nodes
     global edges
-    project_dir = os.path.dirname(os.path.abspath(__file__))
+    project_dir = os.path.dirname(os.path.abspath(__file__)) + '/uncategorized'
     filename = subprocess.run(
         [
             "zenity",
@@ -563,6 +563,25 @@ while running:
                             ):
                                 interaction['field_focus'] = 'title'
                                 break
+                elif pygame.key.get_mods() & pygame.KMOD_SHIFT:
+                    interaction['node_focus'] = None
+                    interaction['field_focus'] = None
+                    interaction['field_i_focus'] = None
+                    for node in reversed(nodes):
+                        if (
+                            mouse['world_x'] >= node['world_x'] and 
+                            mouse['world_y'] >= node['world_y'] and 
+                            mouse['world_x'] <= node['world_x'] + node['world_w'] and 
+                            mouse['world_y'] <= node['world_y'] + row_h * (len(node['fields'])+1)
+                        ):
+                            nodes.remove(node)
+                            nodes.append(node)
+                            interaction['node_focus'] = node
+                            interaction['action'] = 'drag_snap'
+                            interaction['node_drag'] = node
+                            interaction['drag_offset_x'] = mouse['world_x'] - node['world_x']
+                            interaction['drag_offset_y'] = mouse['world_y'] - node['world_y']
+                            break
                 else:
                     interaction['node_focus'] = None
                     interaction['field_focus'] = None
@@ -702,6 +721,14 @@ while running:
                             elif edge['edge_type'] == 'M:N':
                                 edge['edge_type'] = '1:1'
                             break
+                else:
+                    interaction['node_focus']['world_w'] += 10
+            # Ctrl+LEFT
+            elif event.key == pygame.K_LEFT and pygame.key.get_mods() & pygame.KMOD_CTRL:
+                if interaction['field_i_focus'] != None:
+                    pass
+                else:
+                    interaction['node_focus']['world_w'] -= 10
             # Editor
             elif event.unicode == '+':
                 if interaction['node_focus'] != None:
@@ -730,8 +757,8 @@ while running:
                                 interaction['node_focus']['fields'][i]['name'] += letter
 
     mouse['screen_x'], mouse['screen_y'] = pygame.mouse.get_pos()
-
     mouse['world_x'], mouse['world_y'] = screen_to_world(mouse['screen_x'], mouse['screen_y'])
+
     if interaction['action'] == 'pan':
         dx = mouse['screen_x'] - interaction['mouse_x_start']
         dy = mouse['screen_y'] - interaction['mouse_y_start']
@@ -739,8 +766,12 @@ while running:
         camera['world_y'] = interaction['camera_y_start'] - dy / camera['scale']
 
     if interaction['action'] == 'drag':
-        interaction['node_drag']['world_x'] = mouse['world_x'] - interaction['drag_offset_x']
-        interaction['node_drag']['world_y'] = mouse['world_y'] - interaction['drag_offset_y']
+        interaction['node_drag']['world_x'] = (mouse['world_x'] - interaction['drag_offset_x'])
+        interaction['node_drag']['world_y'] = (mouse['world_y'] - interaction['drag_offset_y'])
+
+    if interaction['action'] == 'drag_snap':
+        interaction['node_drag']['world_x'] = (mouse['world_x'] - interaction['drag_offset_x']) // 100 * 100
+        interaction['node_drag']['world_y'] = (mouse['world_y'] - interaction['drag_offset_y']) // 100 * 100
 
 
 

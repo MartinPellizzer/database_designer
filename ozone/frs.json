@@ -1,0 +1,289 @@
+{
+    "nodes": [
+        {
+            "world_x": 100.0,
+            "world_y": -300.0,
+            "world_w": 320,
+            "world_h": 100,
+            "title": "national_alternative_name_file",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "registry_id",
+                    "key": "none"
+                },
+                {
+                    "name": "pgm_sys_acrnm",
+                    "key": "none"
+                },
+                {
+                    "name": "pgm_sys_id",
+                    "key": ""
+                },
+                {
+                    "name": "alternative_name",
+                    "key": ""
+                },
+                {
+                    "name": "alternative_name_type",
+                    "key": ""
+                }
+            ]
+        },
+        {
+            "world_x": -500.0,
+            "world_y": -300.0,
+            "world_w": 300,
+            "world_h": 100,
+            "title": "national_facility_file",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "frs_facility_detail_report_url",
+                    "key": "none"
+                },
+                {
+                    "name": "registry_id",
+                    "key": "none"
+                },
+                {
+                    "name": "primary_name",
+                    "key": ""
+                },
+                {
+                    "name": "location_address",
+                    "key": ""
+                },
+                {
+                    "name": "supplemental_location",
+                    "key": ""
+                },
+                {
+                    "name": "city_name",
+                    "key": ""
+                },
+                {
+                    "name": "county_name",
+                    "key": ""
+                },
+                {
+                    "name": "fips_code",
+                    "key": ""
+                },
+                {
+                    "name": "state_name",
+                    "key": ""
+                },
+                {
+                    "name": "country_name",
+                    "key": ""
+                },
+                {
+                    "name": "posteal_code",
+                    "key": ""
+                },
+                {
+                    "name": "federal_facility_code",
+                    "key": ""
+                },
+                {
+                    "name": "federal_agency_name",
+                    "key": ""
+                },
+                {
+                    "name": "tribal_land_code",
+                    "key": ""
+                },
+                {
+                    "name": "tribal_land_name",
+                    "key": ""
+                },
+                {
+                    "name": "congressional_dist_num",
+                    "key": ""
+                },
+                {
+                    "name": "census_block_code",
+                    "key": ""
+                },
+                {
+                    "name": "huc_code",
+                    "key": ""
+                },
+                {
+                    "name": "epa_region_code",
+                    "key": ""
+                },
+                {
+                    "name": "site_type_name",
+                    "key": ""
+                },
+                {
+                    "name": "location_description",
+                    "key": ""
+                },
+                {
+                    "name": "create_date",
+                    "key": ""
+                },
+                {
+                    "name": "update_date",
+                    "key": ""
+                },
+                {
+                    "name": "us_mexico_border_ind",
+                    "key": ""
+                },
+                {
+                    "name": "pgm_sys_acrnms",
+                    "key": ""
+                },
+                {
+                    "name": "latitude83",
+                    "key": ""
+                },
+                {
+                    "name": "longitude83",
+                    "key": ""
+                },
+                {
+                    "name": "conveyor",
+                    "key": ""
+                },
+                {
+                    "name": "collect_desc",
+                    "key": ""
+                },
+                {
+                    "name": "accuracy_value",
+                    "key": ""
+                },
+                {
+                    "name": "ref_point_desc",
+                    "key": ""
+                },
+                {
+                    "name": "hdatum_desc",
+                    "key": ""
+                },
+                {
+                    "name": "source_desc",
+                    "key": ""
+                }
+            ]
+        },
+        {
+            "world_x": 156.0,
+            "world_y": 194.0,
+            "world_w": 200,
+            "world_h": 100,
+            "title": "table_name",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "id",
+                    "key": "none"
+                },
+                {
+                    "name": "name",
+                    "key": "none"
+                }
+            ]
+        },
+        {
+            "world_x": 600.0,
+            "world_y": -300.0,
+            "world_w": 300,
+            "world_h": 100,
+            "title": "national_contact_file",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "registry_id",
+                    "key": "none"
+                },
+                {
+                    "name": "pgm_sys_acrnm",
+                    "key": "none"
+                },
+                {
+                    "name": "pgm_sys_id",
+                    "key": ""
+                },
+                {
+                    "name": "interest_type",
+                    "key": ""
+                },
+                {
+                    "name": "affiliation_type",
+                    "key": ""
+                },
+                {
+                    "name": "start_date",
+                    "key": ""
+                },
+                {
+                    "name": "end_date",
+                    "key": ""
+                },
+                {
+                    "name": "full_name",
+                    "key": ""
+                },
+                {
+                    "name": "title",
+                    "key": ""
+                },
+                {
+                    "name": "phone_number",
+                    "key": ""
+                },
+                {
+                    "name": "alternate_number",
+                    "key": ""
+                },
+                {
+                    "name": "fax_number",
+                    "key": ""
+                },
+                {
+                    "name": "email_address",
+                    "key": ""
+                },
+                {
+                    "name": "mailing_adderss",
+                    "key": ""
+                },
+                {
+                    "name": "supplemental_address",
+                    "key": ""
+                },
+                {
+                    "name": "city_name",
+                    "key": ""
+                },
+                {
+                    "name": "state_code",
+                    "key": ""
+                },
+                {
+                    "name": "state_name",
+                    "key": ""
+                },
+                {
+                    "name": "postal_code",
+                    "key": ""
+                },
+                {
+                    "name": "country_name",
+                    "key": ""
+                }
+            ]
+        }
+    ],
+    "edges": []
+}
