@@ -1,0 +1,131 @@
+{
+    "nodes": [
+        {
+            "world_x": 400.0,
+            "world_y": -100.0,
+            "world_w": 200,
+            "world_h": 100,
+            "title": "questions",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "question_id",
+                    "key": "none"
+                },
+                {
+                    "name": "question_text",
+                    "key": "none"
+                },
+                {
+                    "name": "stakeholder_id",
+                    "key": "foreign_key"
+                }
+            ]
+        },
+        {
+            "world_x": -200.0,
+            "world_y": -100.0,
+            "world_w": 400,
+            "world_h": 100,
+            "title": "stakeholders",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "stakeholder_id",
+                    "key": "primary_key"
+                },
+                {
+                    "name": "stakeholder_name",
+                    "key": "none"
+                },
+                {
+                    "name": "stakeholder_role",
+                    "key": ""
+                },
+                {
+                    "name": "stakeholder_category",
+                    "key": ""
+                },
+                {
+                    "name": "stakeholder_purpose",
+                    "key": ""
+                },
+                {
+                    "name": "stakeholder_potential_requirement_areas",
+                    "key": ""
+                }
+            ]
+        }
+    ],
+    "edges": [
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": -200.0,
+                    "world_y": -100.0,
+                    "world_w": 400,
+                    "world_h": 100,
+                    "title": "stakeholders",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "stakeholder_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "stakeholder_name",
+                            "key": "none"
+                        },
+                        {
+                            "name": "stakeholder_role",
+                            "key": ""
+                        },
+                        {
+                            "name": "stakeholder_category",
+                            "key": ""
+                        },
+                        {
+                            "name": "stakeholder_purpose",
+                            "key": ""
+                        },
+                        {
+                            "name": "stakeholder_potential_requirement_areas",
+                            "key": ""
+                        }
+                    ]
+                },
+                "field_i": 1
+            },
+            "edge_end": {
+                "node": {
+                    "world_x": 400.0,
+                    "world_y": -100.0,
+                    "world_w": 200,
+                    "world_h": 100,
+                    "title": "questions",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "question_id",
+                            "key": "none"
+                        },
+                        {
+                            "name": "question_text",
+                            "key": "none"
+                        },
+                        {
+                            "name": "stakeholder_id",
+                            "key": "foreign_key"
+                        }
+                    ]
+                },
+                "field_i": 3
+            },
+            "edge_type": "1:N"
+        }
+    ]
+}
