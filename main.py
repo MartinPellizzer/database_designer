@@ -234,7 +234,9 @@ def project_open():
     global current_file
     global nodes
     global edges
-    project_dir = os.path.dirname(os.path.abspath(__file__)) + '/uncategorized'
+    ### LINUX
+    """
+    filename = os.path.dirname(os.path.abspath(__file__)) + '/uncategorized'
     filename = subprocess.run(
         [
             "zenity",
@@ -245,6 +247,8 @@ def project_open():
         capture_output=True,
         text=True
     ).stdout.strip()
+    """
+    filename = r'C:\proj\database_designer\ozone\requirements.json'
     if filename:
         with open(filename, "r") as f:
             data = json.load(f)

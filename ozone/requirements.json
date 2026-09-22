@@ -2,30 +2,26 @@
     "nodes": [
         {
             "world_x": 400.0,
-            "world_y": -100.0,
+            "world_y": 300.0,
             "world_w": 200,
             "world_h": 100,
-            "title": "questions",
+            "title": "interviewers",
             "kind": "data",
             "description": "",
             "fields": [
                 {
-                    "name": "question_id",
-                    "key": "none"
+                    "name": "interviewer_id",
+                    "key": "primary_key"
                 },
                 {
-                    "name": "question_text",
+                    "name": "interviewer_name",
                     "key": "none"
-                },
-                {
-                    "name": "stakeholder_id",
-                    "key": "foreign_key"
                 }
             ]
         },
         {
             "world_x": -200.0,
-            "world_y": -100.0,
+            "world_y": 100.0,
             "world_w": 400,
             "world_h": 100,
             "title": "stakeholders",
@@ -57,6 +53,104 @@
                     "key": ""
                 }
             ]
+        },
+        {
+            "world_x": 800.0,
+            "world_y": -100.0,
+            "world_w": 300,
+            "world_h": 100,
+            "title": "answers",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "answer_id",
+                    "key": "none"
+                },
+                {
+                    "name": "question_id",
+                    "key": "foreign_key"
+                },
+                {
+                    "name": "stakeholder_id",
+                    "key": ""
+                },
+                {
+                    "name": "interviewer_id",
+                    "key": "foreign_key"
+                },
+                {
+                    "name": "answer_date",
+                    "key": ""
+                },
+                {
+                    "name": "answer_text",
+                    "key": ""
+                },
+                {
+                    "name": "answer_clarification",
+                    "key": ""
+                },
+                {
+                    "name": "answer_interpretation",
+                    "key": ""
+                },
+                {
+                    "name": "answer_requirement_candidate",
+                    "key": ""
+                },
+                {
+                    "name": "priority",
+                    "key": ""
+                },
+                {
+                    "name": "souce_type",
+                    "key": ""
+                },
+                {
+                    "name": "open_issue",
+                    "key": ""
+                },
+                {
+                    "name": "follow_up",
+                    "key": ""
+                },
+                {
+                    "name": "final_disposition",
+                    "key": ""
+                },
+                {
+                    "name": "requirement_id",
+                    "key": ""
+                },
+                {
+                    "name": "notes",
+                    "key": ""
+                }
+            ]
+        },
+        {
+            "world_x": 400.0,
+            "world_y": -200.0,
+            "world_w": 200,
+            "world_h": 100,
+            "title": "questions",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "question_id",
+                    "key": "primary_key"
+                },
+                {
+                    "name": "question_text",
+                    "key": "none"
+                },
+                {
+                    "name": "stakeholder_id",
+                    "key": "foreign_key"
+                }
+            ]
         }
     ],
     "edges": [
@@ -64,7 +158,7 @@
             "edge_start": {
                 "node": {
                     "world_x": -200.0,
-                    "world_y": -100.0,
+                    "world_y": 100.0,
                     "world_w": 400,
                     "world_h": 100,
                     "title": "stakeholders",
@@ -102,7 +196,7 @@
             "edge_end": {
                 "node": {
                     "world_x": 400.0,
-                    "world_y": -100.0,
+                    "world_y": -200.0,
                     "world_w": 200,
                     "world_h": 100,
                     "title": "questions",
@@ -111,7 +205,7 @@
                     "fields": [
                         {
                             "name": "question_id",
-                            "key": "none"
+                            "key": "primary_key"
                         },
                         {
                             "name": "question_text",
@@ -120,6 +214,335 @@
                         {
                             "name": "stakeholder_id",
                             "key": "foreign_key"
+                        }
+                    ]
+                },
+                "field_i": 3
+            },
+            "edge_type": "1:N"
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": 400.0,
+                    "world_y": -200.0,
+                    "world_w": 200,
+                    "world_h": 100,
+                    "title": "questions",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "question_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "question_text",
+                            "key": "none"
+                        },
+                        {
+                            "name": "stakeholder_id",
+                            "key": "foreign_key"
+                        }
+                    ]
+                },
+                "field_i": 1
+            },
+            "edge_end": {
+                "node": {
+                    "world_x": 800.0,
+                    "world_y": -100.0,
+                    "world_w": 300,
+                    "world_h": 100,
+                    "title": "answers",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "answer_id",
+                            "key": "none"
+                        },
+                        {
+                            "name": "question_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "stakeholder_id",
+                            "key": ""
+                        },
+                        {
+                            "name": "interviewer_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "answer_date",
+                            "key": ""
+                        },
+                        {
+                            "name": "answer_text",
+                            "key": ""
+                        },
+                        {
+                            "name": "answer_clarification",
+                            "key": ""
+                        },
+                        {
+                            "name": "answer_interpretation",
+                            "key": ""
+                        },
+                        {
+                            "name": "answer_requirement_candidate",
+                            "key": ""
+                        },
+                        {
+                            "name": "priority",
+                            "key": ""
+                        },
+                        {
+                            "name": "souce_type",
+                            "key": ""
+                        },
+                        {
+                            "name": "open_issue",
+                            "key": ""
+                        },
+                        {
+                            "name": "follow_up",
+                            "key": ""
+                        },
+                        {
+                            "name": "final_disposition",
+                            "key": ""
+                        },
+                        {
+                            "name": "requirement_id",
+                            "key": ""
+                        },
+                        {
+                            "name": "notes",
+                            "key": ""
+                        }
+                    ]
+                },
+                "field_i": 2
+            },
+            "edge_type": "1:N"
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": 400.0,
+                    "world_y": 300.0,
+                    "world_w": 200,
+                    "world_h": 100,
+                    "title": "interviewers",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "interviewer_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "interviewer_name",
+                            "key": "none"
+                        }
+                    ]
+                },
+                "field_i": 1
+            },
+            "edge_end": {
+                "node": {
+                    "world_x": 800.0,
+                    "world_y": -100.0,
+                    "world_w": 300,
+                    "world_h": 100,
+                    "title": "answers",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "answer_id",
+                            "key": "none"
+                        },
+                        {
+                            "name": "question_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "stakeholder_id",
+                            "key": ""
+                        },
+                        {
+                            "name": "interviewer_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "answer_date",
+                            "key": ""
+                        },
+                        {
+                            "name": "answer_text",
+                            "key": ""
+                        },
+                        {
+                            "name": "answer_clarification",
+                            "key": ""
+                        },
+                        {
+                            "name": "answer_interpretation",
+                            "key": ""
+                        },
+                        {
+                            "name": "answer_requirement_candidate",
+                            "key": ""
+                        },
+                        {
+                            "name": "priority",
+                            "key": ""
+                        },
+                        {
+                            "name": "souce_type",
+                            "key": ""
+                        },
+                        {
+                            "name": "open_issue",
+                            "key": ""
+                        },
+                        {
+                            "name": "follow_up",
+                            "key": ""
+                        },
+                        {
+                            "name": "final_disposition",
+                            "key": ""
+                        },
+                        {
+                            "name": "requirement_id",
+                            "key": ""
+                        },
+                        {
+                            "name": "notes",
+                            "key": ""
+                        }
+                    ]
+                },
+                "field_i": 4
+            },
+            "edge_type": "1:N"
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": -200.0,
+                    "world_y": 100.0,
+                    "world_w": 400,
+                    "world_h": 100,
+                    "title": "stakeholders",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "stakeholder_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "stakeholder_name",
+                            "key": "none"
+                        },
+                        {
+                            "name": "stakeholder_role",
+                            "key": ""
+                        },
+                        {
+                            "name": "stakeholder_category",
+                            "key": ""
+                        },
+                        {
+                            "name": "stakeholder_purpose",
+                            "key": ""
+                        },
+                        {
+                            "name": "stakeholder_potential_requirement_areas",
+                            "key": ""
+                        }
+                    ]
+                },
+                "field_i": 1
+            },
+            "edge_end": {
+                "node": {
+                    "world_x": 800.0,
+                    "world_y": -100.0,
+                    "world_w": 300,
+                    "world_h": 100,
+                    "title": "answers",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "answer_id",
+                            "key": "none"
+                        },
+                        {
+                            "name": "question_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "stakeholder_id",
+                            "key": ""
+                        },
+                        {
+                            "name": "interviewer_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "answer_date",
+                            "key": ""
+                        },
+                        {
+                            "name": "answer_text",
+                            "key": ""
+                        },
+                        {
+                            "name": "answer_clarification",
+                            "key": ""
+                        },
+                        {
+                            "name": "answer_interpretation",
+                            "key": ""
+                        },
+                        {
+                            "name": "answer_requirement_candidate",
+                            "key": ""
+                        },
+                        {
+                            "name": "priority",
+                            "key": ""
+                        },
+                        {
+                            "name": "souce_type",
+                            "key": ""
+                        },
+                        {
+                            "name": "open_issue",
+                            "key": ""
+                        },
+                        {
+                            "name": "follow_up",
+                            "key": ""
+                        },
+                        {
+                            "name": "final_disposition",
+                            "key": ""
+                        },
+                        {
+                            "name": "requirement_id",
+                            "key": ""
+                        },
+                        {
+                            "name": "notes",
+                            "key": ""
                         }
                     ]
                 },
