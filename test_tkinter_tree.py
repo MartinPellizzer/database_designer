@@ -4,6 +4,7 @@ import sqlite3
 
 db_filepath = 'app.db'
 table_name = 'users'
+questions_table_name = 'questions'
 
 def create(table_name):
     db = sqlite3.connect(db_filepath)
@@ -16,6 +17,18 @@ def create(table_name):
             stakeholder_role TEXT,
             stakeholder_category TEXT,
             stakeholder_purpose TEXT
+        )'''
+    )
+    db.commit()
+    db.close()
+    
+def sql_questions_create():
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        CREATE TABLE IF NOT EXISTS {questions_table_name} (
+            question_id INTEGER PRIMARY KEY, 
+            question_text TEXT
         )'''
     )
     db.commit()
@@ -57,6 +70,22 @@ def insert(
     ))
     db.commit()
     db.close()
+    
+def sql_questions_insert(
+    question_text, 
+):
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        INSERT INTO {questions_table_name} (
+            question_text
+        ) 
+        VALUES (?)
+    ''', (
+        question_text, 
+    ))
+    db.commit()
+    db.close()
 
 def delete(id):
     db = sqlite3.connect(db_filepath)
@@ -73,6 +102,18 @@ def get_all():
     items = [dict(row) for row in rows]
     db.close()
     return items
+
+def sql_questions_get_all():
+    db = sqlite3.connect(db_filepath)
+    db.row_factory = sqlite3.Row
+    cur = db.cursor()
+    rows = db.execute(f"SELECT * FROM {questions_table_name}").fetchall()
+    items = [dict(row) for row in rows]
+    db.close()
+    return items
+
+
+
 
 def stakeholder_view():
     items = get_all()
@@ -111,9 +152,32 @@ def stakeholder_delete(event):
     tree.delete(item)
     stakeholder_view()
 
+
+def questions_view():
+    items = sql_questions_get_all()
+    questions_tree.delete(*questions_tree.get_children())
+    for item in items:
+        row = [val for key, val in item.items()]
+        questions_tree.insert("", tk.END, values=list(row))
+
+def question_insert():
+    questions_question_text = questions_entry_question_text.get()
+    if questions_question_text.strip() == '': 
+        print('ERR: Question text NOT valid')
+        return
+    sql_questions_insert(
+        questions_question_text,
+    )
+    
+    questions_view()
+
+
+
 # Example:
 # drop(table_name)
 create(table_name)
+sql_questions_create()
+sql_questions_insert('test')
 # insert("Alice")
 # items = get_all()
 # print(items)
@@ -151,7 +215,7 @@ frame_left.pack(side="left", fill="y")
 frame_left.pack_propagate(False)
 
 padx = 10
-tk.Label(frame_left, text="Stakeholder First Nane").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+tk.Label(frame_left, text="Stakeholder First Name").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
 entry_stakeholder_name_first = tk.Entry(frame_left)
 entry_stakeholder_name_first.pack(fill="x", padx=(padx, padx))
 
@@ -195,27 +259,6 @@ for col in cols:
     tree.column(col, width=1)
 
 stakeholder_view()
-
-###########################################################
-# TAB 2
-###########################################################
-tab2 = tk.Frame(tabs)
-tabs.add(tab2, text="Questions")
-
-tk.Label(tab2, text="Settings").pack(pady=20)
-
-ttk.Combobox(
-    tab2,
-    values=["Option 1", "Option 2", "Option 3"]
-).pack()
-
-tk.Button(tab2, text="Save").pack(pady=20)
-
-###########################################################
-# TAB 3
-###########################################################
-tab3 = tk.Frame(tabs)
-tabs.add(tab3, text="Answers")
 
 if tabs.nametowidget(tabs.select()) == tab1:
     tree.bind("<Delete>", stakeholder_delete)
@@ -274,5 +317,46 @@ tk.Button(
     text="Update",
     command=stakeholder_update
 ).pack(fill="x", padx=padx, pady=10)
+
+###########################################################
+# TAB 2
+###########################################################
+questions_tab = tk.Frame(tabs)
+tabs.add(questions_tab, text="Questions")
+
+questions_frame_left = tk.Frame(questions_tab, width=200)
+questions_frame_left.pack(side="left", fill="y")
+questions_frame_left.pack_propagate(False)
+
+padx = 10
+tk.Label(questions_frame_left, text="Question Text").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+questions_entry_question_text = tk.Entry(questions_frame_left)
+questions_entry_question_text.pack(fill="x", padx=(padx, padx))
+
+questions_frame_center = tk.Frame(questions_tab)
+questions_frame_center.pack(side="left", fill="both", expand=True)
+
+tk.Button(frame_left, text="Insert Question", command=question_insert).pack(fill="x", padx=(padx, padx), pady=(10, 0))
+
+questions_fields = [
+    "question_id", 
+    "question_text",
+]
+
+questions_tree = ttk.Treeview(questions_frame_center, columns=questions_fields, show="headings")
+questions_tree.pack(fill="both", expand=True)
+
+for col in questions_fields:
+    questions_tree.heading(col, text=col)
+    questions_tree.column(col, width=1)
+
+questions_view()
+
+###########################################################
+# TAB 3
+###########################################################
+tab3 = tk.Frame(tabs)
+tabs.add(tab3, text="Answers")
+
 
 root.mainloop()
