@@ -2,15 +2,109 @@ import tkinter as tk
 from tkinter import ttk
 import sqlite3
 
-db_filepath = 'app.db'
-table_name = 'users'
+db_filepath = 'requirements.db'
+stakeholders_table_name = 'stakeholders'
 questions_table_name = 'questions'
 
-def create(table_name):
+############################################################
+# SQLITE FUNCTIONS
+############################################################
+
+sql_stakeholders_fields = [
+    {
+        "name": "stakeholder_id",
+        "type": "INTEGER",
+        "primary_key": True,
+    },
+    {
+        "name": "stakeholder_name_first",
+        "type": "TEXT",
+    },
+    {
+        "name": "stakeholder_name_last",
+        "type": "TEXT",
+    },
+    {
+        "name": "stakeholder_role",
+        "type": "TEXT",
+    },
+    {
+        "name": "stakeholder_category",
+        "type": "TEXT",
+    },
+    {
+        "name": "stakeholder_purpose",
+        "type": "TEXT",
+    },
+]
+
+
+"""
+def sql_create_table(table_name, fields):
+    ###
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    columns = []
+    for field in fields:
+        column = f"{field['name']} {field['type']}"
+        if field.get("primary_key"): column += " PRIMARY KEY"
+        if field.get("not_null"): column += " NOT NULL"
+        if field.get("unique"): column += " UNIQUE"
+        columns.append(column)
+    sql = f'''
+        CREATE TABLE IF NOT EXISTS {table_name} (
+            {", ".join(columns)}
+        )
+    '''
+    cur.execute(sql)
+    db.commit()
+    db.close()
+
+sql_create_table(stakeholders_table_name, fields)
+
+def sql_stakeholders_create_table(table_name, fields):
+    table_name = stakeholders_table_name
+    fields = sql_stakeholders_fields
+    ###
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    columns = []
+    for field in fields:
+        column = f"{field['name']} {field['type']}"
+        if field.get("primary_key"): column += " PRIMARY KEY"
+        if field.get("not_null"): column += " NOT NULL"
+        if field.get("unique"): column += " UNIQUE"
+        columns.append(column)
+    sql = f'''
+        CREATE TABLE IF NOT EXISTS {table_name} (
+            {", ".join(columns)}
+        )
+    '''
+    cur.execute(sql)
+    db.commit()
+    db.close()
+
+sql_stakeholders_create_table()
+"""
+
+# ----------------------------------------------------------
+# SQLITE STAKEHOLDERS
+# ----------------------------------------------------------
+
+def sql_stakeholders_drop():
     db = sqlite3.connect(db_filepath)
     cur = db.cursor()
     cur.execute(f'''
-        CREATE TABLE IF NOT EXISTS {table_name} (
+        DROP TABLE IF EXISTS {stakeholders_table_name}
+    ''')
+    db.commit()
+    db.close()
+
+def sql_stakeholders_create():
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        CREATE TABLE IF NOT EXISTS {stakeholders_table_name} (
             stakeholder_id INTEGER PRIMARY KEY, 
             stakeholder_name_first TEXT,
             stakeholder_name_last TEXT,
@@ -22,16 +116,7 @@ def create(table_name):
     db.commit()
     db.close()
 
-def drop(table_name):
-    db = sqlite3.connect(db_filepath)
-    cur = db.cursor()
-    cur.execute(f'''
-        DROP TABLE IF EXISTS {table_name}
-    ''')
-    db.commit()
-    db.close()
-
-def insert(
+def sql_stakeholders_insert(
     stakeholder_name_first, 
     stakeholder_name_last, 
     stakeholder_role,
@@ -41,7 +126,7 @@ def insert(
     db = sqlite3.connect(db_filepath)
     cur = db.cursor()
     cur.execute(f'''
-        INSERT INTO {table_name} (
+        INSERT INTO {stakeholders_table_name} (
             stakeholder_name_first, 
             stakeholder_name_last, 
             stakeholder_role,
@@ -59,29 +144,29 @@ def insert(
     db.commit()
     db.close()
 
-def delete(id):
+def sql_stakeholders_delete(id):
     db = sqlite3.connect(db_filepath)
     cur = db.cursor()
-    cur.execute(f"DELETE FROM {table_name} WHERE stakeholder_id = ?", (id,))
+    cur.execute(f"DELETE FROM {stakeholders_table_name} WHERE stakeholder_id = ?", (id,))
     db.commit()
     db.close()
 
-def get_all():
+def sql_stakeholders_get_all():
     db = sqlite3.connect(db_filepath)
     db.row_factory = sqlite3.Row
     cur = db.cursor()
-    rows = db.execute(f"SELECT * FROM {table_name}").fetchall()
+    rows = db.execute(f"SELECT * FROM {stakeholders_table_name}").fetchall()
     items = [dict(row) for row in rows]
     db.close()
     return items
     
-def sql_stakeholder_get_by_id(stakeholder_id):
+def sql_stakeholders_get_by_id(stakeholder_id):
     db = sqlite3.connect(db_filepath)
     db.row_factory = sqlite3.Row
     cur = db.cursor()
     rows = db.execute(f'''
         SELECT * 
-        FROM {table_name}
+        FROM {stakeholders_table_name}
         WHERE stakeholder_id = {stakeholder_id}
     ''').fetchall()
     items = [dict(row) for row in rows]
@@ -90,6 +175,19 @@ def sql_stakeholder_get_by_id(stakeholder_id):
     db.close()
     return item
     
+# ----------------------------------------------------------
+# SQLITE QUESTIONS
+# ----------------------------------------------------------
+
+def sql_questions_drop():
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        DROP TABLE IF EXISTS {questions_table_name}
+    ''')
+    db.commit()
+    db.close()
+
 def sql_questions_create():
     db = sqlite3.connect(db_filepath)
     cur = db.cursor()
@@ -122,16 +220,6 @@ def sql_questions_insert(
     db.commit()
     db.close()
 
-def sql_questions_get_all():
-    db = sqlite3.connect(db_filepath)
-    db.row_factory = sqlite3.Row
-    cur = db.cursor()
-    rows = db.execute(f"SELECT * FROM {questions_table_name}").fetchall()
-    items = [dict(row) for row in rows]
-    db.close()
-    return items
-
-
 def sql_questions_delete(id):
     db = sqlite3.connect(db_filepath)
     cur = db.cursor()
@@ -142,26 +230,34 @@ def sql_questions_delete(id):
     db.commit()
     db.close()
 
-def sql_questions_drop():
+def sql_questions_get_all():
     db = sqlite3.connect(db_filepath)
+    db.row_factory = sqlite3.Row
     cur = db.cursor()
-    cur.execute(f'''
-        DROP TABLE IF EXISTS {questions_table_name}
-    ''')
-    db.commit()
+    rows = db.execute(f"SELECT * FROM {questions_table_name}").fetchall()
+    items = [dict(row) for row in rows]
     db.close()
+    return items
 
 
 
 
-def stakeholder_view():
-    items = get_all()
+############################################################
+# TKINTER FUNCTIONS
+############################################################
+
+# ----------------------------------------------------------
+# TKINTER FUNCTIONS STAKEHOLDERS
+# ----------------------------------------------------------
+
+def tk_stakeholder_view():
+    items = sql_stakeholders_get_all()
     tree.delete(*tree.get_children())
     for item in items:
         row = [val for key, val in item.items()]
         tree.insert("", tk.END, values=list(row))
     
-def stakeholder_insert():
+def tk_stakeholder_insert():
     stakeholder_name_first = text=entry_stakeholder_name_first.get()
     stakeholder_name_last = text=entry_stakeholder_name_last.get()
     stakeholder_role = dropdown.get()
@@ -170,27 +266,51 @@ def stakeholder_insert():
     if stakeholder_name_first.strip() == '': 
         print('ERR: Stakeholder name NOT valid')
         return
-    create(table_name)
-    insert(
+    sql_stakeholders_insert(
         stakeholder_name_first, 
         stakeholder_name_last, 
         stakeholder_role,
         stakeholder_category,
         stakeholder_purpose,
     )
+    tk_stakeholder_view()
     
-    stakeholder_view()
-
-def stakeholder_delete(event):
-    print('here')
-    if not tree.selection():
-        return
+def tk_stakeholder_update():
     item = tree.selection()[0]
     id = tree.item(item)["values"][0]
-    delete(id)
-    tree.delete(item)
-    stakeholder_view()
+    db = sqlite3.connect(db_filepath)
+    db.execute(f"""
+        UPDATE {stakeholders_table_name}
+        SET 
+            stakeholder_name_first=?, 
+            stakeholder_name_last=?, 
+            stakeholder_role=?,
+            stakeholder_category=?,
+            stakeholder_purpose=?
+        WHERE stakeholder_id=?
+    """, (
+        entry_stakeholder_name_first.get(),
+        entry_stakeholder_name_last.get(),
+        dropdown.get(),
+        entry_stakeholder_category.get(),
+        entry_stakeholder_purpose.get(),
+        id
+    ))
+    db.commit()
+    db.close()
+    tk_stakeholder_view()
 
+def tk_stakeholder_delete(event):
+    if not tree.selection(): return
+    item = tree.selection()[0]
+    id = tree.item(item)["values"][0]
+    sql_stakeholders_delete(id)
+    tree.delete(item)
+    tk_stakeholder_view()
+
+# ----------------------------------------------------------
+# TKINTER FUNCTIONS QUESTIONS
+# ----------------------------------------------------------
 
 def questions_view():
     items = sql_questions_get_all()
@@ -200,8 +320,9 @@ def questions_view():
         row = [val for key, val in item.items()]
         rows.append(row)
     for row in rows:
+        print(row)
         stakeholder_id = row[2]
-        stakeholder_item = sql_stakeholder_get_by_id(stakeholder_id)
+        stakeholder_item = sql_stakeholders_get_by_id(stakeholder_id)
         stakeholder = f'''{stakeholder_item['stakeholder_role']} - {stakeholder_item['stakeholder_name_first']} {stakeholder_item['stakeholder_name_last']}'''
         row.append(stakeholder)
         questions_tree.insert("", tk.END, values=list(row))
@@ -230,26 +351,25 @@ def questions_delete(event):
     questions_tree.delete(item)
     questions_view()
 
-
+def questions_print():
+    for item in questions_tree.get_children():
+        print(questions_tree.item(item)["values"][1])
 
 # Example:
-# drop(table_name)
-create(table_name)
+# sql_stakeholders_drop()
+sql_stakeholders_create()
 # sql_questions_drop()
 sql_questions_create()
 # sql_questions_insert('test')
-# insert("Alice")
-# items = get_all()
 # print(items)
-# delete(1)
-# get_all()
-# drop(table_name)
 
 
 
 ###########################################################
-# TKINTER
+# TKINTER UI
 ###########################################################
+
+padx = 10
 
 root = tk.Tk()
 root.geometry("1280x720")
@@ -257,9 +377,9 @@ root.geometry("1280x720")
 tabs = ttk.Notebook(root)
 tabs.pack(fill="both", expand=True)
 
-###########################################################
-# TAB 1
-###########################################################
+# ----------------------------------------------------------
+# STAKEHOLDERS TAB
+# ----------------------------------------------------------
 
 stakeholder_roles = [
     'System Architect', 
@@ -267,14 +387,17 @@ stakeholder_roles = [
     'CORE Firmware Engineer',
 ]
 
-tab1 = tk.Frame(tabs)
-tabs.add(tab1, text="Stakeholders")
+stakeholders_tab = tk.Frame(tabs)
+tabs.add(stakeholders_tab, text="Stakeholders")
 
-frame_left = tk.Frame(tab1, width=200)
+# ..........................................................
+# STAKEHOLDERS FRAME LEFT
+# ..........................................................
+
+frame_left = tk.Frame(stakeholders_tab, width=200)
 frame_left.pack(side="left", fill="y")
 frame_left.pack_propagate(False)
 
-padx = 10
 tk.Label(frame_left, text="Stakeholder First Name").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
 entry_stakeholder_name_first = tk.Entry(frame_left)
 entry_stakeholder_name_first.pack(fill="x", padx=(padx, padx))
@@ -284,8 +407,6 @@ entry_stakeholder_name_last = tk.Entry(frame_left)
 entry_stakeholder_name_last.pack(fill="x", padx=(padx, padx))
 
 tk.Label(frame_left, text="Stakeholder Role").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
-# entry_stakeholder_role = tk.Entry(frame_left)
-# entry_stakeholder_role.pack(fill="x", padx=(padx, padx))
 dropdown = ttk.Combobox(frame_left, values=stakeholder_roles)
 dropdown.pack(fill="x", padx=(padx, padx))
 
@@ -297,9 +418,13 @@ tk.Label(frame_left, text="Stakeholder Purpose").pack(anchor="w", pady=(10, 0), 
 entry_stakeholder_purpose = tk.Entry(frame_left)
 entry_stakeholder_purpose.pack(fill="x", padx=(padx, padx))
 
-tk.Button(frame_left, text="Insert Stakeholder", command=stakeholder_insert).pack(fill="x", padx=(padx, padx), pady=(10, 0))
+tk.Button(frame_left, text="Insert Stakeholder", command=tk_stakeholder_insert).pack(fill="x", padx=(padx, padx), pady=(10, 0))
 
-frame_center = tk.Frame(tab1)
+# ..........................................................
+# STAKEHOLDERS FRAME CENTER
+# ..........................................................
+
+frame_center = tk.Frame(stakeholders_tab)
 frame_center.pack(side="left", fill="both", expand=True)
 
 cols = [
@@ -318,64 +443,30 @@ for col in cols:
     tree.heading(col, text=col)
     tree.column(col, width=1)
 
-stakeholder_view()
+tk_stakeholder_view()
 
-# if tabs.nametowidget(tabs.select()) == tab1:
-tree.bind("<Delete>", stakeholder_delete)
+tree.bind("<Delete>", tk_stakeholder_delete)
 
 def stakeholder_select(event):
-    if not tree.selection():
-        return
-
+    if not tree.selection(): return
     values = tree.item(tree.selection()[0])["values"]
-
     entry_stakeholder_name_first.delete(0, tk.END)
     entry_stakeholder_name_first.insert(0, values[1])
-
     entry_stakeholder_name_last.delete(0, tk.END)
     entry_stakeholder_name_last.insert(0, values[2])
-
     dropdown.set(values[3])
-
     entry_stakeholder_category.delete(0, tk.END)
     entry_stakeholder_category.insert(0, values[4])
-
     entry_stakeholder_purpose.delete(0, tk.END)
     entry_stakeholder_purpose.insert(0, values[5])
 
 tree.bind("<<TreeviewSelect>>", stakeholder_select)
 
-def stakeholder_update():
-    item = tree.selection()[0]
-    id = tree.item(item)["values"][0]
-
-    db = sqlite3.connect(db_filepath)
-    db.execute(f"""
-        UPDATE {table_name}
-        SET 
-            stakeholder_name_first=?, 
-            stakeholder_name_last=?, 
-            stakeholder_role=?,
-            stakeholder_category=?,
-            stakeholder_purpose=?
-        WHERE stakeholder_id=?
-    """, (
-        entry_stakeholder_name_first.get(),
-        entry_stakeholder_name_last.get(),
-        dropdown.get(),
-        entry_stakeholder_category.get(),
-        entry_stakeholder_purpose.get(),
-        id
-    ))
-    db.commit()
-    db.close()
-
-    stakeholder_view()
 
 tk.Button(
     frame_left,
     text="Update",
-    command=stakeholder_update
+    command=tk_stakeholder_update
 ).pack(fill="x", padx=padx, pady=10)
 
 ###########################################################
@@ -393,15 +484,7 @@ tk.Label(questions_frame_left, text="Question Text").pack(anchor="w", pady=(10, 
 questions_entry_question_text = tk.Entry(questions_frame_left)
 questions_entry_question_text.pack(fill="x", padx=(padx, padx))
 
-# questions_combobox_stakeholder_values = []
-# stakeholders_items = get_all()
-# for stakeholders_item in stakeholders_items:
-#     questions_combobox_stakeholder_value = f
-#     questions_combobox_stakeholder_values.append()
-#     print(stakeholders_item)
-# quit()
-
-questions_combobox_stakeholder_values = [f'''{item['stakeholder_id']} ({item['stakeholder_role']} - {item['stakeholder_name_first']} {item['stakeholder_name_last']})''' for item in get_all()]
+questions_combobox_stakeholder_values = [f'''{item['stakeholder_id']} ({item['stakeholder_role']} - {item['stakeholder_name_first']} {item['stakeholder_name_last']})''' for item in sql_stakeholders_get_all()]
 tk.Label(questions_frame_left, text="Question Stakeholder ID").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
 questions_combobox_stakeholder = ttk.Combobox(
     questions_frame_left, 
@@ -448,7 +531,7 @@ def questions_select(event):
     questions_entry_question_text.insert(0, values[1])
 
     stakeholder_id = values[2]
-    stakeholder_item = sql_stakeholder_get_by_id(stakeholder_id)
+    stakeholder_item = sql_stakeholders_get_by_id(stakeholder_id)
     stakeholder = f'''{stakeholder_id} ({stakeholder_item['stakeholder_role']} - {stakeholder_item['stakeholder_name_first']} {stakeholder_item['stakeholder_name_last']})'''
 
     questions_combobox_stakeholder.set(stakeholder)
@@ -487,7 +570,13 @@ tk.Button(
     questions_frame_left,
     text="Update",
     command=questions_update
-).pack(fill="x", padx=padx, pady=10)
+).pack(fill="x", padx=(padx, padx), pady=(10, 0))
+
+tk.Button(
+    questions_frame_left,
+    text="Print Questions",
+    command=questions_print
+).pack(fill="x", padx=(padx, padx), pady=(10, 0))
 
 ###########################################################
 # TAB 3
