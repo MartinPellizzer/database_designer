@@ -21,18 +21,6 @@ def create(table_name):
     )
     db.commit()
     db.close()
-    
-def sql_questions_create():
-    db = sqlite3.connect(db_filepath)
-    cur = db.cursor()
-    cur.execute(f'''
-        CREATE TABLE IF NOT EXISTS {questions_table_name} (
-            question_id INTEGER PRIMARY KEY, 
-            question_text TEXT
-        )'''
-    )
-    db.commit()
-    db.close()
 
 def drop(table_name):
     db = sqlite3.connect(db_filepath)
@@ -70,22 +58,6 @@ def insert(
     ))
     db.commit()
     db.close()
-    
-def sql_questions_insert(
-    question_text, 
-):
-    db = sqlite3.connect(db_filepath)
-    cur = db.cursor()
-    cur.execute(f'''
-        INSERT INTO {questions_table_name} (
-            question_text
-        ) 
-        VALUES (?)
-    ''', (
-        question_text, 
-    ))
-    db.commit()
-    db.close()
 
 def delete(id):
     db = sqlite3.connect(db_filepath)
@@ -102,6 +74,53 @@ def get_all():
     items = [dict(row) for row in rows]
     db.close()
     return items
+    
+def sql_stakeholder_get_by_id(stakeholder_id):
+    db = sqlite3.connect(db_filepath)
+    db.row_factory = sqlite3.Row
+    cur = db.cursor()
+    rows = db.execute(f'''
+        SELECT * 
+        FROM {table_name}
+        WHERE stakeholder_id = {stakeholder_id}
+    ''').fetchall()
+    items = [dict(row) for row in rows]
+    if items != []: item = items[0]
+    else: item = None
+    db.close()
+    return item
+    
+def sql_questions_create():
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        CREATE TABLE IF NOT EXISTS {questions_table_name} (
+            question_id INTEGER PRIMARY KEY, 
+            question_text TEXT,
+            stakeholder_id INTEGER
+        )'''
+    )
+    db.commit()
+    db.close()
+
+def sql_questions_insert(
+    question_text, 
+    stakeholder_id, 
+):
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        INSERT INTO {questions_table_name} (
+            question_text,
+            stakeholder_id
+        ) 
+        VALUES (?, ?)
+    ''', (
+        question_text, 
+        stakeholder_id, 
+    ))
+    db.commit()
+    db.close()
 
 def sql_questions_get_all():
     db = sqlite3.connect(db_filepath)
@@ -111,6 +130,26 @@ def sql_questions_get_all():
     items = [dict(row) for row in rows]
     db.close()
     return items
+
+
+def sql_questions_delete(id):
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        DELETE FROM {questions_table_name} 
+        WHERE question_id = ?
+    ''', (id,))
+    db.commit()
+    db.close()
+
+def sql_questions_drop():
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        DROP TABLE IF EXISTS {questions_table_name}
+    ''')
+    db.commit()
+    db.close()
 
 
 
@@ -156,19 +195,39 @@ def stakeholder_delete(event):
 def questions_view():
     items = sql_questions_get_all()
     questions_tree.delete(*questions_tree.get_children())
+    rows = []
     for item in items:
         row = [val for key, val in item.items()]
+        rows.append(row)
+    for row in rows:
+        stakeholder_id = row[2]
+        stakeholder_item = sql_stakeholder_get_by_id(stakeholder_id)
+        stakeholder = f'''{stakeholder_item['stakeholder_role']} - {stakeholder_item['stakeholder_name_first']} {stakeholder_item['stakeholder_name_last']}'''
+        row.append(stakeholder)
         questions_tree.insert("", tk.END, values=list(row))
 
 def question_insert():
     questions_question_text = questions_entry_question_text.get()
+    questions_stakeholder_val = questions_combobox_stakeholder.get()
+    questions_stakeholder_id = questions_stakeholder_val.split('(')[0].strip()
     if questions_question_text.strip() == '': 
         print('ERR: Question text NOT valid')
         return
     sql_questions_insert(
         questions_question_text,
+        questions_stakeholder_id,
     )
     
+    questions_view()
+
+def questions_delete(event):
+    print('here')
+    if not questions_tree.selection():
+        return
+    item = questions_tree.selection()[0]
+    id = questions_tree.item(item)["values"][0]
+    sql_questions_delete(id)
+    questions_tree.delete(item)
     questions_view()
 
 
@@ -176,8 +235,9 @@ def question_insert():
 # Example:
 # drop(table_name)
 create(table_name)
+# sql_questions_drop()
 sql_questions_create()
-sql_questions_insert('test')
+# sql_questions_insert('test')
 # insert("Alice")
 # items = get_all()
 # print(items)
@@ -186,10 +246,10 @@ sql_questions_insert('test')
 # drop(table_name)
 
 
+
 ###########################################################
 # TKINTER
 ###########################################################
-
 
 root = tk.Tk()
 root.geometry("1280x720")
@@ -260,8 +320,8 @@ for col in cols:
 
 stakeholder_view()
 
-if tabs.nametowidget(tabs.select()) == tab1:
-    tree.bind("<Delete>", stakeholder_delete)
+# if tabs.nametowidget(tabs.select()) == tab1:
+tree.bind("<Delete>", stakeholder_delete)
 
 def stakeholder_select(event):
     if not tree.selection():
@@ -290,8 +350,8 @@ def stakeholder_update():
     id = tree.item(item)["values"][0]
 
     db = sqlite3.connect(db_filepath)
-    db.execute("""
-        UPDATE users
+    db.execute(f"""
+        UPDATE {table_name}
         SET 
             stakeholder_name_first=?, 
             stakeholder_name_last=?, 
@@ -333,17 +393,39 @@ tk.Label(questions_frame_left, text="Question Text").pack(anchor="w", pady=(10, 
 questions_entry_question_text = tk.Entry(questions_frame_left)
 questions_entry_question_text.pack(fill="x", padx=(padx, padx))
 
+# questions_combobox_stakeholder_values = []
+# stakeholders_items = get_all()
+# for stakeholders_item in stakeholders_items:
+#     questions_combobox_stakeholder_value = f
+#     questions_combobox_stakeholder_values.append()
+#     print(stakeholders_item)
+# quit()
+
+questions_combobox_stakeholder_values = [f'''{item['stakeholder_id']} ({item['stakeholder_role']} - {item['stakeholder_name_first']} {item['stakeholder_name_last']})''' for item in get_all()]
+tk.Label(questions_frame_left, text="Question Stakeholder ID").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+questions_combobox_stakeholder = ttk.Combobox(
+    questions_frame_left, 
+    values=questions_combobox_stakeholder_values
+)
+questions_combobox_stakeholder.pack(fill="x", padx=(padx, padx))
+
 questions_frame_center = tk.Frame(questions_tab)
 questions_frame_center.pack(side="left", fill="both", expand=True)
 
-tk.Button(frame_left, text="Insert Question", command=question_insert).pack(fill="x", padx=(padx, padx), pady=(10, 0))
+tk.Button(questions_frame_left, text="Insert Question", command=question_insert).pack(fill="x", padx=(padx, padx), pady=(10, 0))
 
 questions_fields = [
     "question_id", 
     "question_text",
+    "stakeholder_id",
+    "stakeholder",
 ]
 
-questions_tree = ttk.Treeview(questions_frame_center, columns=questions_fields, show="headings")
+questions_tree = ttk.Treeview(
+    questions_frame_center, 
+    columns=questions_fields, 
+    show="headings"
+)
 questions_tree.pack(fill="both", expand=True)
 
 for col in questions_fields:
@@ -351,6 +433,61 @@ for col in questions_fields:
     questions_tree.column(col, width=1)
 
 questions_view()
+
+# if tabs.nametowidget(tabs.select()) == questions_tab:
+questions_tree.bind("<Delete>", questions_delete)
+
+    
+def questions_select(event):
+    if not questions_tree.selection():
+        return
+
+    values = questions_tree.item(questions_tree.selection()[0])["values"]
+
+    questions_entry_question_text.delete(0, tk.END)
+    questions_entry_question_text.insert(0, values[1])
+
+    stakeholder_id = values[2]
+    stakeholder_item = sql_stakeholder_get_by_id(stakeholder_id)
+    stakeholder = f'''{stakeholder_id} ({stakeholder_item['stakeholder_role']} - {stakeholder_item['stakeholder_name_first']} {stakeholder_item['stakeholder_name_last']})'''
+
+    questions_combobox_stakeholder.set(stakeholder)
+
+questions_tree.bind("<<TreeviewSelect>>", questions_select)
+
+def questions_update():
+    item = questions_tree.selection()[0]
+    
+    questions_id = questions_tree.item(item)["values"][0]
+    questions_question_text = questions_entry_question_text.get()
+    questions_stakeholder_val = questions_combobox_stakeholder.get()
+    questions_stakeholder_id = questions_stakeholder_val.split('(')[0].strip()
+    if questions_question_text.strip() == '': 
+        print('ERR: Question text NOT valid')
+        return
+
+    db = sqlite3.connect(db_filepath)
+    db.execute(f"""
+        UPDATE {questions_table_name}
+        SET 
+            question_text=?, 
+            stakeholder_id=?
+        WHERE question_id=?
+    """, (
+        questions_question_text,
+        questions_stakeholder_id,
+        questions_id
+    ))
+    db.commit()
+    db.close()
+
+    questions_view()
+
+tk.Button(
+    questions_frame_left,
+    text="Update",
+    command=questions_update
+).pack(fill="x", padx=padx, pady=10)
 
 ###########################################################
 # TAB 3
