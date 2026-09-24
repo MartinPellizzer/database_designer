@@ -815,7 +815,7 @@ answers_text_question_text.pack(fill="x", padx=(padx, padx))
 answers_text_question_text.config(state="disabled", bg=bg, fg=fg)
 
 tk.Label(answers_frame_left, text="Answer Text").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
-answers_text_answer_text = tk.Text(answers_frame_left, wrap="word", height=5)
+answers_text_answer_text = tk.Text(answers_frame_left, wrap="word", height=10)
 answers_text_answer_text.pack(fill="x", padx=(padx, padx))
 
 tk.Button(
