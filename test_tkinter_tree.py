@@ -513,27 +513,38 @@ def tk_answers_insert():
 def tk_answers_update():
     item = answers_tree.selection()[0]
     answer_id = answers_tree.item(item)["values"][0]
-    questions_question_text = questions_entry_question_text.get()
-    questions_stakeholder_val = questions_combobox_stakeholder.get()
-    questions_stakeholder_id = questions_stakeholder_val.split('(')[0].strip()
-    if questions_question_text.strip() == '': 
-        print('ERR: Question text NOT valid')
+
+    question_id = answers_entry_question_id.get()
+    question_text = answers_text_question_text.get("1.0", tk.END).strip()
+    answer_text = answers_text_answer_text.get("1.0", tk.END).strip()
+
+    if question_id.strip() == '': 
+        print('ERR: ANSWERS -> Question id NOT alid')
         return
+    if question_text.strip() == '': 
+        print('ERR: ANSWERS -> Question text NOT valid')
+        return
+    if answer_text.strip() == '': 
+        print('ERR: ANSWERS -> Answer text NOT valid')
+        return
+
     db = sqlite3.connect(db_filepath)
     db.execute(f"""
-        UPDATE {questions_table_name}
+        UPDATE {answers_table_name}
         SET 
-            question_text=?, 
-            stakeholder_id=?
-        WHERE question_id=?
+            answer_text=?, 
+            question_id=?,
+            question_text=?
+        WHERE answer_id=?
     """, (
-        questions_question_text,
-        questions_stakeholder_id,
-        questions_id
+        answer_text,
+        question_id,
+        question_text,
+        answer_id,
     ))
     db.commit()
     db.close()
-    questions_view()
+    tk_answers_view()
 
 def tk_answers_delete(event):
     if not answers_tree.selection():
@@ -548,7 +559,7 @@ def tk_answers_select(event):
     if not answers_tree.selection(): return
 
     values = answers_tree.item(answers_tree.selection()[0])["values"]
-    
+
     answers_entry_question_id.config(state="normal")
     answers_entry_question_id.delete(0, tk.END)
     answers_entry_question_id.insert(0, values[0])
