@@ -509,6 +509,16 @@ def tk_answers_insert():
         question_text,
     )
     tk_answers_view()
+    
+    answers_entry_question_id.config(state="normal")
+    answers_entry_question_id.delete(0, tk.END)
+    answers_entry_question_id.config(state="disabled")
+    ###
+    answers_text_question_text.config(state="normal")
+    answers_text_question_text.delete("1.0", tk.END)
+    answers_text_question_text.config(state="disabled")
+    ###
+    answers_text_answer_text.delete("1.0", tk.END)
 
 def tk_answers_update():
     item = answers_tree.selection()[0]
@@ -545,6 +555,16 @@ def tk_answers_update():
     db.commit()
     db.close()
     tk_answers_view()
+    
+    answers_entry_question_id.config(state="normal")
+    answers_entry_question_id.delete(0, tk.END)
+    answers_entry_question_id.config(state="disabled")
+    ###
+    answers_text_question_text.config(state="normal")
+    answers_text_question_text.delete("1.0", tk.END)
+    answers_text_question_text.config(state="disabled")
+    ###
+    answers_text_answer_text.delete("1.0", tk.END)
 
 def tk_answers_delete(event):
     if not answers_tree.selection():
@@ -572,6 +592,23 @@ def tk_answers_select(event):
 
     answers_text_answer_text.delete("1.0", tk.END)
     answers_text_answer_text.insert("1.0", values[1])
+
+def tk_compile_markdown():
+    from textwrap import dedent
+    items = sql_answers_get_all()
+    output_text = ''
+    for item in items:
+        print(item)
+        output_text += dedent(f'''
+            | Field              | Example                                                                                                                                                     |
+            | ------------------ | -------------------------- |
+            | Question ID        | {item['question_id']}      |
+            | Question Text      | {item['question_text']}    |
+            
+        ''').strip()
+        output_text += f'\n\n'
+    with open('output.md', 'w') as f: f.write(output_text)
+
 
 # Example:
 # sql_stakeholders_drop()
@@ -854,5 +891,22 @@ answers_tree.bind("<Delete>", tk_answers_delete)
 answers_tree.bind("<<TreeviewSelect>>", tk_answers_select)
 
 
+
+###########################################################
+# TAB COMPILE
+###########################################################
+
+compile_tab = tk.Frame(tabs)
+tabs.add(compile_tab, text="Compile")
+
+compile_frame_left = tk.Frame(compile_tab, width=200)
+compile_frame_left.pack(side="left", fill="y")
+compile_frame_left.pack_propagate(False)
+
+tk.Button(
+    compile_frame_left,
+    text="Compile Markdown",
+    command=tk_compile_markdown
+).pack(fill="x", padx=(padx, padx), pady=(10, 0))
 
 root.mainloop()
