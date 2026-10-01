@@ -13,6 +13,15 @@ from reportlab.platypus import Paragraph
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 
 
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+
+from reportlab.platypus import KeepTogether
+
+# pdfmetrics.registerFont(
+#     TTFont("DejaVuSans", "DejaVuSans.ttf")
+# )
+
 doc = SimpleDocTemplate("out.pdf")
 
 
@@ -31,34 +40,27 @@ header_style = ParagraphStyle(
     textColor="#344054",
 )
 
-md = """
-| Field              | Example                                                                                                                                                     |
-| ------------------ | -------------------------- |
-| Question ID        | 1      |
-| Question Text      | What is the overall purpose of the system?    |
+with open("output.md", encoding="utf-8") as f: md = f.read().strip()
 
-| Field              | Example                                                                                                                                                     |
-| ------------------ | -------------------------- |
-| Question ID        | 1      |
-| Question Text      | What is the overall purpose of the system?    |
-""".strip()
+def md_to_tables(md):
+    md_elements = []
+    md_element = ''
 
-md_elements = []
-md_element = ''
+    for line in md.split('\n'):
+        line = line.strip()
+        if line.startswith('|'):
+            md_element += line
+            md_element += '\n'
+        else:
+            md_elements.append(md_element)
+            md_element = ''
 
-for line in md.split('\n'):
-    line = line.strip()
-    if line.startswith('|'):
-        md_element += line
-        md_element += '\n'
-    else:
+    if md_element != '':
         md_elements.append(md_element)
-        md_element = ''
 
-if md_element != '':
-    md_elements.append(md_element)
+    return md_elements
 
-
+md_elements = md_to_tables(md)
 
 
 def markdown_table(md):
@@ -97,9 +99,16 @@ def markdown_table(md):
     return table
 
 elements_parse = []
-for md_element in md_elements:
+for i, md_element in enumerate(md_elements):
+
     element_parse = markdown_table(md_element)
-    elements_parse.append(element_parse)
+
+    table_elements = [element_parse]
+
+    if i < len(md_elements) - 1:
+        table_elements.append(Spacer(1, 40))
+
+    elements_parse.append(KeepTogether(table_elements))
 
 story = elements_parse
 

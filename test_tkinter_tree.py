@@ -1,11 +1,25 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import filedialog
 import sqlite3
 
 db_filepath = 'requirements.db'
 stakeholders_table_name = 'stakeholders'
 questions_table_name = 'questions'
 answers_table_name = 'answers'
+
+db = None
+project_file = None
+
+
+stakeholder_roles = [
+    'System Architect', 
+    'System Engineer', 
+    'CORE Firmware Engineer',
+    'Electrical Engineer',
+    'Process Engineer',
+    'Safety Engineer',
+]
 
 ############################################################
 # SQLITE FUNCTIONS
@@ -239,6 +253,22 @@ def sql_questions_get_all():
     items = [dict(row) for row in rows]
     db.close()
     return items
+    
+def sql_questions_get_by_id(id):
+    db = sqlite3.connect(db_filepath)
+    db.row_factory = sqlite3.Row
+    cur = db.cursor()
+    records = db.execute(f'''
+        SELECT * 
+        FROM {questions_table_name}
+        WHERE question_id = ?
+    ''', (id,))
+    rows = records.fetchall()
+    items = [dict(row) for row in rows]
+    if items != []: item = items[0]
+    else: item = None
+    db.close()
+    return item
 
 # ----------------------------------------------------------
 # SQLITE ANSWERS
@@ -599,27 +629,81 @@ def tk_compile_markdown():
     output_text = ''
     for item in items:
         print(item)
+        question_item = sql_questions_get_by_id(item['question_id'])
+        stakeholder_item = sql_stakeholders_get_by_id(question_item['stakeholder_id'])
+        print(stakeholder_item)
         output_text += dedent(f'''
-            | Field              | Example                                                                                                                                                     |
+            | Field              | Value                      |
             | ------------------ | -------------------------- |
             | Question ID        | {item['question_id']}      |
+            | Answer ID          | {item['answer_id']}        |
+            | Stakeholder Role   | {stakeholder_item['stakeholder_role']}        |
             | Question Text      | {item['question_text']}    |
-            
+            | Answer Text        | {item['answer_text']}      |
         ''').strip()
         output_text += f'\n\n'
-    with open('output.md', 'w') as f: f.write(output_text)
+    with open('output.md', 'w', encoding="utf-8") as f: f.write(output_text)
 
 
-# Example:
-# sql_stakeholders_drop()
-# sql_answers_drop()
-sql_stakeholders_create()
-sql_questions_create()
-sql_answers_create()
-# print(items)
+# # Example:
+# # sql_stakeholders_drop()
+# # sql_answers_drop()
+# sql_stakeholders_create()
+# sql_questions_create()
+# sql_answers_create()
+# # print(items)
+
+def create_tables():
+    sql_stakeholders_create()
+    # sql_answers_drop()
+    sql_questions_create()
+    # sql_questions_drop()
+    sql_answers_create()
+
+def refresh_all():
+    tk_stakeholder_view()
+    questions_view()
+    tk_answers_view()
+
+    
+    new_values = [
+        f"{item['stakeholder_id']} "
+        f"({item['stakeholder_role']} - "
+        f"{item['stakeholder_name_first']} "
+        f"{item['stakeholder_name_last']})"
+        for item in sql_stakeholders_get_all()
+    ]
+
+    questions_combobox_stakeholder["values"] = new_values
 
 
 
+def new_project():
+    global db_filepath
+    project_file = filedialog.asksaveasfilename(
+        defaultextension=".db",
+        filetypes=[("SQLite database", "*.db")]
+    )
+    if not project_file: return
+    db_filepath = project_file
+    # 'requirements.db'
+    # db = sqlite3.connect(project_file)
+    create_tables()
+    refresh_all()
+
+def open_project():
+    global db_filepath
+    filename = filedialog.askopenfilename(
+        filetypes=[("SQLite database", "*.db")]
+    )
+    if not filename: return
+    if db: db.close()
+    db_filepath = filename
+    # db = sqlite3.connect(project_file)
+    refresh_all()
+
+def save_project():
+    if db: db.commit()
 
 
 
@@ -632,18 +716,24 @@ padx = 10
 root = tk.Tk()
 root.geometry("1280x720")
 
+menu = tk.Menu(root)
+root.config(menu=menu)
+
+file_menu = tk.Menu(menu, tearoff=False)
+menu.add_cascade(label="File", menu=file_menu)
+
+file_menu.add_command(label="New", command=new_project)
+file_menu.add_command(label="Open...", command=open_project)
+file_menu.add_command(label="Save", command=save_project)
+file_menu.add_separator()
+file_menu.add_command(label="Exit", command=root.destroy)
+
 tabs = ttk.Notebook(root)
 tabs.pack(fill="both", expand=True)
 
 # ----------------------------------------------------------
 # STAKEHOLDERS TAB
 # ----------------------------------------------------------
-
-stakeholder_roles = [
-    'System Architect', 
-    'System Engineer', 
-    'CORE Firmware Engineer',
-]
 
 stakeholders_tab = tk.Frame(tabs)
 tabs.add(stakeholders_tab, text="Stakeholders")
@@ -742,7 +832,11 @@ tk.Label(questions_frame_left, text="Question Text").pack(anchor="w", pady=(10, 
 questions_entry_question_text = tk.Entry(questions_frame_left)
 questions_entry_question_text.pack(fill="x", padx=(padx, padx))
 
-questions_combobox_stakeholder_values = [f'''{item['stakeholder_id']} ({item['stakeholder_role']} - {item['stakeholder_name_first']} {item['stakeholder_name_last']})''' for item in sql_stakeholders_get_all()]
+questions_combobox_stakeholder_values = [
+    f'''
+        {item['stakeholder_id']} ({item['stakeholder_role']} - {item['stakeholder_name_first']} {item['stakeholder_name_last']})
+    ''' for item in sql_stakeholders_get_all()
+]
 tk.Label(questions_frame_left, text="Question Stakeholder ID").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
 questions_combobox_stakeholder = ttk.Combobox(
     questions_frame_left, 
