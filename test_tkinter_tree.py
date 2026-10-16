@@ -3,10 +3,13 @@ from tkinter import ttk
 from tkinter import filedialog
 import sqlite3
 
+from textwrap import dedent
+
 db_filepath = 'requirements.db'
 stakeholders_table_name = 'stakeholders'
 questions_table_name = 'questions'
 answers_table_name = 'answers'
+requirements_table_name = 'requirements'
 
 db = None
 project_file = None
@@ -337,6 +340,45 @@ def sql_answers_get_all():
     items = [dict(row) for row in rows]
     db.close()
     return items
+    
+# ----------------------------------------------------------
+# SQLITE REQUIREMENTS
+# ----------------------------------------------------------
+
+def sql_requirements_drop():
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        DROP TABLE IF EXISTS {requirements_table_name}
+    ''')
+    db.commit()
+    db.close()
+
+def sql_requirements_create():
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        CREATE TABLE IF NOT EXISTS {requirements_table_name} (
+            answer_id INTEGER PRIMARY KEY, 
+            answer_text TEXT,
+            question_id INTEGER,
+            question_text TEXT
+        )'''
+    )
+    db.commit()
+    db.close()
+
+def sql_requirements_get_all():
+    db = sqlite3.connect(db_filepath)
+    db.row_factory = sqlite3.Row
+    cur = db.cursor()
+    rows = db.execute(f"SELECT * FROM {requirements_table_name}").fetchall()
+    items = [dict(row) for row in rows]
+    db.close()
+    return items
+
+sql_requirements_create()
+
 
 ############################################################
 # TKINTER FUNCTIONS
@@ -623,7 +665,85 @@ def tk_answers_select(event):
     answers_text_answer_text.delete("1.0", tk.END)
     answers_text_answer_text.insert("1.0", values[1])
 
+    
+    requirements_entry_answer_id.config(state="normal")
+    requirements_entry_answer_id.delete(0, tk.END)
+    requirements_entry_answer_id.insert(0, values[0])
+    requirements_entry_answer_id.config(state="disabled")
+
+    requirements_entry_answer_text.config(state="normal")
+    requirements_entry_answer_text.delete("1.0", tk.END)
+    requirements_entry_answer_text.insert("1.0", values[1])
+    requirements_entry_answer_text.config(state="disabled")
+
+
+
+# ----------------------------------------------------------
+# TKINTER FUNCTIONS REQUIREMENTS
+# ----------------------------------------------------------
+
+def tk_requirements_view():
+    items = sql_requirements_get_all()
+    requirements_tree.delete(*requirements_tree.get_children())
+    rows = []
+    for item in items:
+        row = [val for key, val in item.items()]
+        rows.append(row)
+    for row in rows:
+        requirements_tree.insert("", tk.END, values=list(row))
+
+def tk_requirements_insert():
+    ### TODO
+    # answer_id = requirements_entry__id.get()
+    # question_text = answers_text_question_text.get("1.0", tk.END).strip()
+    # answer_text = answers_text_answer_text.get("1.0", tk.END).strip()
+
+    # if question_id.strip() == '': 
+    #     print('ERR: Question id NOT alid')
+    #     return
+    # if question_text.strip() == '': 
+    #     print('ERR: Question text NOT valid')
+    #     return
+    # if answer_text.strip() == '': 
+    #     print('ERR: Answer text NOT valid')
+    #     return
+
+    # sql_answers_insert(
+    #     answer_text, 
+    #     question_id, 
+    #     question_text,
+    # )
+    # tk_answers_view()
+    
+    # answers_entry_question_id.config(state="normal")
+    # answers_entry_question_id.delete(0, tk.END)
+    # answers_entry_question_id.config(state="disabled")
+    # ###
+    # answers_text_question_text.config(state="normal")
+    # answers_text_question_text.delete("1.0", tk.END)
+    # answers_text_question_text.config(state="disabled")
+    # ###
+    # answers_text_answer_text.delete("1.0", tk.END)
+
+def tk_requirements_update():
+    pass
+
+def tk_requirements_delete(event):
+    pass
+
+def tk_requirements_select(event):
+    pass
+
+
+
+# ----------------------------------------------------------
+# TKINTER FUNCTIONS COMPILE
+# ----------------------------------------------------------
+
 def tk_compile_markdown():
+    markdown_stakeholders_create()
+    markdown_questions_create()
+    markdown_answers_create()
     from textwrap import dedent
     items = sql_answers_get_all()
     output_text = ''
@@ -676,8 +796,6 @@ def refresh_all():
 
     questions_combobox_stakeholder["values"] = new_values
 
-
-
 def new_project():
     global db_filepath
     project_file = filedialog.asksaveasfilename(
@@ -704,6 +822,131 @@ def open_project():
 
 def save_project():
     if db: db.commit()
+
+
+
+###########################################################
+# MARKDOWN
+###########################################################
+def markdown_stakeholders_create():
+    items = sql_stakeholders_get_all()
+    output_filepath = f'C:/og-new/products/aurora_module_relay_x8/v0_1_0/docs/inputs/stakeholders.md'
+    output_text = ''
+    output_text += dedent(f'''
+        <head>
+        <title>
+        Aurora: Module Relay x8
+        </title>
+        <subtitle>
+        Stakeholders
+        </subtitle>
+        </head>
+        <rev>
+        Version, Date, Author, Description
+        0.1.0, 2026-07-02, Martin Pellizzer, Starting version
+        </rev>
+        <body>
+        # Stakeholders
+    ''').strip() + '\n'
+    for item_i, item in enumerate(items):
+        output_text += dedent(f'''
+            ## Stakeholder {item_i+1}: {item['stakeholder_role']}
+            {item['stakeholder_purpose']}
+            | Field              | Value                      |
+            | ------------------ | -------------------------- |
+            | Stakeholder ID | {item['stakeholder_id']} |
+            | Stakeholder First Name | {item['stakeholder_name_first']} |
+            | Stakeholder Last Name | {item['stakeholder_name_last']} |
+            | Stakeholder Role | {item['stakeholder_role']} |
+        ''')
+        # for key, val in item.items():
+        #     output_text += dedent(f'''| {key} | {val} | \n''')
+        output_text += f'\n\n'
+    output_text += dedent(f'''
+        </body>
+    ''').strip() + '\n'
+    with open(output_filepath, 'w', encoding="utf-8") as f: f.write(output_text)
+
+def markdown_questions_create():
+    questions_items = sql_questions_get_all()
+    output_filepath = f'C:/og-new/products/aurora_module_relay_x8/v0_1_0/docs/inputs/questions.md'
+    output_text = ''
+    output_text += dedent(f'''
+        <head>
+        <title>
+        Aurora: Module Relay x8
+        </title>
+        <subtitle>
+        Stakeholders Questions
+        </subtitle>
+        </head>
+        <rev>
+        Version, Date, Author, Description
+        0.1.0, 2026-07-02, Martin Pellizzer, Starting version
+        </rev>
+        <body>
+        # Questions
+    ''').strip() + '\n'
+    for item_i, question_item in enumerate(questions_items):
+        stakeholder_item = sql_stakeholders_get_by_id(question_item['stakeholder_id'])
+        output_text += dedent(f'''
+            ## Question {item_i+1}
+            | Field              | Value                      |
+            | ------------------ | -------------------------- |
+            | Stakeholder ID | {stakeholder_item['stakeholder_id']} |
+            | Stakeholder Role | {stakeholder_item['stakeholder_role']} |
+            | Question ID | {question_item['question_id']} |
+            | Question Text | {question_item['question_text']} |
+        ''')
+        output_text += f'\n\n'
+    output_text += dedent(f'''
+        </body>
+    ''').strip() + '\n'
+    with open(output_filepath, 'w', encoding="utf-8") as f: f.write(output_text)
+
+def markdown_answers_create():
+    answers_items = sql_answers_get_all()
+    output_filepath = f'C:/og-new/products/aurora_module_relay_x8/v0_1_0/docs/inputs/answers.md'
+    output_text = ''
+    output_text += dedent(f'''
+        <head>
+        <title>
+        Aurora: Module Relay x8
+        </title>
+        <subtitle>
+        Stakeholders Answers
+        </subtitle>
+        </head>
+        <rev>
+        Version, Date, Author, Description
+        0.1.0, 2026-07-02, Martin Pellizzer, Starting version
+        </rev>
+        <body>
+        # Answers
+    ''').strip() + '\n'
+    for item_i, answer_item in enumerate(answers_items):
+        question_item = sql_questions_get_by_id(answer_item['question_id'])
+        stakeholder_item = sql_stakeholders_get_by_id(question_item['stakeholder_id'])
+        output_text += dedent(f'''
+            ## Answer {item_i+1}: {stakeholder_item['stakeholder_role']}
+            ### Question
+            {question_item['question_text']}
+            ### Answer
+            {answer_item['answer_text']}
+            | Field              | Value                      |
+            | ------------------ | -------------------------- |
+            | Stakeholder ID | {stakeholder_item['stakeholder_id']} |
+            | Question ID | {question_item['question_id']} |
+            | Answer ID | {answer_item['answer_id']} |
+            | Stakeholder Role | {stakeholder_item['stakeholder_role']} |
+            | Question Text | {question_item['question_text']} |
+            | Answer Text | {answer_item['answer_text']} |
+        ''')
+        output_text += f'\n\n'
+    output_text += dedent(f'''
+        </body>
+    ''').strip() + '\n'
+    with open(output_filepath, 'w', encoding="utf-8") as f: f.write(output_text)
 
 
 
@@ -817,8 +1060,10 @@ tk.Button(
     command=tk_stakeholder_update
 ).pack(fill="x", padx=padx, pady=10)
 
+
+
 ###########################################################
-# TAB 2
+# QUESTIONS TAB
 ###########################################################
 questions_tab = tk.Frame(tabs)
 tabs.add(questions_tab, text="Questions")
@@ -888,8 +1133,10 @@ tk.Button(
     command=questions_print
 ).pack(fill="x", padx=(padx, padx), pady=(10, 0))
 
+
+
 ###########################################################
-# TAB 3
+# ANSWERS TAB
 ###########################################################
 
 padx = 10
@@ -983,6 +1230,81 @@ tk_answers_view()
 
 answers_tree.bind("<Delete>", tk_answers_delete)
 answers_tree.bind("<<TreeviewSelect>>", tk_answers_select)
+
+
+
+###########################################################
+# REQUIREMENTS TAB
+###########################################################
+
+padx = 10
+
+requirements_fields = [
+    "answer_id", 
+    "answer_text",
+    "question_id",
+    "question_text",
+    "stakeholder_id",
+    "stakeholder_text",
+    "requirement_id",
+    "requirement_text",
+]
+
+requirements_tab = tk.Frame(tabs)
+tabs.add(requirements_tab, text="Requirements")
+
+requirements_frame_left = tk.Frame(requirements_tab, width=200)
+requirements_frame_left.pack(side="left", fill="y")
+requirements_frame_left.pack_propagate(False)
+
+tk.Label(requirements_frame_left, text="Answer ID").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+requirements_entry_answer_id = tk.Entry(requirements_frame_left)
+requirements_entry_answer_id.pack(fill="x", padx=(padx, padx))
+requirements_entry_answer_id.config(state="disabled")
+
+tk.Label(requirements_frame_left, text="Answer Text").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+requirements_entry_answer_text = tk.Text(requirements_frame_left, wrap="word", height=5)
+requirements_entry_answer_text.pack(fill="x", padx=(padx, padx))
+requirements_entry_answer_text.config(state="disabled", bg=bg, fg=fg)
+
+tk.Label(requirements_frame_left, text="Requirement Text").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+requirements_text_requirement_text = tk.Text(requirements_frame_left, wrap="word", height=10)
+requirements_text_requirement_text.pack(fill="x", padx=(padx, padx))
+
+tk.Button(
+    requirements_frame_left,
+    text="Insert Requirement",
+    command=tk_requirements_insert
+).pack(fill="x", padx=(padx, padx), pady=(10, 0))
+
+tk.Button(
+    requirements_frame_left,
+    text="Update Requirement",
+    command=tk_requirements_update
+).pack(fill="x", padx=(padx, padx), pady=(10, 0))
+
+# ..........................................................
+# REQUIREMENTS FRAME CENTER
+# ..........................................................
+
+requirement_frame_center = tk.Frame(requirements_tab)
+requirement_frame_center.pack(side="left", fill="both", expand=True)
+
+requirements_tree = ttk.Treeview(
+    requirement_frame_center, 
+    columns=requirements_fields, 
+    show="headings"
+)
+requirements_tree.pack(fill="both", expand=True)
+
+for col in requirements_fields:
+    requirements_tree.heading(col, text=col)
+    requirements_tree.column(col, width=1)
+
+tk_requirements_view()
+
+requirements_tree.bind("<Delete>", tk_requirements_delete)
+requirements_tree.bind("<<TreeviewSelect>>", tk_requirements_select)
 
 
 
