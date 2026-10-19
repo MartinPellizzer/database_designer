@@ -5,6 +5,7 @@ import sqlite3
 
 from textwrap import dedent
 
+### TODO: change db_filepath based on project
 db_filepath = 'requirements.db'
 stakeholders_table_name = 'stakeholders'
 questions_table_name = 'questions'
@@ -359,12 +360,44 @@ def sql_requirements_create():
     cur = db.cursor()
     cur.execute(f'''
         CREATE TABLE IF NOT EXISTS {requirements_table_name} (
-            answer_id INTEGER PRIMARY KEY, 
-            answer_text TEXT,
-            question_id INTEGER,
-            question_text TEXT
+            requirement_id INTEGER PRIMARY KEY, 
+            requirement_text TEXT,
+            answer_id INTEGER,
+            answer_text TEXT
         )'''
     )
+    db.commit()
+    db.close()
+
+def sql_requirements_insert(
+    answer_id, 
+    answer_text, 
+    requirement_text, 
+):
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        INSERT INTO {requirements_table_name} (
+        requirement_text,
+        answer_id,
+        answer_text
+        ) 
+        VALUES (?, ?, ?)
+    ''', (
+        requirement_text,
+        answer_id,
+        answer_text,
+    ))
+    db.commit()
+    db.close()
+
+def sql_requirements_delete(id):
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        DELETE FROM {requirements_table_name} 
+        WHERE requirement_id = ?
+    ''', (id,))
     db.commit()
     db.close()
 
@@ -377,8 +410,9 @@ def sql_requirements_get_all():
     db.close()
     return items
 
-sql_requirements_create()
 
+# sql_requirements_drop()
+sql_requirements_create()
 
 ############################################################
 # TKINTER FUNCTIONS
@@ -671,10 +705,10 @@ def tk_answers_select(event):
     requirements_entry_answer_id.insert(0, values[0])
     requirements_entry_answer_id.config(state="disabled")
 
-    requirements_entry_answer_text.config(state="normal")
-    requirements_entry_answer_text.delete("1.0", tk.END)
-    requirements_entry_answer_text.insert("1.0", values[1])
-    requirements_entry_answer_text.config(state="disabled")
+    requirements_text_answer_text.config(state="normal")
+    requirements_text_answer_text.delete("1.0", tk.END)
+    requirements_text_answer_text.insert("1.0", values[1])
+    requirements_text_answer_text.config(state="disabled")
 
 
 
@@ -686,34 +720,88 @@ def tk_requirements_view():
     items = sql_requirements_get_all()
     requirements_tree.delete(*requirements_tree.get_children())
     rows = []
+    # for item in items:
+    #     row = [val for key, val in item.items()]
+    #     rows.append(row)
     for item in items:
-        row = [val for key, val in item.items()]
+        # row = [val for key, val in item.items()]
+        row = [
+            item['requirement_id'], 
+            item['requirement_text'],
+            item['answer_id'],
+            item['answer_text'],
+        ]
         rows.append(row)
     for row in rows:
         requirements_tree.insert("", tk.END, values=list(row))
 
 def tk_requirements_insert():
-    ### TODO
-    # answer_id = requirements_entry__id.get()
-    # question_text = answers_text_question_text.get("1.0", tk.END).strip()
-    # answer_text = answers_text_answer_text.get("1.0", tk.END).strip()
+    answer_id = requirements_entry_answer_id.get()
+    answer_text = requirements_text_answer_text.get("1.0", tk.END).strip()
+    requirement_text = requirements_text_requirement_text.get("1.0", tk.END).strip()
+    print(answer_id)
+    print(answer_text)
+    print(requirement_text)
+    if answer_id.strip() == '': 
+        print('ERR: Question id NOT alid')
+        return
+    if answer_text.strip() == '': 
+        print('ERR: Question text NOT valid')
+        return
+    if requirement_text.strip() == '': 
+        print('ERR: Answer text NOT valid')
+        return
+    sql_requirements_insert(
+        answer_id, 
+        answer_text, 
+        requirement_text,
+    )
+    tk_requirements_view()
+    # requirements_entry_answer_id.config(state="normal")
+    # requirements_entry_answer_id.delete(0, tk.END)
+    # requirements_entry_answer_id.config(state="disabled")
+    ###
+    # requirements_text_answer_text.config(state="normal")
+    # requirements_text_answer_text.delete("1.0", tk.END)
+    # requirements_text_answer_text.config(state="disabled")
+    ###
+    requirements_text_requirement_text.delete("1.0", tk.END)
 
-    # if question_id.strip() == '': 
-    #     print('ERR: Question id NOT alid')
-    #     return
-    # if question_text.strip() == '': 
-    #     print('ERR: Question text NOT valid')
-    #     return
-    # if answer_text.strip() == '': 
-    #     print('ERR: Answer text NOT valid')
-    #     return
+def tk_requirements_update():
+    item = requirements_tree.selection()[0]
+    requirement_id = requirements_tree.item(item)["values"][0]
 
-    # sql_answers_insert(
-    #     answer_text, 
-    #     question_id, 
-    #     question_text,
-    # )
-    # tk_answers_view()
+    answer_id = requirements_entry_answer_id.get()
+    answer_text = requirements_text_answer_text.get("1.0", tk.END).strip()
+    requirement_text = requirements_text_requirement_text.get("1.0", tk.END).strip()
+
+    if answer_id.strip() == '': 
+        print('ERR: ANSWERS -> Question id NOT alid')
+        return
+    if answer_text.strip() == '': 
+        print('ERR: ANSWERS -> Question text NOT valid')
+        return
+    if requirement_text.strip() == '': 
+        print('ERR: ANSWERS -> Answer text NOT valid')
+        return
+
+    db = sqlite3.connect(db_filepath)
+    db.execute(f"""
+        UPDATE {requirements_table_name}
+        SET 
+            answer_id=?, 
+            answer_text=?,
+            requirement_text=?
+        WHERE requirement_id=?
+    """, (
+        answer_id,
+        answer_text,
+        requirement_text,
+        requirement_id,
+    ))
+    db.commit()
+    db.close()
+    tk_requirements_view()
     
     # answers_entry_question_id.config(state="normal")
     # answers_entry_question_id.delete(0, tk.END)
@@ -722,17 +810,33 @@ def tk_requirements_insert():
     # answers_text_question_text.config(state="normal")
     # answers_text_question_text.delete("1.0", tk.END)
     # answers_text_question_text.config(state="disabled")
-    # ###
-    # answers_text_answer_text.delete("1.0", tk.END)
-
-def tk_requirements_update():
-    pass
+    ###
+    requirements_text_requirement_text.delete("1.0", tk.END)
 
 def tk_requirements_delete(event):
-    pass
+    if not requirements_tree.selection(): return
+    item = requirements_tree.selection()[0]
+    id = requirements_tree.item(item)["values"][0]
+    sql_requirements_delete(id)
+    requirements_tree.delete(item)
+    tk_requirements_view()
 
 def tk_requirements_select(event):
-    pass
+    if not requirements_tree.selection(): return
+    values = requirements_tree.item(requirements_tree.selection()[0])["values"]
+
+    requirements_entry_answer_id.config(state="normal")
+    requirements_entry_answer_id.delete(0, tk.END)
+    requirements_entry_answer_id.insert(0, values[2])
+    requirements_entry_answer_id.config(state="disabled")
+
+    requirements_text_answer_text.config(state="normal")
+    requirements_text_answer_text.delete("1.0", tk.END)
+    requirements_text_answer_text.insert("1.0", values[3])
+    requirements_text_answer_text.config(state="disabled")
+
+    requirements_text_requirement_text.delete("1.0", tk.END)
+    requirements_text_requirement_text.insert("1.0", values[1])
 
 
 
@@ -744,6 +848,7 @@ def tk_compile_markdown():
     markdown_stakeholders_create()
     markdown_questions_create()
     markdown_answers_create()
+    markdown_requirements_create()
     from textwrap import dedent
     items = sql_answers_get_all()
     output_text = ''
@@ -784,6 +889,7 @@ def refresh_all():
     tk_stakeholder_view()
     questions_view()
     tk_answers_view()
+    tk_requirements_view()
 
     
     new_values = [
@@ -807,6 +913,7 @@ def new_project():
     # 'requirements.db'
     # db = sqlite3.connect(project_file)
     create_tables()
+    sql_requirements_create()
     refresh_all()
 
 def open_project():
@@ -942,6 +1049,53 @@ def markdown_answers_create():
             | Question Text | {question_item['question_text']} |
             | Answer Text | {answer_item['answer_text']} |
         ''')
+        output_text += f'\n\n'
+    output_text += dedent(f'''
+        </body>
+    ''').strip() + '\n'
+    with open(output_filepath, 'w', encoding="utf-8") as f: f.write(output_text)
+
+def markdown_requirements_create():
+    requirements_items = sql_requirements_get_all()
+    output_filepath = f'C:/og-new/products/aurora_module_relay_x8/v0_1_0/docs/inputs/requirements.md'
+    output_text = ''
+    output_text += dedent(f'''
+        <head>
+        <title>
+        Aurora: Module Relay x8
+        </title>
+        <subtitle>
+        Stakeholders Requirements
+        </subtitle>
+        </head>
+        <rev>
+        Version, Date, Author, Description
+        0.1.0, 2026-07-02, Martin Pellizzer, Starting version
+        </rev>
+        <body>
+        # requirements
+    ''').strip() + '\n'
+    for item_i, requirement_item in enumerate(requirements_items):
+        # question_item = sql_questions_get_by_id(answer_item['question_id'])
+        # stakeholder_item = sql_stakeholders_get_by_id(question_item['stakeholder_id'])
+        output_text += dedent(f'''
+            ## Requirement {item_i+1}
+            ### Requirement
+            {requirement_item['requirement_text']}
+        ''')
+        '''
+        
+            ### Answer
+            {answer_item['answer_text']}
+            | Field              | Value                      |
+            | ------------------ | -------------------------- |
+            | Stakeholder ID | {stakeholder_item['stakeholder_id']} |
+            | Question ID | {question_item['question_id']} |
+            | Answer ID | {answer_item['answer_id']} |
+            | Stakeholder Role | {stakeholder_item['stakeholder_role']} |
+            | Question Text | {question_item['question_text']} |
+            | Answer Text | {answer_item['answer_text']} |
+            '''
         output_text += f'\n\n'
     output_text += dedent(f'''
         </body>
@@ -1240,14 +1394,10 @@ answers_tree.bind("<<TreeviewSelect>>", tk_answers_select)
 padx = 10
 
 requirements_fields = [
-    "answer_id", 
-    "answer_text",
-    "question_id",
-    "question_text",
-    "stakeholder_id",
-    "stakeholder_text",
     "requirement_id",
     "requirement_text",
+    "answer_id",
+    "answer_text",
 ]
 
 requirements_tab = tk.Frame(tabs)
@@ -1263,9 +1413,9 @@ requirements_entry_answer_id.pack(fill="x", padx=(padx, padx))
 requirements_entry_answer_id.config(state="disabled")
 
 tk.Label(requirements_frame_left, text="Answer Text").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
-requirements_entry_answer_text = tk.Text(requirements_frame_left, wrap="word", height=5)
-requirements_entry_answer_text.pack(fill="x", padx=(padx, padx))
-requirements_entry_answer_text.config(state="disabled", bg=bg, fg=fg)
+requirements_text_answer_text = tk.Text(requirements_frame_left, wrap="word", height=15)
+requirements_text_answer_text.pack(fill="x", padx=(padx, padx))
+requirements_text_answer_text.config(state="disabled", bg=bg, fg=fg)
 
 tk.Label(requirements_frame_left, text="Requirement Text").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
 requirements_text_requirement_text = tk.Text(requirements_frame_left, wrap="word", height=10)
@@ -1299,7 +1449,30 @@ requirements_tree.pack(fill="both", expand=True)
 
 for col in requirements_fields:
     requirements_tree.heading(col, text=col)
-    requirements_tree.column(col, width=1)
+    requirements_tree.column(
+        col, 
+        stretch=False
+    )
+requirements_tree.column(
+    "requirement_id", 
+    width=100,
+    stretch=False,
+)
+requirements_tree.column(
+    "requirement_text", 
+    width=120,
+    stretch=True,
+)
+requirements_tree.column(
+    "answer_id", 
+    width=100,
+    stretch=False,
+)
+requirements_tree.column(
+    "answer_text", 
+    width=100,
+    stretch=False,
+)
 
 tk_requirements_view()
 
