@@ -342,6 +342,22 @@ def sql_answers_get_all():
     db.close()
     return items
     
+def sql_answers_get_by_id(id):
+    db = sqlite3.connect(db_filepath)
+    db.row_factory = sqlite3.Row
+    cur = db.cursor()
+    records = db.execute(f'''
+        SELECT * 
+        FROM {answers_table_name}
+        WHERE answer_id = ?
+    ''', (id,))
+    rows = records.fetchall()
+    items = [dict(row) for row in rows]
+    if items != []: item = items[0]
+    else: item = None
+    db.close()
+    return item
+    
 # ----------------------------------------------------------
 # SQLITE REQUIREMENTS
 # ----------------------------------------------------------
@@ -1076,17 +1092,19 @@ def markdown_requirements_create():
         # requirements
     ''').strip() + '\n'
     for item_i, requirement_item in enumerate(requirements_items):
-        # question_item = sql_questions_get_by_id(answer_item['question_id'])
-        # stakeholder_item = sql_stakeholders_get_by_id(question_item['stakeholder_id'])
+        answer_item = sql_answers_get_by_id(requirement_item['answer_id'])
+        question_item = sql_questions_get_by_id(answer_item['question_id'])
+        stakeholder_item = sql_stakeholders_get_by_id(question_item['stakeholder_id'])
         output_text += dedent(f'''
             ## Requirement {item_i+1}
             ### Requirement
             {requirement_item['requirement_text']}
-        ''')
-        '''
-        
             ### Answer
             {answer_item['answer_text']}
+            ### Question
+            {question_item['question_text']}
+            ### Stakeholder
+            {stakeholder_item['stakeholder_role']}
             | Field              | Value                      |
             | ------------------ | -------------------------- |
             | Stakeholder ID | {stakeholder_item['stakeholder_id']} |
@@ -1095,7 +1113,10 @@ def markdown_requirements_create():
             | Stakeholder Role | {stakeholder_item['stakeholder_role']} |
             | Question Text | {question_item['question_text']} |
             | Answer Text | {answer_item['answer_text']} |
-            '''
+            | Requirement Text | {requirement_item['requirement_text']} |
+
+            ---
+        ''')
         output_text += f'\n\n'
     output_text += dedent(f'''
         </body>
