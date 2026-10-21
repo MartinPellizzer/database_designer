@@ -11,6 +11,10 @@ stakeholders_table_name = 'stakeholders'
 questions_table_name = 'questions'
 answers_table_name = 'answers'
 statements_table_name = 'statements'
+requirements_table_name = 'requirements'
+
+
+requirements_statements_list_cur = []
 
 db = None
 project_file = None
@@ -359,7 +363,7 @@ def sql_answers_get_by_id(id):
     return item
     
 # ----------------------------------------------------------
-# SQLITE statements
+# SQLITE STATEMENTS
 # ----------------------------------------------------------
 
 def sql_statements_drop():
@@ -426,9 +430,75 @@ def sql_statements_get_all():
     db.close()
     return items
 
-
 # sql_statements_drop()
 sql_statements_create()
+
+# ----------------------------------------------------------
+# SQLITE REQUIREMENTS
+# ----------------------------------------------------------
+
+def sql_requirements_drop():
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        DROP TABLE IF EXISTS {requirements_table_name}
+    ''')
+    db.commit()
+    db.close()
+
+def sql_requirements_create():
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        CREATE TABLE IF NOT EXISTS {requirements_table_name} (
+            requirement_id INTEGER PRIMARY KEY, 
+            requirement_text TEXT,
+            requirements_statements_ids TEXT
+        )'''
+    )
+    db.commit()
+    db.close()
+
+def sql_requirements_insert(
+    requirement_text, 
+    requirements_statements_ids, 
+):
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        INSERT INTO {requirements_table_name} (
+        requirement_text,
+        requirements_statements_ids
+        ) 
+        VALUES (?, ?)
+    ''', (
+        requirement_text,
+        requirements_statements_ids,
+    ))
+    db.commit()
+    db.close()
+
+def sql_requirements_delete(id):
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        DELETE FROM {requirements_table_name} 
+        WHERE requirement_id = ?
+    ''', (id,))
+    db.commit()
+    db.close()
+
+def sql_requirements_get_all():
+    db = sqlite3.connect(db_filepath)
+    db.row_factory = sqlite3.Row
+    cur = db.cursor()
+    rows = db.execute(f"SELECT * FROM {requirements_table_name}").fetchall()
+    items = [dict(row) for row in rows]
+    db.close()
+    return items
+
+# sql_requirements_drop()
+sql_requirements_create()
 
 ############################################################
 # TKINTER FUNCTIONS
@@ -750,6 +820,15 @@ def tk_statements_view():
         rows.append(row)
     for row in rows:
         statements_tree.insert("", tk.END, values=list(row))
+        
+    ### COLOR ROWS
+    print(requirements_statements_list_cur)
+    for item in statements_tree.get_children():
+        row_id = statements_tree.item(item, "values")[0]  # ID in first column
+        if row_id in requirements_statements_list_cur:
+            statements_tree.item(item, tags=("match",))
+        else:
+            statements_tree.item(item, tags=("blank",))
 
 def tk_statements_insert():
     answer_id = statements_entry_answer_id.get()
@@ -854,6 +933,16 @@ def tk_statements_select(event):
     statements_text_statement_text.delete("1.0", tk.END)
     statements_text_statement_text.insert("1.0", values[1])
 
+    requirements_entry_statement_id.config(state="normal")
+    requirements_entry_statement_id.delete(0, tk.END)
+    requirements_entry_statement_id.insert(0, values[0])
+    requirements_entry_statement_id.config(state="disabled")
+
+    requirements_text_statement_text.config(state="normal")
+    requirements_text_statement_text.delete("1.0", tk.END)
+    requirements_text_statement_text.insert("1.0", values[1])
+    requirements_text_statement_text.config(state="disabled")
+
 
 
 # ----------------------------------------------------------
@@ -861,19 +950,94 @@ def tk_statements_select(event):
 # ----------------------------------------------------------
 
 def tk_requirements_view():
-    pass
+    items = sql_requirements_get_all()
+    requirements_tree.delete(*requirements_tree.get_children())
+    rows = []
+    for item in items:
+        row = [
+            item['requirement_id'], 
+            item['requirement_text'],
+            item['requirements_statements_ids'],
+        ]
+        rows.append(row)
+    for row in rows:
+        requirements_tree.insert("", tk.END, values=list(row))
 
 def tk_requirements_insert():
-    pass
+    global requirements_statements_list_cur
+    # statement_id = requirements_entry_statement_id.get()
+    requirement_text = requirements_text_requirement_text.get("1.0", tk.END).strip()
+    requirements_statements_ids = ','.join(requirements_listbox.get(0, tk.END))
+    # if statement_id.strip() == '': 
+    #     print('ERR: statement_id id NOT valid')
+    #     return
+    if requirement_text.strip() == '': 
+        print('ERR: statement_text text NOT valid')
+        return
+    if requirements_statements_ids.strip() == '': 
+        print('ERR: requirements_statements_ids text NOT valid')
+        return
+    sql_requirements_insert(
+        requirement_text, 
+        requirements_statements_ids,
+    )
+    tk_requirements_view()
+    # statements_entry_answer_id.config(state="normal")
+    # statements_entry_answer_id.delete(0, tk.END)
+    # statements_entry_answer_id.config(state="disabled")
+    ###
+    # statements_text_answer_text.config(state="normal")
+    # statements_text_answer_text.delete("1.0", tk.END)
+    # statements_text_answer_text.config(state="disabled")
+    ###
+    requirements_listbox.delete(0, tk.END)
+    requirements_text_requirement_text.delete("1.0", tk.END)
+
+    requirements_statements_list_cur = []
+    tk_statements_view()
 
 def tk_requirements_update():
     pass
 
 def tk_requirements_delete(event):
-    pass
+    if not requirements_tree.selection(): return
+    item = requirements_tree.selection()[0]
+    id = requirements_tree.item(item)["values"][0]
+    sql_requirements_delete(id)
+    requirements_tree.delete(item)
+    tk_requirements_view()
+    requirements_listbox.delete(0, tk.END)
+    requirements_text_requirement_text.delete("1.0", tk.END)
 
 def tk_requirements_select(event):
-    pass
+    if not requirements_tree.selection(): return
+    values = requirements_tree.item(requirements_tree.selection()[0])["values"]
+    ids_lst = [val.strip() for val in str(values[2]).split(',')]
+
+    # requirements_entry_statement_id.config(state="normal")
+    # requirements_entry_statement_id.delete(0, tk.END)
+    # requirements_entry_statement_id.insert(0, values[2])
+    # requirements_entry_statement_id.config(state="disabled")
+
+    # requirements_text_statement_text.config(state="normal")
+    # requirements_text_statement_text.delete("1.0", tk.END)
+    # requirements_text_statement_text.insert("1.0", values[3])
+    # requirements_text_statement_text.config(state="disabled")
+
+    requirements_listbox.delete(0, tk.END)  # Clear all items
+    for item in ids_lst:
+        requirements_listbox.insert(tk.END, item)
+
+    requirements_text_requirement_text.delete("1.0", tk.END)
+    requirements_text_requirement_text.insert("1.0", values[1])
+
+def tk_requirements_statement_add():
+    text = requirements_entry_statement_id.get().strip()
+    if text and text not in requirements_statements_list_cur:
+        requirements_statements_list_cur.append(text)
+        requirements_listbox.insert(tk.END, text)
+        # requirements_entry_statement_id.delete(0, tk.END)
+    tk_statements_view()
 
 
 
@@ -1516,6 +1680,9 @@ statements_tree.column(
     stretch=False,
 )
 
+statements_tree.tag_configure("blank", background="white")
+statements_tree.tag_configure("match", background="yellow")
+
 tk_statements_view()
 
 statements_tree.bind("<Delete>", tk_statements_delete)
@@ -1531,7 +1698,7 @@ padx = 10
 requirements_fields = [
     "requirement_id",
     "requirement_text",
-    "requirements_statements_id",
+    "requirements_statements_ids",
 ]
 
 requirements_tab = tk.Frame(tabs)
@@ -1542,14 +1709,25 @@ requirements_frame_left.pack(side="left", fill="y")
 requirements_frame_left.pack_propagate(False)
 
 tk.Label(requirements_frame_left, text="Statement ID").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
-requirements_entry_answer_id = tk.Entry(requirements_frame_left)
-requirements_entry_answer_id.pack(fill="x", padx=(padx, padx))
-requirements_entry_answer_id.config(state="disabled")
+requirements_entry_statement_id = tk.Entry(requirements_frame_left)
+requirements_entry_statement_id.pack(fill="x", padx=(padx, padx))
+requirements_entry_statement_id.config(state="disabled")
 
 tk.Label(requirements_frame_left, text="Statement Text").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
-requirements_text_answer_text = tk.Text(requirements_frame_left, wrap="word", height=15)
-requirements_text_answer_text.pack(fill="x", padx=(padx, padx))
-requirements_text_answer_text.config(state="disabled", bg=bg, fg=fg)
+requirements_text_statement_text = tk.Text(requirements_frame_left, wrap="word", height=5)
+requirements_text_statement_text.pack(fill="x", padx=(padx, padx))
+requirements_text_statement_text.config(state="disabled", bg=bg, fg=fg)
+
+tk.Button(
+    requirements_frame_left,
+    text="Add Statement",
+    command=tk_requirements_statement_add
+).pack(fill="x", padx=(padx, padx), pady=(10, 0))
+
+# Listbox with multiple selection
+tk.Label(requirements_frame_left, text="Statement List").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+requirements_listbox = tk.Listbox(requirements_frame_left, selectmode=tk.EXTENDED, height=5)
+requirements_listbox.pack(fill="both", expand=True, padx=10, pady=10)
 
 tk.Label(requirements_frame_left, text="Requirement Text").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
 requirements_text_requirement_text = tk.Text(requirements_frame_left, wrap="word", height=10)
@@ -1575,8 +1753,8 @@ requirements_frame_center = tk.Frame(requirements_tab)
 requirements_frame_center.pack(side="left", fill="both", expand=True)
 
 requirements_tree = ttk.Treeview(
-    requirements_frame_center, 
-    columns=requirements_fields, 
+    requirements_frame_center,
+    columns=requirements_fields,
     show="headings"
 )
 requirements_tree.pack(fill="both", expand=True)
@@ -1588,17 +1766,17 @@ for col in requirements_fields:
         stretch=False
     )
 requirements_tree.column(
-    "requirement_id", 
+    "requirement_id",
     width=100,
     stretch=False,
 )
 requirements_tree.column(
-    "requirement_text", 
+    "requirement_text",
     width=120,
     stretch=True,
 )
 requirements_tree.column(
-    "requirements_statements_id", 
+    "requirements_statements_ids",
     width=100,
     stretch=False,
 )
