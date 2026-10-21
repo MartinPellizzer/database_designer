@@ -823,10 +823,19 @@ def tk_statements_view():
         
     ### COLOR ROWS
     print(requirements_statements_list_cur)
+    sql_requirements_items = sql_requirements_get_all()
+    ids_lst = set()
+    for sql_requirements_item in sql_requirements_items:
+        ids_lst_cur = [val.strip() for val in str(sql_requirements_item['requirements_statements_ids']).split(',')]
+        for x in ids_lst_cur:
+            ids_lst.add(x)
+
     for item in statements_tree.get_children():
         row_id = statements_tree.item(item, "values")[0]  # ID in first column
         if row_id in requirements_statements_list_cur:
-            statements_tree.item(item, tags=("match",))
+            statements_tree.item(item, tags=("tmp",))
+        elif row_id in ids_lst:
+            statements_tree.item(item, tags=("done",))
         else:
             statements_tree.item(item, tags=("blank",))
 
@@ -997,19 +1006,69 @@ def tk_requirements_insert():
     tk_statements_view()
 
 def tk_requirements_update():
-    pass
+    global requirements_statements_list_cur
+    requirement_item = requirements_tree.selection()[0]
+    requirement_id = requirements_tree.item(requirement_item)["values"][0]
+
+    # statement_id = requirements_entry_statement_id.get()
+    requirement_text = requirements_text_requirement_text.get("1.0", tk.END).strip()
+    requirements_statements_ids = ','.join(requirements_listbox.get(0, tk.END))
+    # if statement_id.strip() == '': 
+    #     print('ERR: statement_id id NOT valid')
+    #     return
+    if requirement_text.strip() == '': 
+        print('ERR: statement_text text NOT valid')
+        return
+    if requirements_statements_ids.strip() == '': 
+        print('ERR: requirements_statements_ids text NOT valid')
+        return
+    
+    db = sqlite3.connect(db_filepath)
+    db.execute(f"""
+        UPDATE {requirements_table_name}
+        SET 
+            requirement_text=?,
+            requirements_statements_ids=?
+        WHERE requirement_id=?
+    """, (
+        requirement_text,
+        requirements_statements_ids,
+        requirement_id,
+    ))
+    db.commit()
+    db.close()
+
+    tk_requirements_view()
+    # statements_entry_answer_id.config(state="normal")
+    # statements_entry_answer_id.delete(0, tk.END)
+    # statements_entry_answer_id.config(state="disabled")
+    ###
+    # statements_text_answer_text.config(state="normal")
+    # statements_text_answer_text.delete("1.0", tk.END)
+    # statements_text_answer_text.config(state="disabled")
+    ###
+    requirements_listbox.delete(0, tk.END)
+    requirements_text_requirement_text.delete("1.0", tk.END)
+
+    requirements_statements_list_cur = []
+    tk_statements_view()
 
 def tk_requirements_delete(event):
+    global requirements_statements_list_cur
     if not requirements_tree.selection(): return
     item = requirements_tree.selection()[0]
     id = requirements_tree.item(item)["values"][0]
+    ###
     sql_requirements_delete(id)
     requirements_tree.delete(item)
     tk_requirements_view()
     requirements_listbox.delete(0, tk.END)
     requirements_text_requirement_text.delete("1.0", tk.END)
+    requirements_statements_list_cur = []
+    tk_statements_view()
 
 def tk_requirements_select(event):
+    global requirements_statements_list_cur
     if not requirements_tree.selection(): return
     values = requirements_tree.item(requirements_tree.selection()[0])["values"]
     ids_lst = [val.strip() for val in str(values[2]).split(',')]
@@ -1030,6 +1089,8 @@ def tk_requirements_select(event):
 
     requirements_text_requirement_text.delete("1.0", tk.END)
     requirements_text_requirement_text.insert("1.0", values[1])
+    requirements_statements_list_cur = []
+    tk_statements_view()
 
 def tk_requirements_statement_add():
     text = requirements_entry_statement_id.get().strip()
@@ -1091,6 +1152,7 @@ def refresh_all():
     questions_view()
     tk_answers_view()
     tk_statements_view()
+    tk_requirements_view()
 
     
     new_values = [
@@ -1126,6 +1188,8 @@ def open_project():
     if db: db.close()
     db_filepath = filename
     # db = sqlite3.connect(project_file)
+    # sql_requirements_drop()
+    # sql_requirements_create()
     refresh_all()
 
 def save_project():
@@ -1681,7 +1745,8 @@ statements_tree.column(
 )
 
 statements_tree.tag_configure("blank", background="white")
-statements_tree.tag_configure("match", background="yellow")
+statements_tree.tag_configure("tmp", background="yellow")
+statements_tree.tag_configure("done", background="green")
 
 tk_statements_view()
 
