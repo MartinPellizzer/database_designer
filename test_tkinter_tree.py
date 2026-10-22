@@ -1798,6 +1798,15 @@ tk.Label(requirements_frame_left, text="Requirement Text").pack(anchor="w", pady
 requirements_text_requirement_text = tk.Text(requirements_frame_left, wrap="word", height=10)
 requirements_text_requirement_text.pack(fill="x", padx=(padx, padx))
 
+def requirements_listbox_item_delete(event=None):
+    for index in reversed(requirements_listbox.curselection()):
+        text = requirements_listbox.get(index)
+        requirements_statements_list_cur.remove(text)  # Remove matching string from your list
+        requirements_listbox.delete(index)
+        tk_statements_view()
+
+requirements_listbox.bind("<Delete>", requirements_listbox_item_delete)
+
 tk.Button(
     requirements_frame_left,
     text="Insert Requirement",
@@ -1850,7 +1859,6 @@ tk_requirements_view()
 
 requirements_tree.bind("<Delete>", tk_requirements_delete)
 requirements_tree.bind("<<TreeviewSelect>>", tk_requirements_select)
-
 
 
 ###########################################################
