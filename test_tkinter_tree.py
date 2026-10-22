@@ -429,6 +429,22 @@ def sql_statements_get_all():
     items = [dict(row) for row in rows]
     db.close()
     return items
+    
+def sql_statements_get_by_id(id):
+    db = sqlite3.connect(db_filepath)
+    db.row_factory = sqlite3.Row
+    cur = db.cursor()
+    records = db.execute(f'''
+        SELECT * 
+        FROM {statements_table_name}
+        WHERE statement_id = ?
+    ''', (id,))
+    rows = records.fetchall()
+    items = [dict(row) for row in rows]
+    if items != []: item = items[0]
+    else: item = None
+    db.close()
+    return item
 
 # sql_statements_drop()
 sql_statements_create()
@@ -1091,6 +1107,28 @@ def tk_requirements_select(event):
     requirements_text_requirement_text.insert("1.0", values[1])
     requirements_statements_list_cur = []
     tk_statements_view()
+
+    ###
+    statements_items = []
+    for statement_id in ids_lst:
+        statement_item = sql_statements_get_by_id(statement_id)
+        statements_items.append(statement_item)
+        # print(statement_item)
+
+    tk_requirements_statements_view(statements_items)
+    
+def tk_requirements_statements_view(statements_items):
+    items = statements_items
+    requirements_statements_tree.delete(*requirements_statements_tree.get_children())
+    rows = []
+    for item in items:
+        row = [
+            item['statement_id'], 
+            item['statement_text'],
+        ]
+        rows.append(row)
+    for row in rows:
+        requirements_statements_tree.insert("", tk.END, values=list(row))
 
 def tk_requirements_statement_add():
     text = requirements_entry_statement_id.get().strip()
@@ -1766,6 +1804,11 @@ requirements_fields = [
     "requirements_statements_ids",
 ]
 
+requirements_statements_fields = [
+    "statement_id",
+    "statement_text",
+]
+
 requirements_tab = tk.Frame(tabs)
 tabs.add(requirements_tab, text="Requirements")
 
@@ -1860,6 +1903,29 @@ tk_requirements_view()
 requirements_tree.bind("<Delete>", tk_requirements_delete)
 requirements_tree.bind("<<TreeviewSelect>>", tk_requirements_select)
 
+
+requirements_statements_tree = ttk.Treeview(
+    requirements_frame_center,
+    columns=requirements_statements_fields,
+    show="headings"
+)
+requirements_statements_tree.pack(fill="both", expand=True)
+for col in requirements_statements_fields:
+    requirements_statements_tree.heading(col, text=col)
+    requirements_statements_tree.column(
+        col, 
+        stretch=False
+    )
+requirements_statements_tree.column(
+    "statement_id",
+    width=100,
+    stretch=False,
+)
+requirements_statements_tree.column(
+    "statement_text",
+    width=120,
+    stretch=True,
+)
 
 ###########################################################
 # TAB COMPILE
