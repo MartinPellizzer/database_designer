@@ -512,6 +512,22 @@ def sql_requirements_get_all():
     items = [dict(row) for row in rows]
     db.close()
     return items
+    
+def sql_requirements_get_by_id(id):
+    db = sqlite3.connect(db_filepath)
+    db.row_factory = sqlite3.Row
+    cur = db.cursor()
+    records = db.execute(f'''
+        SELECT * 
+        FROM {requirements_table_name}
+        WHERE requirement_id = ?
+    ''', (id,))
+    rows = records.fetchall()
+    items = [dict(row) for row in rows]
+    if items != []: item = items[0]
+    else: item = None
+    db.close()
+    return item
 
 # sql_requirements_drop()
 sql_requirements_create()
@@ -1113,9 +1129,11 @@ def tk_requirements_select(event):
     for statement_id in ids_lst:
         statement_item = sql_statements_get_by_id(statement_id)
         statements_items.append(statement_item)
-        # print(statement_item)
-
     tk_requirements_statements_view(statements_items)
+    
+    requirement_item = sql_requirements_get_by_id(values[0])
+    print(requirement_item)
+
     
 def tk_requirements_statements_view(statements_items):
     items = statements_items
