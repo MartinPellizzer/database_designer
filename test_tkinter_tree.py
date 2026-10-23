@@ -990,8 +990,12 @@ def tk_statements_select(event):
 # TKINTER FUNCTIONS REQUIREMENTS
 # ----------------------------------------------------------
 
-def tk_requirements_view():
-    items = sql_requirements_get_all()
+def tk_requirements_view(items=None):
+    if not items:
+        items = sql_requirements_get_all()
+    # for item in items:
+    #     print(item)
+    items = sorted(items, key=lambda x: x['sort_order'])
     requirements_tree.delete(*requirements_tree.get_children())
     rows = []
     for item in items:
@@ -1132,7 +1136,7 @@ def tk_requirements_select(event):
     tk_requirements_statements_view(statements_items)
     
     requirement_item = sql_requirements_get_by_id(values[0])
-    print(requirement_item)
+    # print(requirement_item)
 
     
 def tk_requirements_statements_view(statements_items):
@@ -1156,6 +1160,72 @@ def tk_requirements_statement_add():
         # requirements_entry_statement_id.delete(0, tk.END)
     tk_statements_view()
 
+
+def move_record(direction):
+    selected = requirements_tree.selection()
+    if not selected:
+        return
+
+    item = selected[0]
+    current = requirements_tree.item(item, "values")
+    current_id = current[0]  # Adjust index to your ID column
+
+    conn = sqlite3.connect(db_filepath)
+    cur = conn.cursor()
+    
+    # cur.execute(f"PRAGMA table_info({requirements_table_name})")
+    # print([column[1] for column in cur.fetchall()])
+
+    cur.execute(f'''
+        SELECT sort_order 
+        FROM {requirements_table_name} 
+        WHERE requirement_id = ?
+    ''', (current_id,))
+    current_order = cur.fetchone()[0]
+    # print(f'''CURRENT ORDER: {current_order}''')
+
+    if direction == "up":
+        cur.execute(f'''
+            SELECT requirement_id, sort_order 
+            FROM {requirements_table_name} 
+            WHERE sort_order < ?
+            ORDER BY sort_order DESC LIMIT 1
+        ''', (current_order,))
+    else:
+        cur.execute(f'''
+            SELECT requirement_id, sort_order FROM {requirements_table_name} 
+            WHERE sort_order > ?
+            ORDER BY sort_order ASC LIMIT 1
+        ''', (current_order,))
+    neighbor = cur.fetchone()
+
+    if neighbor:
+        neighbor_id, neighbor_order = neighbor
+        cur.execute(f"UPDATE {requirements_table_name} SET sort_order = ? WHERE requirement_id = ?",
+                    (neighbor_order, current_id))
+        cur.execute(f"UPDATE {requirements_table_name} SET sort_order = ? WHERE requirement_id = ?",
+                    (current_order, neighbor_id))
+        conn.commit()
+    conn.close()
+    tk_requirements_view()
+
+    print(f'CURRENT_ID: {current_id}')
+    for item in requirements_tree.get_children():
+        if requirements_tree.item(item, "values")[0] == current_id:
+            print(requirements_tree.item(item, "values"))
+            requirements_tree.selection_set(item)
+            # requirements_tree.focus(item)
+
+            requirements_tree.after_idle(
+                lambda item=item: requirements_tree.focus(item)
+            )
+            requirements_tree.see(item)
+            break
+
+    # print(direction)
+    # print(current_id)
+    # print(f'''CURRENT ORDER: {current_order}''')
+    # print(f'''NEIGHBOR ORDER: {neighbor}''')
 
 
 # ----------------------------------------------------------
@@ -1887,6 +1957,26 @@ tk.Button(
 requirements_frame_center = tk.Frame(requirements_tab)
 requirements_frame_center.pack(side="left", fill="both", expand=True)
 
+tk.Label(requirements_frame_center, text="Search").pack(anchor="w", pady=(10, 0))
+requirements_entry_search = tk.Entry(requirements_frame_center)
+requirements_entry_search.pack(fill="x", pady=(0, padx))
+
+def on_key_release(event):
+    entry_text = requirements_entry_search.get()
+    sql_requirements_items = sql_requirements_get_all()
+    sql_requirements_items_filter = [
+        item
+        for item in sql_requirements_items
+        if entry_text in item['requirement_text']
+    ]
+    tk_requirements_view(sql_requirements_items_filter)
+
+    print(entry_text)  # Current text
+    print(sql_requirements_items)
+
+requirements_entry_search.bind("<KeyRelease>", on_key_release)
+
+
 requirements_tree = ttk.Treeview(
     requirements_frame_center,
     columns=requirements_fields,
@@ -1944,6 +2034,192 @@ requirements_statements_tree.column(
     width=120,
     stretch=True,
 )
+
+requirements_tree.bind("<Control-Up>", lambda e: move_record("up"))
+requirements_tree.bind("<Control-Down>", lambda e: move_record("down"))
+
+###########################################################
+# STRUCTURE TAB
+###########################################################
+
+"""
+TODO
+the goal is to group the requirements in hierarchical structure
+ex:
+1. Hardware
+    1.1
+    1.2
+2. Software 
+    2.1 Report to CORE
+    2.2 Local fault-handling
+use max 3 levels
+list grouped requirement per section
+
+i need:
+- left sidebar for
+    - requirement_id
+    - requirement_text
+    - level 1 category
+    - level 2 category
+    - level 3 category
+- center tree for
+    - display grouped relationships
+"""
+
+padx = 10
+
+requirements_fields = [
+    "requirement_id",
+    "requirement_text",
+    "requirements_statements_ids",
+]
+
+requirements_statements_fields = [
+    "statement_id",
+    "statement_text",
+]
+
+requirements_tab = tk.Frame(tabs)
+tabs.add(requirements_tab, text="Requirements")
+
+requirements_frame_left = tk.Frame(requirements_tab, width=200)
+requirements_frame_left.pack(side="left", fill="y")
+requirements_frame_left.pack_propagate(False)
+
+tk.Label(requirements_frame_left, text="Statement ID").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+requirements_entry_statement_id = tk.Entry(requirements_frame_left)
+requirements_entry_statement_id.pack(fill="x", padx=(padx, padx))
+requirements_entry_statement_id.config(state="disabled")
+
+tk.Label(requirements_frame_left, text="Statement Text").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+requirements_text_statement_text = tk.Text(requirements_frame_left, wrap="word", height=5)
+requirements_text_statement_text.pack(fill="x", padx=(padx, padx))
+requirements_text_statement_text.config(state="disabled", bg=bg, fg=fg)
+
+tk.Button(
+    requirements_frame_left,
+    text="Add Statement",
+    command=tk_requirements_statement_add
+).pack(fill="x", padx=(padx, padx), pady=(10, 0))
+
+# Listbox with multiple selection
+tk.Label(requirements_frame_left, text="Statement List").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+requirements_listbox = tk.Listbox(requirements_frame_left, selectmode=tk.EXTENDED, height=5)
+requirements_listbox.pack(fill="both", expand=True, padx=10, pady=10)
+
+tk.Label(requirements_frame_left, text="Requirement Text").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+requirements_text_requirement_text = tk.Text(requirements_frame_left, wrap="word", height=10)
+requirements_text_requirement_text.pack(fill="x", padx=(padx, padx))
+
+def requirements_listbox_item_delete(event=None):
+    for index in reversed(requirements_listbox.curselection()):
+        text = requirements_listbox.get(index)
+        requirements_statements_list_cur.remove(text)  # Remove matching string from your list
+        requirements_listbox.delete(index)
+        tk_statements_view()
+
+requirements_listbox.bind("<Delete>", requirements_listbox_item_delete)
+
+tk.Button(
+    requirements_frame_left,
+    text="Insert Requirement",
+    command=tk_requirements_insert
+).pack(fill="x", padx=(padx, padx), pady=(10, 0))
+
+tk.Button(
+    requirements_frame_left,
+    text="Update Requirement",
+    command=tk_requirements_update
+).pack(fill="x", padx=(padx, padx), pady=(10, 0))
+
+# ..........................................................
+# REQUIREMENTS FRAME CENTER
+# ..........................................................
+
+requirements_frame_center = tk.Frame(requirements_tab)
+requirements_frame_center.pack(side="left", fill="both", expand=True)
+
+tk.Label(requirements_frame_center, text="Search").pack(anchor="w", pady=(10, 0))
+requirements_entry_search = tk.Entry(requirements_frame_center)
+requirements_entry_search.pack(fill="x", pady=(0, padx))
+
+def on_key_release(event):
+    entry_text = requirements_entry_search.get()
+    sql_requirements_items = sql_requirements_get_all()
+    sql_requirements_items_filter = [
+        item
+        for item in sql_requirements_items
+        if entry_text in item['requirement_text']
+    ]
+    tk_requirements_view(sql_requirements_items_filter)
+
+    print(entry_text)  # Current text
+    print(sql_requirements_items)
+
+requirements_entry_search.bind("<KeyRelease>", on_key_release)
+
+
+requirements_tree = ttk.Treeview(
+    requirements_frame_center,
+    columns=requirements_fields,
+    show="headings"
+)
+requirements_tree.pack(fill="both", expand=True)
+
+for col in requirements_fields:
+    requirements_tree.heading(col, text=col)
+    requirements_tree.column(
+        col, 
+        stretch=False
+    )
+requirements_tree.column(
+    "requirement_id",
+    width=100,
+    stretch=False,
+)
+requirements_tree.column(
+    "requirement_text",
+    width=120,
+    stretch=True,
+)
+requirements_tree.column(
+    "requirements_statements_ids",
+    width=100,
+    stretch=False,
+)
+
+tk_requirements_view()
+
+requirements_tree.bind("<Delete>", tk_requirements_delete)
+requirements_tree.bind("<<TreeviewSelect>>", tk_requirements_select)
+
+
+requirements_statements_tree = ttk.Treeview(
+    requirements_frame_center,
+    columns=requirements_statements_fields,
+    show="headings"
+)
+requirements_statements_tree.pack(fill="both", expand=True)
+for col in requirements_statements_fields:
+    requirements_statements_tree.heading(col, text=col)
+    requirements_statements_tree.column(
+        col, 
+        stretch=False
+    )
+requirements_statements_tree.column(
+    "statement_id",
+    width=100,
+    stretch=False,
+)
+requirements_statements_tree.column(
+    "statement_text",
+    width=120,
+    stretch=True,
+)
+
+requirements_tree.bind("<Control-Up>", lambda e: move_record("up"))
+requirements_tree.bind("<Control-Down>", lambda e: move_record("down"))
+
 
 ###########################################################
 # TAB COMPILE
