@@ -53,6 +53,20 @@ font_size_base = 1
 font = pygame.font.Font(None, font_size_base*int(camera['scale']))
 font_debug = pygame.font.Font(None, 24)
 
+frame_left = {
+    'x': 0,
+    'y': 0,
+    'w': 320,
+    'h': screen_h,
+}
+
+frame_center = {
+    'x': 0 + frame_left['x'],
+    'y': 0,
+    'w': screen_w - frame_left['w'],
+    'h': screen_h,
+}
+
 # ============================================================
 # NODES
 # ============================================================
@@ -597,7 +611,7 @@ def inputs_key_down(event):
             sql = f'''
                 CREATE TABLE IF NOT EXISTS {table_name} (
                     {sql_fields}
-                )
+                );
             '''
             def format_sql(sql):
                 lines = sql.strip().splitlines()
@@ -837,24 +851,33 @@ def draw_edge_tmp():
 
 def draw_debug():
     i = 1
+    offset_x = screen_w - 320
     text = font_debug.render(f"mouse screen x:{mouse['screen_x']} y:{mouse['screen_y']}", True, (255, 0, 255))
-    screen.blit(text, (32, 24 * i))
+    screen.blit(text, (offset_x, 24 * i))
     i += 1
     text = font_debug.render(f"mouse world x:{mouse['world_x']:.2f} y:{mouse['world_y']:.2f}", True, (255, 0, 255))
-    screen.blit(text, (32, 24 * i))
+    screen.blit(text, (offset_x, 24 * i))
     i += 1
     text = font_debug.render(f"camera world x:{camera['world_x']:.2f} y:{camera['world_y']:.2f}", True, (255, 0, 255))
-    screen.blit(text, (32, 24 * i))
+    screen.blit(text, (offset_x, 24 * i))
     i += 1
     text = font_debug.render(f"screen center x:{screen_w // 2} y:{screen_h // 2}", True, (255, 0, 255))
-    screen.blit(text, (32, 24 * i))
+    screen.blit(text, (offset_x, 24 * i))
     i += 1
     text = font_debug.render(f"scale: {camera['scale']}", True, (255, 0, 255))
-    screen.blit(text, (32, 24 * i))
+    screen.blit(text, (offset_x, 24 * i))
     i += 1
+
+def draw_frame_left():
+    frame_x = frame_left['x']
+    frame_y = frame_left['y']
+    frame_w = frame_left['w']
+    frame_h = frame_left['h']
+    pygame.draw.rect(screen, (60, 60, 60), (frame_x, frame_y, frame_w, frame_h))
 
 def main_draw():
     draw_background()
+
     draw_grid()
 
     draw_edge_tmp()
@@ -865,6 +888,8 @@ def main_draw():
     for node in nodes:
         draw_node(node)
     
+    draw_frame_left()
+
     draw_debug()
 
 

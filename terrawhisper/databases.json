@@ -1,8 +1,31 @@
 {
     "nodes": [
         {
-            "world_x": -60.375,
-            "world_y": -18.125,
+            "world_x": -16.25,
+            "world_y": -3.0,
+            "world_w": 20,
+            "world_h": 100,
+            "title": "activities",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "activity_id",
+                    "key": "primary_key"
+                },
+                {
+                    "name": "activity_name_reference",
+                    "key": "none"
+                },
+                {
+                    "name": "activity_name_reference_normalize",
+                    "key": ""
+                }
+            ]
+        },
+        {
+            "world_x": -16.75,
+            "world_y": -16.75,
             "world_w": 20,
             "world_h": 100,
             "title": "plants",
@@ -24,31 +47,8 @@
             ]
         },
         {
-            "world_x": -31.9375,
-            "world_y": -10.1875,
-            "world_w": 20,
-            "world_h": 100,
-            "title": "plants_activities",
-            "kind": "data",
-            "description": "",
-            "fields": [
-                {
-                    "name": "plant_activity_id",
-                    "key": "primary_key"
-                },
-                {
-                    "name": "plant_id",
-                    "key": "foreign_key"
-                },
-                {
-                    "name": "activity_id",
-                    "key": "foreign_key"
-                }
-            ]
-        },
-        {
-            "world_x": -60.5,
-            "world_y": 14.5625,
+            "world_x": -48.75,
+            "world_y": -16.9375,
             "world_w": 20,
             "world_h": 100,
             "title": "conditions",
@@ -70,8 +70,8 @@
             ]
         },
         {
-            "world_x": -60.25,
-            "world_y": 26.0,
+            "world_x": -49.125,
+            "world_y": -4.75,
             "world_w": 20,
             "world_h": 100,
             "title": "plant_parts",
@@ -101,25 +101,52 @@
             ]
         },
         {
-            "world_x": -60.625,
-            "world_y": 0.375,
+            "world_x": 16.875,
+            "world_y": -7.0,
             "world_w": 20,
             "world_h": 100,
-            "title": "activities",
+            "title": "plants_activities",
             "kind": "data",
             "description": "",
             "fields": [
                 {
-                    "name": "activity_id",
+                    "name": "plant_activity_id",
                     "key": "primary_key"
                 },
                 {
-                    "name": "activity_name_reference",
-                    "key": "none"
+                    "name": "plant_id",
+                    "key": "foreign_key"
                 },
                 {
-                    "name": "activity_name_reference_normalize",
+                    "name": "activity_id",
+                    "key": "foreign_key"
+                },
+                {
+                    "name": "study_id",
+                    "key": "foreign_key"
+                }
+            ]
+        },
+        {
+            "world_x": -16.1875,
+            "world_y": 9.3125,
+            "world_w": 20,
+            "world_h": 100,
+            "title": "studies",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "study_id",
+                    "key": "primary_key"
+                },
+                {
+                    "name": "study_pmid",
                     "key": ""
+                },
+                {
+                    "name": "study_title",
+                    "key": "none"
                 }
             ]
         }
@@ -128,8 +155,8 @@
         {
             "edge_start": {
                 "node": {
-                    "world_x": -60.375,
-                    "world_y": -18.125,
+                    "world_x": -16.75,
+                    "world_y": -16.75,
                     "world_w": 20,
                     "world_h": 100,
                     "title": "plants",
@@ -154,8 +181,8 @@
             },
             "edge_end": {
                 "node": {
-                    "world_x": -31.9375,
-                    "world_y": -10.1875,
+                    "world_x": 16.875,
+                    "world_y": -7.0,
                     "world_w": 20,
                     "world_h": 100,
                     "title": "plants_activities",
@@ -173,6 +200,10 @@
                         {
                             "name": "activity_id",
                             "key": "foreign_key"
+                        },
+                        {
+                            "name": "study_id",
+                            "key": "foreign_key"
                         }
                     ]
                 },
@@ -183,8 +214,8 @@
         {
             "edge_start": {
                 "node": {
-                    "world_x": -60.625,
-                    "world_y": 0.375,
+                    "world_x": -16.25,
+                    "world_y": -3.0,
                     "world_w": 20,
                     "world_h": 100,
                     "title": "activities",
@@ -209,8 +240,8 @@
             },
             "edge_end": {
                 "node": {
-                    "world_x": -31.9375,
-                    "world_y": -10.1875,
+                    "world_x": 16.875,
+                    "world_y": -7.0,
                     "world_w": 20,
                     "world_h": 100,
                     "title": "plants_activities",
@@ -228,10 +259,73 @@
                         {
                             "name": "activity_id",
                             "key": "foreign_key"
+                        },
+                        {
+                            "name": "study_id",
+                            "key": "foreign_key"
                         }
                     ]
                 },
                 "field_i": 3
+            },
+            "edge_type": "1:N"
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": -16.1875,
+                    "world_y": 9.3125,
+                    "world_w": 20,
+                    "world_h": 100,
+                    "title": "studies",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "study_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "study_pmid",
+                            "key": ""
+                        },
+                        {
+                            "name": "study_title",
+                            "key": "none"
+                        }
+                    ]
+                },
+                "field_i": 1
+            },
+            "edge_end": {
+                "node": {
+                    "world_x": 16.875,
+                    "world_y": -7.0,
+                    "world_w": 20,
+                    "world_h": 100,
+                    "title": "plants_activities",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "plant_activity_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "plant_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "activity_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "study_id",
+                            "key": "foreign_key"
+                        }
+                    ]
+                },
+                "field_i": 4
             },
             "edge_type": "1:N"
         }
