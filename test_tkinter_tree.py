@@ -12,6 +12,8 @@ questions_table_name = 'questions'
 answers_table_name = 'answers'
 statements_table_name = 'statements'
 requirements_table_name = 'requirements'
+categories_table_name = 'categories'
+categories_requirements_table_name = 'categories_requirements'
 
 
 requirements_statements_list_cur = []
@@ -531,6 +533,171 @@ def sql_requirements_get_by_id(id):
 
 # sql_requirements_drop()
 sql_requirements_create()
+
+# ----------------------------------------------------------
+# SQLITE CATEGORIES
+# ----------------------------------------------------------
+
+def sql_categories_drop():
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        DROP TABLE IF EXISTS {categories_table_name}
+    ''')
+    db.commit()
+    db.close()
+
+def sql_categories_create():
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        CREATE TABLE IF NOT EXISTS {categories_table_name} (
+            category_id INTEGER PRIMARY KEY, 
+            category_text TEXT
+        )'''
+    )
+    db.commit()
+    db.close()
+
+def sql_categories_insert(
+    category_text, 
+):
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        INSERT INTO {categories_table_name} (
+        category_text
+        ) 
+        VALUES (?)
+    ''', (
+        category_text,
+    ))
+    db.commit()
+    db.close()
+
+def sql_categories_delete(id):
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        DELETE FROM {categories_table_name} 
+        WHERE category_id = ?
+    ''', (id,))
+    db.commit()
+    db.close()
+
+def sql_categories_get_all():
+    db = sqlite3.connect(db_filepath)
+    db.row_factory = sqlite3.Row
+    cur = db.cursor()
+    rows = db.execute(f"SELECT * FROM {categories_table_name}").fetchall()
+    items = [dict(row) for row in rows]
+    db.close()
+    return items
+    
+def sql_categories_get_by_id(id):
+    db = sqlite3.connect(db_filepath)
+    db.row_factory = sqlite3.Row
+    cur = db.cursor()
+    records = db.execute(f'''
+        SELECT * 
+        FROM {categories_table_name}
+        WHERE category_id = ?
+    ''', (id,))
+    rows = records.fetchall()
+    items = [dict(row) for row in rows]
+    if items != []: item = items[0]
+    else: item = None
+    db.close()
+    return item
+
+# sql_categories_drop()
+sql_categories_create()
+
+# ----------------------------------------------------------
+# SQLITE CATEGORIES_REQUIREMENTS
+# ----------------------------------------------------------
+
+def sql_categories_requirements_drop():
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        DROP TABLE IF EXISTS {categories_requirements_table_name}
+    ''')
+    db.commit()
+    db.close()
+
+def sql_categories_requirements_create():
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        CREATE TABLE IF NOT EXISTS {categories_requirements_table_name} (
+            category_requirement_id INTEGER PRIMARY KEY, 
+            category_id TEXT, 
+            requirement_id TEXT
+        )'''
+    )
+    db.commit()
+    db.close()
+
+def sql_categories_requirements_insert(
+    category_id, 
+    requirement_id, 
+):
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        INSERT INTO {categories_requirements_table_name} (
+            category_id,
+            requirement_id
+        ) 
+        VALUES (?, ?)
+    ''', (
+        category_id,
+        requirement_id
+    ))
+    db.commit()
+    db.close()
+
+def sql_categories_requirements_get_all():
+    db = sqlite3.connect(db_filepath)
+    db.row_factory = sqlite3.Row
+    cur = db.cursor()
+    rows = db.execute(f"SELECT * FROM {categories_requirements_table_name}").fetchall()
+    items = [dict(row) for row in rows]
+    db.close()
+    return items
+    
+    
+def sql_categories_requirements_get_by_category_id(id):
+    db = sqlite3.connect(db_filepath)
+    db.row_factory = sqlite3.Row
+    cur = db.cursor()
+    records = db.execute(f'''
+        SELECT * 
+        FROM {categories_requirements_table_name}
+        WHERE category_id = ?
+    ''', (id,))
+    rows = records.fetchall()
+    items = [dict(row) for row in rows]
+    db.close()
+    return items
+
+def sql_categories_requirements_delete(category_id, requirement_id):
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        DELETE FROM {categories_requirements_table_name} 
+        WHERE category_id = ? AND requirement_id = ?
+    ''', (category_id, requirement_id))
+    db.commit()
+    db.close()
+
+# sql_categories_requirements_drop()
+# sql_categories_requirements_create()
+# sql_categories_requirements_insert(
+#     category_id=1, 
+#     requirement_id=2, 
+# )
 
 ############################################################
 # TKINTER FUNCTIONS
@@ -1136,9 +1303,18 @@ def tk_requirements_select(event):
     tk_requirements_statements_view(statements_items)
     
     requirement_item = sql_requirements_get_by_id(values[0])
+
+    categories_entry_requirement_id.config(state="normal")
+    categories_entry_requirement_id.delete(0, tk.END)
+    categories_entry_requirement_id.insert(0, values[0])
+    categories_entry_requirement_id.config(state="disabled")
+
+    categories_text_requirement_text.config(state="normal")
+    categories_text_requirement_text.delete("1.0", tk.END)
+    categories_text_requirement_text.insert("1.0", values[1])
+    categories_text_requirement_text.config(state="disabled")
     # print(requirement_item)
 
-    
 def tk_requirements_statements_view(statements_items):
     items = statements_items
     requirements_statements_tree.delete(*requirements_statements_tree.get_children())
@@ -1159,7 +1335,6 @@ def tk_requirements_statement_add():
         requirements_listbox.insert(tk.END, text)
         # requirements_entry_statement_id.delete(0, tk.END)
     tk_statements_view()
-
 
 def move_record(direction):
     selected = requirements_tree.selection()
@@ -1227,6 +1402,108 @@ def move_record(direction):
     # print(f'''CURRENT ORDER: {current_order}''')
     # print(f'''NEIGHBOR ORDER: {neighbor}''')
 
+# ----------------------------------------------------------
+# TKINTER categories
+# ----------------------------------------------------------
+
+def tk_categories_view(items=None):
+    if not items:
+        items = sql_categories_get_all()
+    categories_tree.delete(*categories_tree.get_children())
+    rows = []
+    for item in items:
+        row = [
+            item['category_id'], 
+            item['category_text'],
+        ]
+        rows.append(row)
+    for row in rows:
+        categories_tree.insert("", tk.END, values=list(row))
+
+def tk_categories_category_lvl1_insert():
+    # category_id = categories_entry_category_lvl1_id.get()
+    category_text = categories_entry_category_lvl1_text.get()
+    # if category_id.strip() == '':
+    #     print('ERR: category_id text NOT valid')
+    #     return
+    if category_text.strip() == '':
+        print('ERR: category_text text NOT valid')
+        return
+    sql_categories_insert(
+        category_text,
+    )
+    tk_categories_view()
+
+def tk_categories_category_lvl1_delete(event):
+    if not categories_tree.selection(): return
+    item = categories_tree.selection()[0]
+    id = categories_tree.item(item)["values"][0]
+    ###
+    sql_categories_delete(id)
+    categories_tree.delete(item)
+
+    
+def tk_categories_select(event):
+    if not categories_tree.selection(): return
+    item = categories_tree.selection()[0]
+    category_id = categories_tree.item(item)["values"][0]
+
+    categories_requirements_items = sql_categories_requirements_get_by_category_id(category_id)
+    # print(categories_requirements_items)
+    tk_categories_requirements_view(items=categories_requirements_items)
+    # tk_statements_view()
+
+    # ###
+    # statements_items = []
+    # for statement_id in ids_lst:
+    #     statement_item = sql_statements_get_by_id(statement_id)
+    #     statements_items.append(statement_item)
+    # tk_requirements_statements_view(statements_items)
+
+def tk_categories_requirements_insert():
+    if not categories_tree.selection(): return
+    item = categories_tree.selection()[0]
+    category_id = categories_tree.item(item)["values"][0]
+    requirement_id = categories_entry_requirement_id.get()
+    requirement_text = categories_text_requirement_text.get("1.0", tk.END).strip()
+    # print(category_id)
+    # print(requirement_id)
+    # print(requirement_text)
+    sql_categories_requirements_insert(
+        category_id=category_id, 
+        requirement_id=requirement_id, 
+    )
+    tk_categories_requirements_view()
+
+def tk_categories_requirements_view(items=None):
+    # if not items:
+        # items = sql_categories_requirements_get_all()
+    categories_requirements_tree.delete(*categories_requirements_tree.get_children())
+    rows = []
+    # print(items)
+    for item in items:
+        # print(item)
+        category_item = sql_categories_get_by_id(int(item['category_id']))
+        requirement_item = sql_requirements_get_by_id(int(item['requirement_id']))
+        if category_item and requirement_item:
+            row = [
+                item['category_id'], 
+                category_item['category_text'],
+                item['requirement_id'],
+                requirement_item['requirement_text'],
+            ]
+            rows.append(row)
+    for row in rows:
+        categories_requirements_tree.insert("", tk.END, values=list(row))
+
+def tk_categories_requirements_delete(event):
+    if not categories_requirements_tree.selection(): return
+    item = categories_requirements_tree.selection()[0]
+    category_id = categories_requirements_tree.item(item)["values"][0]
+    requirement_id = categories_requirements_tree.item(item)["values"][2]
+    ###
+    sql_categories_requirements_delete(category_id, requirement_id)
+    categories_requirements_tree.delete(item)
 
 # ----------------------------------------------------------
 # TKINTER FUNCTIONS COMPILE
@@ -1279,6 +1556,7 @@ def refresh_all():
     tk_answers_view()
     tk_statements_view()
     tk_requirements_view()
+    tk_categories_view()
 
     
     new_values = [
@@ -1316,6 +1594,10 @@ def open_project():
     # db = sqlite3.connect(project_file)
     # sql_requirements_drop()
     # sql_requirements_create()
+    # sql_categories_drop()
+    # sql_categories_create()
+    # sql_categories_requirements_drop()
+    # sql_categories_requirements_create()
     refresh_all()
 
 def save_project():
@@ -2039,17 +2321,153 @@ requirements_tree.bind("<Control-Up>", lambda e: move_record("up"))
 requirements_tree.bind("<Control-Down>", lambda e: move_record("down"))
 
 ###########################################################
-# STRUCTURE TAB
+# CATEGORIES TAB
 ###########################################################
+
+categories_fields = [
+    "category_lvl1_id",
+    "category_lvl1_text",
+]
+
+categories_tab = tk.Frame(tabs)
+tabs.add(categories_tab, text="Categories")
+
+categories_frame_left = tk.Frame(categories_tab, width=200)
+categories_frame_left.pack(side="left", fill="y")
+categories_frame_left.pack_propagate(False)
+
+# tk.Label(categories_frame_left, text="Category LVL1 ID").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+# categories_entry_category_lvl1_id = tk.Entry(categories_frame_left)
+# categories_entry_category_lvl1_id.pack(fill="x", padx=(padx, padx))
+
+tk.Label(categories_frame_left, text="Category LVL1 Text").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+categories_entry_category_lvl1_text = tk.Entry(categories_frame_left)
+categories_entry_category_lvl1_text.pack(fill="x", padx=(padx, padx))
+
+tk.Button(
+    categories_frame_left,
+    text="Insert Category",
+    command=tk_categories_category_lvl1_insert
+).pack(fill="x", padx=(padx, padx), pady=(10, 0))
+
+tk.Label(categories_frame_left, text="Requirement ID").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+categories_entry_requirement_id = tk.Entry(categories_frame_left)
+categories_entry_requirement_id.pack(fill="x", padx=(padx, padx))
+categories_entry_requirement_id.config(state="disabled")
+
+tk.Label(categories_frame_left, text="Requirement Text").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+categories_text_requirement_text = tk.Text(categories_frame_left, wrap="word", height=5)
+categories_text_requirement_text.pack(fill="x", padx=(padx, padx))
+categories_text_requirement_text.config(state="disabled", bg=bg, fg=fg)
+
+tk.Button(
+    categories_frame_left,
+    text="Insert Requirement",
+    command=tk_categories_requirements_insert
+).pack(fill="x", padx=(padx, padx), pady=(10, 0))
+
+# ..........................................................
+# CATEGORIES FRAME CENTER
+# ..........................................................
+
+categories_frame_center = tk.Frame(categories_tab)
+categories_frame_center.pack(side="left", fill="both", expand=True)
+
+# tk.Label(categories_frame_center, text="Search").pack(anchor="w", pady=(10, 0))
+# categories_entry_search = tk.Entry(categories_frame_center)
+# categories_entry_search.pack(fill="x", pady=(0, padx))
+
+categories_tree = ttk.Treeview(
+    categories_frame_center,
+    columns=categories_fields,
+    show="headings"
+)
+categories_tree.pack(fill="both", expand=True)
+
+for col in categories_fields:
+    categories_tree.heading(col, text=col)
+    categories_tree.column(
+        col, 
+        stretch=False
+    )
+categories_tree.column(
+    "category_lvl1_id",
+    width=120,
+    stretch=False,
+)
+categories_tree.column(
+    "category_lvl1_text",
+    width=120,
+    stretch=True,
+)
+# categories_tree.column(
+#     "requirement_id",
+#     width=100,
+#     stretch=False,
+# )
+# categories_tree.column(
+#     "requirement_text",
+#     width=120,
+#     stretch=True,
+# )
+
+tk_categories_view()
+
+categories_tree.bind("<Delete>", tk_categories_category_lvl1_delete)
+categories_tree.bind("<<TreeviewSelect>>", tk_categories_select)
+
+
+requirements_tree.bind("<<TreeviewSelect>>", tk_requirements_select)
+
+categories_requirements_fields = [
+    "category_lvl1_id",
+    "category_lvl1_text",
+    "requirement_id",
+    "requirement_text",
+]
+
+categories_requirements_tree = ttk.Treeview(
+    categories_frame_center,
+    columns=categories_requirements_fields,
+    show="headings"
+)
+categories_requirements_tree.pack(fill="both", expand=True)
+for col in categories_requirements_fields:
+    categories_requirements_tree.heading(col, text=col)
+    categories_requirements_tree.column(col, stretch=False)
+categories_requirements_tree.column(
+    "category_lvl1_id",
+    width=120,
+    stretch=False,
+)
+categories_requirements_tree.column(
+    "category_lvl1_text",
+    width=120,
+    stretch=False,
+)
+categories_requirements_tree.column(
+    "requirement_id",
+    width=120,
+    stretch=False,
+)
+categories_requirements_tree.column(
+    "requirement_text",
+    width=120,
+    stretch=True,
+)
+
+# tk_categories_requirements_view()
+
+categories_requirements_tree.bind("<Delete>", tk_categories_requirements_delete)
 
 """
 TODO
-the goal is to group the requirements in hierarchical structure
+the goal is to group the requirements in hierarchical categories
 ex:
 1. Hardware
     1.1
     1.2
-2. Software 
+2. Software
     2.1 Report to CORE
     2.2 Local fault-handling
 use max 3 levels
@@ -2066,41 +2484,9 @@ i need:
     - display grouped relationships
 """
 
-padx = 10
+"""
 
-requirements_fields = [
-    "requirement_id",
-    "requirement_text",
-    "requirements_statements_ids",
-]
 
-requirements_statements_fields = [
-    "statement_id",
-    "statement_text",
-]
-
-requirements_tab = tk.Frame(tabs)
-tabs.add(requirements_tab, text="Requirements")
-
-requirements_frame_left = tk.Frame(requirements_tab, width=200)
-requirements_frame_left.pack(side="left", fill="y")
-requirements_frame_left.pack_propagate(False)
-
-tk.Label(requirements_frame_left, text="Statement ID").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
-requirements_entry_statement_id = tk.Entry(requirements_frame_left)
-requirements_entry_statement_id.pack(fill="x", padx=(padx, padx))
-requirements_entry_statement_id.config(state="disabled")
-
-tk.Label(requirements_frame_left, text="Statement Text").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
-requirements_text_statement_text = tk.Text(requirements_frame_left, wrap="word", height=5)
-requirements_text_statement_text.pack(fill="x", padx=(padx, padx))
-requirements_text_statement_text.config(state="disabled", bg=bg, fg=fg)
-
-tk.Button(
-    requirements_frame_left,
-    text="Add Statement",
-    command=tk_requirements_statement_add
-).pack(fill="x", padx=(padx, padx), pady=(10, 0))
 
 # Listbox with multiple selection
 tk.Label(requirements_frame_left, text="Statement List").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
@@ -2120,11 +2506,6 @@ def requirements_listbox_item_delete(event=None):
 
 requirements_listbox.bind("<Delete>", requirements_listbox_item_delete)
 
-tk.Button(
-    requirements_frame_left,
-    text="Insert Requirement",
-    command=tk_requirements_insert
-).pack(fill="x", padx=(padx, padx), pady=(10, 0))
 
 tk.Button(
     requirements_frame_left,
@@ -2136,12 +2517,6 @@ tk.Button(
 # REQUIREMENTS FRAME CENTER
 # ..........................................................
 
-requirements_frame_center = tk.Frame(requirements_tab)
-requirements_frame_center.pack(side="left", fill="both", expand=True)
-
-tk.Label(requirements_frame_center, text="Search").pack(anchor="w", pady=(10, 0))
-requirements_entry_search = tk.Entry(requirements_frame_center)
-requirements_entry_search.pack(fill="x", pady=(0, padx))
 
 def on_key_release(event):
     entry_text = requirements_entry_search.get()
@@ -2159,66 +2534,12 @@ def on_key_release(event):
 requirements_entry_search.bind("<KeyRelease>", on_key_release)
 
 
-requirements_tree = ttk.Treeview(
-    requirements_frame_center,
-    columns=requirements_fields,
-    show="headings"
-)
-requirements_tree.pack(fill="both", expand=True)
 
-for col in requirements_fields:
-    requirements_tree.heading(col, text=col)
-    requirements_tree.column(
-        col, 
-        stretch=False
-    )
-requirements_tree.column(
-    "requirement_id",
-    width=100,
-    stretch=False,
-)
-requirements_tree.column(
-    "requirement_text",
-    width=120,
-    stretch=True,
-)
-requirements_tree.column(
-    "requirements_statements_ids",
-    width=100,
-    stretch=False,
-)
-
-tk_requirements_view()
-
-requirements_tree.bind("<Delete>", tk_requirements_delete)
-requirements_tree.bind("<<TreeviewSelect>>", tk_requirements_select)
-
-
-requirements_statements_tree = ttk.Treeview(
-    requirements_frame_center,
-    columns=requirements_statements_fields,
-    show="headings"
-)
-requirements_statements_tree.pack(fill="both", expand=True)
-for col in requirements_statements_fields:
-    requirements_statements_tree.heading(col, text=col)
-    requirements_statements_tree.column(
-        col, 
-        stretch=False
-    )
-requirements_statements_tree.column(
-    "statement_id",
-    width=100,
-    stretch=False,
-)
-requirements_statements_tree.column(
-    "statement_text",
-    width=120,
-    stretch=True,
-)
 
 requirements_tree.bind("<Control-Up>", lambda e: move_record("up"))
 requirements_tree.bind("<Control-Down>", lambda e: move_record("down"))
+
+"""
 
 
 ###########################################################
