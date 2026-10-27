@@ -1,77 +1,8 @@
 {
     "nodes": [
         {
-            "world_x": -16.25,
-            "world_y": -3.0,
-            "world_w": 20,
-            "world_h": 100,
-            "title": "activities",
-            "kind": "data",
-            "description": "",
-            "fields": [
-                {
-                    "name": "activity_id",
-                    "key": "primary_key"
-                },
-                {
-                    "name": "activity_name_reference",
-                    "key": "none"
-                },
-                {
-                    "name": "activity_name_reference_normalize",
-                    "key": ""
-                }
-            ]
-        },
-        {
-            "world_x": -16.75,
-            "world_y": -16.75,
-            "world_w": 20,
-            "world_h": 100,
-            "title": "plants",
-            "kind": "data",
-            "description": "",
-            "fields": [
-                {
-                    "name": "plant_id",
-                    "key": "primary_key"
-                },
-                {
-                    "name": "plant_name_scientific_reference",
-                    "key": "none"
-                },
-                {
-                    "name": "plant_name_scientific_reference_normalize",
-                    "key": ""
-                }
-            ]
-        },
-        {
             "world_x": -48.75,
-            "world_y": -16.9375,
-            "world_w": 20,
-            "world_h": 100,
-            "title": "conditions",
-            "kind": "data",
-            "description": "",
-            "fields": [
-                {
-                    "name": "condition_id",
-                    "key": ""
-                },
-                {
-                    "name": "condition_name_reference",
-                    "key": "none"
-                },
-                {
-                    "name": "condition_name_reference_normalize",
-                    "key": "none"
-                }
-            ]
-        },
-        {
-            "world_x": -49.125,
-            "world_y": -4.75,
+            "world_y": -8.125,
             "world_w": 20,
             "world_h": 100,
             "title": "plant_parts",
@@ -98,7 +29,32 @@
                     "name": "xxx",
                     "key": ""
                 }
-            ]
+            ],
+            "id": 0
+        },
+        {
+            "world_x": -16.75,
+            "world_y": -16.75,
+            "world_w": 20,
+            "world_h": 100,
+            "title": "plants",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "plant_id",
+                    "key": "primary_key"
+                },
+                {
+                    "name": "plant_name_scientific_reference",
+                    "key": "none"
+                },
+                {
+                    "name": "plant_name_scientific_reference_normalize",
+                    "key": ""
+                }
+            ],
+            "id": 1
         },
         {
             "world_x": 16.875,
@@ -125,10 +81,35 @@
                     "name": "study_id",
                     "key": "foreign_key"
                 }
-            ]
+            ],
+            "id": 2
         },
         {
-            "world_x": -16.1875,
+            "world_x": -16.25,
+            "world_y": -3.0,
+            "world_w": 20,
+            "world_h": 100,
+            "title": "activities",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "activity_id",
+                    "key": "primary_key"
+                },
+                {
+                    "name": "activity_name_reference",
+                    "key": "none"
+                },
+                {
+                    "name": "activity_name_reference_normalize",
+                    "key": ""
+                }
+            ],
+            "id": 3
+        },
+        {
+            "world_x": -16.8125,
             "world_y": 9.3125,
             "world_w": 20,
             "world_h": 100,
@@ -148,7 +129,60 @@
                     "name": "study_title",
                     "key": "none"
                 }
-            ]
+            ],
+            "id": 4
+        },
+        {
+            "world_x": -16.4375,
+            "world_y": 43.0,
+            "world_w": 20,
+            "world_h": 100,
+            "title": "conditions",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "condition_id",
+                    "key": "primary_key"
+                },
+                {
+                    "name": "condition_name_reference",
+                    "key": "none"
+                },
+                {
+                    "name": "condition_name_reference_normalize",
+                    "key": "none"
+                }
+            ],
+            "id": 5
+        },
+        {
+            "world_x": 16.8125,
+            "world_y": 39.0,
+            "world_w": 20,
+            "world_h": 100,
+            "title": "plants_conditions",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "plant_condition_id",
+                    "key": "primary_key"
+                },
+                {
+                    "name": "plant_id",
+                    "key": "foreign_key"
+                },
+                {
+                    "name": "condition_id",
+                    "key": "foreign_key"
+                },
+                {
+                    "name": "study_id",
+                    "key": "foreign_key"
+                }
+            ],
+            "id": 6
         }
     ],
     "edges": [
@@ -175,7 +209,8 @@
                             "name": "plant_name_scientific_reference_normalize",
                             "key": ""
                         }
-                    ]
+                    ],
+                    "id": 1
                 },
                 "field_i": 1
             },
@@ -205,7 +240,8 @@
                             "name": "study_id",
                             "key": "foreign_key"
                         }
-                    ]
+                    ],
+                    "id": 2
                 },
                 "field_i": 2
             },
@@ -234,7 +270,8 @@
                             "name": "activity_name_reference_normalize",
                             "key": ""
                         }
-                    ]
+                    ],
+                    "id": 3
                 },
                 "field_i": 1
             },
@@ -264,7 +301,8 @@
                             "name": "study_id",
                             "key": "foreign_key"
                         }
-                    ]
+                    ],
+                    "id": 2
                 },
                 "field_i": 3
             },
@@ -273,7 +311,7 @@
         {
             "edge_start": {
                 "node": {
-                    "world_x": -16.1875,
+                    "world_x": -16.8125,
                     "world_y": 9.3125,
                     "world_w": 20,
                     "world_h": 100,
@@ -293,7 +331,8 @@
                             "name": "study_title",
                             "key": "none"
                         }
-                    ]
+                    ],
+                    "id": 4
                 },
                 "field_i": 1
             },
@@ -323,7 +362,191 @@
                             "name": "study_id",
                             "key": "foreign_key"
                         }
-                    ]
+                    ],
+                    "id": 2
+                },
+                "field_i": 4
+            },
+            "edge_type": "1:N"
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": -16.75,
+                    "world_y": -16.75,
+                    "world_w": 20,
+                    "world_h": 100,
+                    "title": "plants",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "plant_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "plant_name_scientific_reference",
+                            "key": "none"
+                        },
+                        {
+                            "name": "plant_name_scientific_reference_normalize",
+                            "key": ""
+                        }
+                    ],
+                    "id": 1
+                },
+                "field_i": 1
+            },
+            "edge_end": {
+                "node": {
+                    "world_x": 16.8125,
+                    "world_y": 39.0,
+                    "world_w": 20,
+                    "world_h": 100,
+                    "title": "plants_conditions",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "plant_condition_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "plant_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "condition_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "study_id",
+                            "key": "foreign_key"
+                        }
+                    ],
+                    "id": 6
+                },
+                "field_i": 2
+            },
+            "edge_type": "1:N"
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": -16.4375,
+                    "world_y": 43.0,
+                    "world_w": 20,
+                    "world_h": 100,
+                    "title": "conditions",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "condition_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "condition_name_reference",
+                            "key": "none"
+                        },
+                        {
+                            "name": "condition_name_reference_normalize",
+                            "key": "none"
+                        }
+                    ],
+                    "id": 5
+                },
+                "field_i": 1
+            },
+            "edge_end": {
+                "node": {
+                    "world_x": 16.8125,
+                    "world_y": 39.0,
+                    "world_w": 20,
+                    "world_h": 100,
+                    "title": "plants_conditions",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "plant_condition_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "plant_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "condition_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "study_id",
+                            "key": "foreign_key"
+                        }
+                    ],
+                    "id": 6
+                },
+                "field_i": 3
+            },
+            "edge_type": "1:N"
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": -16.8125,
+                    "world_y": 9.3125,
+                    "world_w": 20,
+                    "world_h": 100,
+                    "title": "studies",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "study_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "study_pmid",
+                            "key": ""
+                        },
+                        {
+                            "name": "study_title",
+                            "key": "none"
+                        }
+                    ],
+                    "id": 4
+                },
+                "field_i": 1
+            },
+            "edge_end": {
+                "node": {
+                    "world_x": 16.8125,
+                    "world_y": 39.0,
+                    "world_w": 20,
+                    "world_h": 100,
+                    "title": "plants_conditions",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "plant_condition_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "plant_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "condition_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "study_id",
+                            "key": "foreign_key"
+                        }
+                    ],
+                    "id": 6
                 },
                 "field_i": 4
             },

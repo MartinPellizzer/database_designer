@@ -5,8 +5,8 @@ import subprocess
 
 pygame.init()
 
-screen_w = 1280
-screen_h = 720
+screen_w = 1600
+screen_h = 900
 
 screen = pygame.display.set_mode((screen_w, screen_h))
 clock = pygame.time.Clock()
@@ -33,8 +33,6 @@ mouse = {
     'world_y': 0,
 }
 
-nodes = []
-
 interaction = {
     'action': None,
     'node_drag': None,
@@ -52,6 +50,7 @@ interaction = {
 font_size_base = 1
 font = pygame.font.Font(None, font_size_base*int(camera['scale']))
 font_debug = pygame.font.Font(None, 24)
+font_ui = pygame.font.Font(None, 18)
 
 frame_left = {
     'x': 0,
@@ -67,6 +66,8 @@ frame_center = {
     'h': screen_h,
 }
 
+nodes = []
+
 # ============================================================
 # NODES
 # ============================================================
@@ -76,7 +77,12 @@ def node_create(x, y, w, h, title, kind, description, fields):
     '''
     DESCRIPTION GUIDELINES: Write 1 short sentence explaining WHAT is this table (definition) and 1 short sentence explaining WHY this table is important.
     '''
+    node_id_last = -1
+    for node in nodes:
+        if node_id_last < node['id']: node_id_last = node['id']
+    node_id_new = node_id_last + 1
     node = {
+        'id': node_id_new,
         'world_x': x,
         'world_y': y,
         'world_w': w,
@@ -372,6 +378,7 @@ def edge_delete():
 # TEST
 ################################################################################
 
+"""
 x = 0
 y = 0
 w = 20
@@ -424,6 +431,7 @@ edge_2 = {
 edges = []
 edges.append(edge_1)
 # edges.append(edge_2)
+"""
 
 def draw_edge(edge):
     ### LINE
@@ -552,6 +560,7 @@ def draw_edge(edge):
     screen.blit(text, (screen_x2, (screen_y2 + screen_y3) / 2))
 
 def inputs_key_down(event):
+    global nodes
     # Ctrl+N
     if event.key == pygame.K_n and pygame.key.get_mods() & pygame.KMOD_CTRL:
         project_new()
@@ -681,6 +690,11 @@ def inputs_key_down(event):
             pass
         else:
             interaction['node_focus']['world_w'] -= 10
+    # Ctrl+DELETE
+    elif event.key == pygame.K_DELETE and pygame.key.get_mods() & pygame.KMOD_CTRL:
+        print('delete')
+        if interaction['node_focus'] != None:
+            nodes = [node for node in nodes if node["id"] != interaction['node_focus']['id']]
     # Editor
     elif event.unicode == '+':
         if interaction['node_focus'] != None:
@@ -717,6 +731,37 @@ def inputs_mouse_wheel(event):
         if camera['scale'] > 1:
             camera['scale'] /= 2
     font = pygame.font.Font(None, font_size_base*int(camera['scale']))
+
+menu_context = {
+    'name': 'viewport',
+    'x': 0,
+    'y': 0,
+    'items': [
+        {'name': 'Add Node'},
+        {'name': 'Add Comment'},
+    ]
+}
+menu_context_visible = False
+
+def menu_context_open():
+    global menu_context_visible
+    menu_context_visible = True
+    menu_context['x'] = mouse['screen_x']
+    menu_context['y'] = mouse['screen_y']
+    return
+
+    x = mouse['world_x']
+    y = mouse['world_y']
+    w = 200
+    h = 100
+    title = 'table_name'
+    kind = 'data'
+    description = ''
+    fields = [
+        {'name': 'id', 'key': 'none'}, 
+        {'name': 'name', 'key': 'none'}, 
+    ]
+    node_create(x, y, w, h, title, kind, description, fields)
 
 def main_inputs():
     global font
@@ -795,18 +840,7 @@ def main_inputs():
                 interaction['mouse_x_start'] = event.pos[0]
                 interaction['mouse_y_start'] = event.pos[1]
             elif event.button == 3:
-                x = mouse['world_x']
-                y = mouse['world_y']
-                w = 200
-                h = 100
-                title = 'table_name'
-                kind = 'data'
-                description = ''
-                fields = [
-                    {'name': 'id', 'key': 'none'}, 
-                    {'name': 'name', 'key': 'none'}, 
-                ]
-                node_create(x, y, w, h, title, kind, description, fields)
+                menu_context_open()
 
         elif event.type == pygame.MOUSEBUTTONUP:
             if event.button == 1:
@@ -874,6 +908,38 @@ def draw_frame_left():
     frame_w = frame_left['w']
     frame_h = frame_left['h']
     pygame.draw.rect(screen, (60, 60, 60), (frame_x, frame_y, frame_w, frame_h))
+    ###
+    i = 1
+    if interaction['node_focus'] != None:
+        node_id = interaction['node_focus']['id']
+        offset_x = 32
+        text = font_debug.render(f"node_id: {node_id}", True, (255, 0, 255))
+        screen.blit(text, (offset_x, 24 * i))
+
+def draw_viewport_menu_context():
+    if menu_context_visible == True:
+        padding = 8
+        gap = 24
+        ### RECT
+        x = menu_context['x']
+        y = menu_context['y']
+        w = 100
+        font_w, font_h = font_ui.size('test text')
+        h = 0
+        h = h + font_h
+        h = h + (padding * 2)
+        h = h + (gap * (len(menu_context['items'])-1))
+        color_gray = 60
+        pygame.draw.rect(screen, (color_gray, color_gray, color_gray), (x, y, w, h))
+        ### TEXT
+        i = 0
+        for item in menu_context['items']:
+            x = menu_context['x'] + padding
+            y = menu_context['y'] + (gap * i) + padding
+            name = item['name']
+            text = font_ui.render(f"{name}", True, (255, 255, 255))
+            screen.blit(text, (x, y))
+            i += 1
 
 def main_draw():
     draw_background()
@@ -890,6 +956,8 @@ def main_draw():
     
     draw_frame_left()
 
+    draw_viewport_menu_context()
+
     draw_debug()
 
 
@@ -897,9 +965,26 @@ def main_draw():
 
 def main():
     project_open(filename=f'/home/ubuntu/proj/database_designer/terrawhisper/databases.json')
-    # for edge in edges:
-        # print(json.dumps(edge, indent=4))
-    # quit()
+
+    ### MANUAL UPDATES
+    '''
+    for node in nodes:
+        node_id_last = -1
+        for _node in nodes:
+            try: 
+                if node_id_last < _node['id']: 
+                    node_id_last = _node['id']
+            except: break
+        node_id_new = node_id_last + 1
+        node['id'] = node_id_new
+    '''
+
+    '''
+    for i, node in enumerate(nodes):
+        node['id'] = i
+    '''
+
+    ### RUNNING
     while core['running']:
         main_inputs()
         main_update()
