@@ -530,6 +530,24 @@ def sql_requirements_get_by_id(id):
     else: item = None
     db.close()
     return item
+    
+"""
+def sql_requirement_get_by_id(id):
+    db = sqlite3.connect(db_filepath)
+    db.row_factory = sqlite3.Row
+    cur = db.cursor()
+    records = db.execute(f'''
+        SELECT * 
+        FROM {statements_table_name}
+        WHERE statement_id = ?
+    ''', (id,))
+    rows = records.fetchall()
+    items = [dict(row) for row in rows]
+    if items != []: item = items[0]
+    else: item = None
+    db.close()
+    return item
+"""
 
 # sql_requirements_drop()
 sql_requirements_create()
@@ -1174,6 +1192,26 @@ def tk_requirements_view(items=None):
         rows.append(row)
     for row in rows:
         requirements_tree.insert("", tk.END, values=list(row))
+        
+    ### COLOR ROWS
+    # sql_requirements_items = sql_requirements_get_all()
+    sql_categories_requirements_items = sql_categories_requirements_get_all()
+    ids_lst = set()
+    for sql_categories_requirements_item in sql_categories_requirements_items:
+        ids_lst_cur = [
+            val.strip() 
+            for val 
+            in str(sql_categories_requirements_item['requirement_id']).split(',')
+        ]
+        for x in ids_lst_cur:
+            ids_lst.add(x)
+
+    for item in requirements_tree.get_children():
+        row_id = requirements_tree.item(item, "values")[0]  # ID in first column
+        if row_id in ids_lst:
+            requirements_tree.item(item, tags=("done",))
+        else:
+            requirements_tree.item(item, tags=("blank",))
 
 def tk_requirements_insert():
     global requirements_statements_list_cur
@@ -1295,7 +1333,6 @@ def tk_requirements_select(event):
     requirements_statements_list_cur = []
     tk_statements_view()
 
-    ###
     statements_items = []
     for statement_id in ids_lst:
         statement_item = sql_statements_get_by_id(statement_id)
@@ -1473,7 +1510,10 @@ def tk_categories_requirements_insert():
         category_id=category_id, 
         requirement_id=requirement_id, 
     )
-    tk_categories_requirements_view()
+    tk_requirements_view()
+    categories_requirements_items = sql_categories_requirements_get_by_category_id(category_id)
+    tk_categories_requirements_view(items=categories_requirements_items)
+
 
 def tk_categories_requirements_view(items=None):
     # if not items:
@@ -1504,6 +1544,7 @@ def tk_categories_requirements_delete(event):
     ###
     sql_categories_requirements_delete(category_id, requirement_id)
     categories_requirements_tree.delete(item)
+    tk_requirements_view()
 
 # ----------------------------------------------------------
 # TKINTER FUNCTIONS COMPILE
@@ -1514,6 +1555,8 @@ def tk_compile_markdown():
     markdown_questions_create()
     markdown_answers_create()
     markdown_statements_create()
+    # markdown_requirements_create()
+    markdown_categories_create()
     from textwrap import dedent
     items = sql_answers_get_all()
     output_text = ''
@@ -1557,7 +1600,6 @@ def refresh_all():
     tk_statements_view()
     tk_requirements_view()
     tk_categories_view()
-
     
     new_values = [
         f"{item['stakeholder_id']} "
@@ -1780,6 +1822,112 @@ def markdown_statements_create():
     ''').strip() + '\n'
     with open(output_filepath, 'w', encoding="utf-8") as f: f.write(output_text)
 
+# ;jump
+def markdown_categories_create():
+    categories_items = sql_categories_get_all()
+    output_filepath = f'C:/og-new/products/aurora_module_relay_x8/v0_1_0/docs/inputs/categories.md'
+    output_text = ''
+    output_text += dedent(f'''
+        <head>
+        <title>
+        Aurora: Module Relay x8
+        </title>
+        <subtitle>
+        Categories
+        </subtitle>
+        </head>
+        <rev>
+        Version, Date, Author, Description
+        0.1.0, 2026-07-02, Martin Pellizzer, Starting version
+        </rev>
+        <body>
+        # 1. Categories
+    ''').strip() + '\n'
+    for item_i, category_item in enumerate(categories_items):
+        categories_requirements_items = sql_categories_requirements_get_by_category_id(category_item['category_id'])
+        output_text += dedent(f'''
+            - {category_item['category_text']}
+        ''')
+    output_text += dedent(f'''
+        ---
+    ''')
+
+    for item_i, category_item in enumerate(categories_items):
+        categories_requirements_items = sql_categories_requirements_get_by_category_id(category_item['category_id'])
+        output_text += dedent(f'''
+            ## 1.{item_i+1} {category_item['category_text']}
+        ''')
+
+        for requirement_i, category_requirement_item in enumerate(categories_requirements_items):
+            requirement_item = sql_requirements_get_by_id(category_requirement_item['requirement_id'])
+            output_text += dedent(f'''
+                - {requirement_item['requirement_text']}
+            ''')
+        output_text += dedent(f'''
+            ---
+        ''')
+
+        for requirement_i, category_requirement_item in enumerate(categories_requirements_items):
+            requirement_item = sql_requirements_get_by_id(category_requirement_item['requirement_id'])
+            output_text += dedent(f'''
+                ### 1.{item_i+1}.{requirement_i+1} {requirement_item['requirement_text']}
+            ''')
+
+            requirements_statements_ids = [
+                int(requirement_id)
+                for requirement_id 
+                in requirement_item['requirements_statements_ids'].split(',')
+            ]
+            output_text += dedent(f'''
+                    #### Statements
+                ''')
+            for statement_id in requirements_statements_ids:
+                statement_item = sql_statements_get_by_id(statement_id)
+                output_text += dedent(f'''
+                    - {statement_item['statement_text']}
+                ''')
+
+            # print(requirements_statements_ids)
+            # quit()
+
+            # print(requirement_item)
+            # quit()
+
+            # requirement_item = sql_requirements_get_by_id(requirement_item['requirement_id'])
+            # answer_item = sql_answers_get_by_id(statement_item['answer_id'])
+            # question_item = sql_questions_get_by_id(answer_item['question_id'])
+            # stakeholder_item = sql_stakeholders_get_by_id(question_item['stakeholder_id'])
+            # output_text += dedent(f'''
+            #     ## 1.{item_i+1} {category_item['category_text']}
+            # ''')
+            '''
+            
+                ### Answer
+                {answer_item['answer_text']}
+                ### Question
+                {question_item['question_text']}
+                ### Stakeholder
+                {stakeholder_item['stakeholder_role']}
+                | Field              | Value                      |
+                | ------------------ | -------------------------- |
+                | Stakeholder ID | {stakeholder_item['stakeholder_id']} |
+                | Question ID | {question_item['question_id']} |
+                | Answer ID | {answer_item['answer_id']} |
+                | Stakeholder Role | {stakeholder_item['stakeholder_role']} |
+                | Question Text | {question_item['question_text']} |
+                | Answer Text | {answer_item['answer_text']} |
+                | Statement Text | {statement_item['statement_text']} |
+
+                ---
+            '''
+            output_text += dedent(f'''
+                ---
+            ''')
+            output_text += f'\n\n'
+    output_text += dedent(f'''
+        </body>
+    ''').strip() + '\n'
+    with open(output_filepath, 'w', encoding="utf-8") as f: f.write(output_text)
 
 
 ###########################################################
@@ -2294,6 +2442,11 @@ requirements_tree.bind("<Delete>", tk_requirements_delete)
 requirements_tree.bind("<<TreeviewSelect>>", tk_requirements_select)
 
 
+requirements_tree.tag_configure("blank", background="white")
+requirements_tree.tag_configure("tmp", background="yellow")
+requirements_tree.tag_configure("done", background="green")
+
+
 requirements_statements_tree = ttk.Treeview(
     requirements_frame_center,
     columns=requirements_statements_fields,
@@ -2417,7 +2570,8 @@ categories_tree.bind("<Delete>", tk_categories_category_lvl1_delete)
 categories_tree.bind("<<TreeviewSelect>>", tk_categories_select)
 
 
-requirements_tree.bind("<<TreeviewSelect>>", tk_requirements_select)
+
+# requirements_tree.bind("<<TreeviewSelect>>", tk_requirements_select)
 
 categories_requirements_fields = [
     "category_lvl1_id",
@@ -2459,30 +2613,6 @@ categories_requirements_tree.column(
 # tk_categories_requirements_view()
 
 categories_requirements_tree.bind("<Delete>", tk_categories_requirements_delete)
-
-"""
-TODO
-the goal is to group the requirements in hierarchical categories
-ex:
-1. Hardware
-    1.1
-    1.2
-2. Software
-    2.1 Report to CORE
-    2.2 Local fault-handling
-use max 3 levels
-list grouped requirement per section
-
-i need:
-- left sidebar for
-    - requirement_id
-    - requirement_text
-    - level 1 category
-    - level 2 category
-    - level 3 category
-- center tree for
-    - display grouped relationships
-"""
 
 """
 
