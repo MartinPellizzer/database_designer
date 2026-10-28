@@ -571,24 +571,30 @@ def sql_categories_create():
     cur.execute(f'''
         CREATE TABLE IF NOT EXISTS {categories_table_name} (
             category_id INTEGER PRIMARY KEY, 
-            category_text TEXT
+            category_lvl1_text TEXT
         )'''
     )
     db.commit()
     db.close()
 
 def sql_categories_insert(
-    category_text, 
+    category_lvl1_text, 
+    category_lvl2_text, 
+    sort_order,
 ):
     db = sqlite3.connect(db_filepath)
     cur = db.cursor()
     cur.execute(f'''
         INSERT INTO {categories_table_name} (
-        category_text
+            category_lvl1_text,
+            category_lvl2_text,
+            sort_order
         ) 
-        VALUES (?)
+        VALUES (?, ?, ?)
     ''', (
-        category_text,
+        category_lvl1_text,
+        category_lvl2_text,
+        sort_order,
     ))
     db.commit()
     db.close()
@@ -1446,32 +1452,75 @@ def move_record(direction):
 def tk_categories_view(items=None):
     if not items:
         items = sql_categories_get_all()
+    print(items)
+    items = sorted(items, key=lambda x: x['sort_order'])
     categories_tree.delete(*categories_tree.get_children())
     rows = []
     for item in items:
         row = [
             item['category_id'], 
-            item['category_text'],
+            item['category_lvl1_text'],
+            item['category_lvl2_text'],
         ]
         rows.append(row)
     for row in rows:
         categories_tree.insert("", tk.END, values=list(row))
 
-def tk_categories_category_lvl1_insert():
-    # category_id = categories_entry_category_lvl1_id.get()
-    category_text = categories_entry_category_lvl1_text.get()
-    # if category_id.strip() == '':
-    #     print('ERR: category_id text NOT valid')
-    #     return
-    if category_text.strip() == '':
-        print('ERR: category_text text NOT valid')
+def tk_categories_insert():
+    category_lvl1_text = categories_entry_category_lvl1_text.get()
+    category_lvl2_text = categories_entry_category_lvl2_text.get()
+    if category_lvl1_text.strip() == '':
+        print('ERR: category_lvl1_text text NOT valid')
         return
+    categories_items = sql_categories_get_all()
+    sort_order_last = -1
+    for item in categories_items:
+        sort_order = item['sort_order']
+        if sort_order_last < item['sort_order']: sort_order_last = item['sort_order']
+    sort_order_new = sort_order_last + 1
+    # return
     sql_categories_insert(
-        category_text,
+        category_lvl1_text,
+        category_lvl2_text,
+        sort_order_new,
     )
     tk_categories_view()
 
-def tk_categories_category_lvl1_delete(event):
+def tk_categories_update():
+    if not categories_tree.selection(): return
+    item = categories_tree.selection()[0]
+    category_id = categories_tree.item(item)["values"][0]
+    category_lvl1_text = categories_entry_category_lvl1_text.get()
+    category_lvl2_text = categories_entry_category_lvl2_text.get()
+
+    if category_id == '': 
+        print('ERR: category_id NOT valid')
+        return
+    if category_lvl1_text.strip() == '': 
+        print('ERR: category_lvl1_text NOT valid')
+        return
+    # if category_lvl2_text.strip() == '': 
+    #     print('ERR: category_lvl2_text NOT valid')
+    #     return
+    
+    db = sqlite3.connect(db_filepath)
+    db.execute(f"""
+        UPDATE {categories_table_name}
+        SET 
+            category_lvl1_text=?,
+            category_lvl2_text=?
+        WHERE category_id=?
+    """, (
+        category_lvl1_text,
+        category_lvl2_text,
+        category_id,
+    ))
+    db.commit()
+    db.close()
+
+    tk_categories_view()
+
+def tk_categories_delete(event):
     if not categories_tree.selection(): return
     item = categories_tree.selection()[0]
     id = categories_tree.item(item)["values"][0]
@@ -1479,11 +1528,11 @@ def tk_categories_category_lvl1_delete(event):
     sql_categories_delete(id)
     categories_tree.delete(item)
 
-    
 def tk_categories_select(event):
     if not categories_tree.selection(): return
     item = categories_tree.selection()[0]
     category_id = categories_tree.item(item)["values"][0]
+    category_lvl1_text = categories_tree.item(item)["values"][1]
 
     categories_requirements_items = sql_categories_requirements_get_by_category_id(category_id)
     # print(categories_requirements_items)
@@ -1496,6 +1545,81 @@ def tk_categories_select(event):
     #     statement_item = sql_statements_get_by_id(statement_id)
     #     statements_items.append(statement_item)
     # tk_requirements_statements_view(statements_items)
+    
+    categories_entry_category_lvl1_text.delete(0, tk.END)
+    categories_entry_category_lvl1_text.insert(0, category_lvl1_text)
+
+def tk_categories_move_record(direction):
+    selected = categories_tree.selection()
+    if not selected: return
+
+    item = selected[0]
+    current = categories_tree.item(item, "values")
+    current_id = current[0]  # Adjust index to your ID column
+    print(f'''CURRENT ID: {current_id}''')
+    # return
+
+    conn = sqlite3.connect(db_filepath)
+    cur = conn.cursor()
+    
+    # cur.execute(f"PRAGMA table_info({requirements_table_name})")
+    # print([column[1] for column in cur.fetchall()])
+    # quit()
+
+    cur.execute(f'''
+        SELECT sort_order 
+        FROM {categories_table_name} 
+        WHERE category_id = ?
+    ''', (current_id,))
+    current_order = cur.fetchone()[0]
+    print(f'''CURRENT ORDER: {current_order}''')
+    # quit()
+
+    if direction == "up":
+        cur.execute(f'''
+            SELECT category_id, sort_order 
+            FROM {categories_table_name} 
+            WHERE sort_order < ?
+            ORDER BY sort_order DESC LIMIT 1
+        ''', (current_order,))
+    else:
+        cur.execute(f'''
+            SELECT category_id, sort_order 
+            FROM {categories_table_name} 
+            WHERE sort_order > ?
+            ORDER BY sort_order ASC LIMIT 1
+        ''', (current_order,))
+    neighbor = cur.fetchone()
+    print(f'''neighbor: {neighbor}''')
+    # return
+
+    if neighbor:
+        neighbor_id, neighbor_order = neighbor
+        cur.execute(f"UPDATE {categories_table_name} SET sort_order = ? WHERE category_id = ?",
+                    (neighbor_order, current_id))
+        cur.execute(f"UPDATE {categories_table_name} SET sort_order = ? WHERE category_id = ?",
+                    (current_order, neighbor_id))
+        conn.commit()
+    conn.close()
+    tk_categories_view()
+
+    print(f'CURRENT_ID: {current_id}')
+    for item in categories_tree.get_children():
+        if categories_tree.item(item, "values")[0] == current_id:
+            print(categories_tree.item(item, "values"))
+            categories_tree.selection_set(item)
+            # categories_tree.focus(item)
+
+            categories_tree.after_idle(
+                lambda item=item: categories_tree.focus(item)
+            )
+            categories_tree.see(item)
+            break
+
+    # print(direction)
+    # print(current_id)
+    # print(f'''CURRENT ORDER: {current_order}''')
+    # print(f'''NEIGHBOR ORDER: {neighbor}''')
 
 def tk_categories_requirements_insert():
     if not categories_tree.selection(): return
@@ -1514,7 +1638,6 @@ def tk_categories_requirements_insert():
     categories_requirements_items = sql_categories_requirements_get_by_category_id(category_id)
     tk_categories_requirements_view(items=categories_requirements_items)
 
-
 def tk_categories_requirements_view(items=None):
     # if not items:
         # items = sql_categories_requirements_get_all()
@@ -1528,7 +1651,8 @@ def tk_categories_requirements_view(items=None):
         if category_item and requirement_item:
             row = [
                 item['category_id'], 
-                category_item['category_text'],
+                category_item['category_lvl1_text'],
+                category_item['category_lvl2_text'],
                 item['requirement_id'],
                 requirement_item['requirement_text'],
             ]
@@ -1540,7 +1664,7 @@ def tk_categories_requirements_delete(event):
     if not categories_requirements_tree.selection(): return
     item = categories_requirements_tree.selection()[0]
     category_id = categories_requirements_tree.item(item)["values"][0]
-    requirement_id = categories_requirements_tree.item(item)["values"][2]
+    requirement_id = categories_requirements_tree.item(item)["values"][3]
     ###
     sql_categories_requirements_delete(category_id, requirement_id)
     categories_requirements_tree.delete(item)
@@ -1576,6 +1700,7 @@ def tk_compile_markdown():
         ''').strip()
         output_text += f'\n\n'
     with open('output.md', 'w', encoding="utf-8") as f: f.write(output_text)
+
 
 
 # # Example:
@@ -1825,6 +1950,7 @@ def markdown_statements_create():
 # ;jump
 def markdown_categories_create():
     categories_items = sql_categories_get_all()
+    categories_items = sorted(categories_items, key=lambda x: x['sort_order'])
     output_filepath = f'C:/og-new/products/aurora_module_relay_x8/v0_1_0/docs/inputs/categories.md'
     output_text = ''
     output_text += dedent(f'''
@@ -1841,8 +1967,87 @@ def markdown_categories_create():
         0.1.0, 2026-07-02, Martin Pellizzer, Starting version
         </rev>
         <body>
-        # 1. Categories
     ''').strip() + '\n'
+        # 1. Categories
+
+    lvl_1_i = 0
+    lvl_2_i = 0
+
+    for item_i, category_item in enumerate(categories_items):
+        categories_requirements_items = sql_categories_requirements_get_by_category_id(category_item['category_id'])
+        category_lvl1_text = category_item['category_lvl1_text']
+        category_lvl2_text = category_item['category_lvl2_text']
+        ### LVL 1
+        if category_lvl2_text.strip() == '':
+            lvl_1_i += 1
+            output_text += dedent(f'''
+                # {lvl_1_i}. {category_item['category_lvl1_text']}
+            ''')
+            
+            categories_requirements_items = sql_categories_requirements_get_by_category_id(category_item['category_id'])
+            
+            for requirement_i, category_requirement_item in enumerate(categories_requirements_items):
+                requirement_item = sql_requirements_get_by_id(category_requirement_item['requirement_id'])
+                output_text += dedent(f'''
+                    - {requirement_item['requirement_text']}
+                ''')
+            output_text += dedent(f'''
+                ---
+            ''')
+        ### LVL 2
+        else:
+            lvl_2_i += 1
+            output_text += dedent(f'''
+                ## {lvl_1_i}.{lvl_2_i} {category_item['category_lvl1_text']} {category_item['category_lvl2_text']}
+            ''')
+            categories_requirements_items = sql_categories_requirements_get_by_category_id(category_item['category_id'])
+            
+            for requirement_i, category_requirement_item in enumerate(categories_requirements_items):
+                requirement_item = sql_requirements_get_by_id(category_requirement_item['requirement_id'])
+                output_text += dedent(f'''
+                    - {requirement_item['requirement_text']}
+                ''')
+            output_text += dedent(f'''
+                ---
+            ''')
+            
+            requirement_i = 0
+            for requirement_i, category_requirement_item in enumerate(categories_requirements_items):
+                requirement_i += 1
+                requirement_item = sql_requirements_get_by_id(category_requirement_item['requirement_id'])
+                output_text += dedent(f'''
+                    ### {lvl_1_i}.{lvl_2_i}.{requirement_i} {requirement_item['requirement_text']}
+                ''')
+
+                requirements_statements_ids = [
+                    int(requirement_id)
+                    for requirement_id 
+                    in requirement_item['requirements_statements_ids'].split(',')
+                ]
+                output_text += dedent(f'''
+                        #### Statements
+                    ''')
+                for statement_id in requirements_statements_ids:
+                    statement_item = sql_statements_get_by_id(statement_id)
+                    output_text += dedent(f'''
+                        - {statement_item['statement_text']}
+                    ''')
+
+                output_text += dedent(f'''
+                    ---
+            ''')
+
+    output_text += f'\n\n'
+    output_text += dedent(f'''
+        </body>
+    ''').strip() + '\n'
+    with open(output_filepath, 'w', encoding="utf-8") as f: f.write(output_text)
+
+
+
+    return
+
+
     for item_i, category_item in enumerate(categories_items):
         categories_requirements_items = sql_categories_requirements_get_by_category_id(category_item['category_id'])
         output_text += dedent(f'''
@@ -2478,8 +2683,9 @@ requirements_tree.bind("<Control-Down>", lambda e: move_record("down"))
 ###########################################################
 
 categories_fields = [
-    "category_lvl1_id",
+    "category_id",
     "category_lvl1_text",
+    "category_lvl2_text",
 ]
 
 categories_tab = tk.Frame(tabs)
@@ -2497,10 +2703,20 @@ tk.Label(categories_frame_left, text="Category LVL1 Text").pack(anchor="w", pady
 categories_entry_category_lvl1_text = tk.Entry(categories_frame_left)
 categories_entry_category_lvl1_text.pack(fill="x", padx=(padx, padx))
 
+tk.Label(categories_frame_left, text="Category LVL2 Text").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+categories_entry_category_lvl2_text = tk.Entry(categories_frame_left)
+categories_entry_category_lvl2_text.pack(fill="x", padx=(padx, padx))
+
 tk.Button(
     categories_frame_left,
     text="Insert Category",
-    command=tk_categories_category_lvl1_insert
+    command=tk_categories_insert
+).pack(fill="x", padx=(padx, padx), pady=(10, 0))
+
+tk.Button(
+    categories_frame_left,
+    text="Update Category",
+    command=tk_categories_update
 ).pack(fill="x", padx=(padx, padx), pady=(10, 0))
 
 tk.Label(categories_frame_left, text="Requirement ID").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
@@ -2526,10 +2742,6 @@ tk.Button(
 categories_frame_center = tk.Frame(categories_tab)
 categories_frame_center.pack(side="left", fill="both", expand=True)
 
-# tk.Label(categories_frame_center, text="Search").pack(anchor="w", pady=(10, 0))
-# categories_entry_search = tk.Entry(categories_frame_center)
-# categories_entry_search.pack(fill="x", pady=(0, padx))
-
 categories_tree = ttk.Treeview(
     categories_frame_center,
     columns=categories_fields,
@@ -2544,38 +2756,36 @@ for col in categories_fields:
         stretch=False
     )
 categories_tree.column(
-    "category_lvl1_id",
+    "category_id",
     width=120,
     stretch=False,
 )
 categories_tree.column(
     "category_lvl1_text",
     width=120,
-    stretch=True,
+    stretch=False,
 )
-# categories_tree.column(
-#     "requirement_id",
-#     width=100,
-#     stretch=False,
-# )
-# categories_tree.column(
-#     "requirement_text",
-#     width=120,
-#     stretch=True,
-# )
+categories_tree.column(
+    "category_lvl2_text",
+    width=120,
+    stretch=False,
+)
 
 tk_categories_view()
 
-categories_tree.bind("<Delete>", tk_categories_category_lvl1_delete)
+categories_tree.bind("<Delete>", tk_categories_delete)
 categories_tree.bind("<<TreeviewSelect>>", tk_categories_select)
 
+categories_tree.bind("<Control-Up>", lambda e: tk_categories_move_record("up"))
+categories_tree.bind("<Control-Down>", lambda e: tk_categories_move_record("down"))
 
 
 # requirements_tree.bind("<<TreeviewSelect>>", tk_requirements_select)
 
 categories_requirements_fields = [
-    "category_lvl1_id",
+    "category_id",
     "category_lvl1_text",
+    "category_lvl2_text",
     "requirement_id",
     "requirement_text",
 ]
@@ -2590,12 +2800,17 @@ for col in categories_requirements_fields:
     categories_requirements_tree.heading(col, text=col)
     categories_requirements_tree.column(col, stretch=False)
 categories_requirements_tree.column(
-    "category_lvl1_id",
+    "category_id",
     width=120,
     stretch=False,
 )
 categories_requirements_tree.column(
     "category_lvl1_text",
+    width=120,
+    stretch=False,
+)
+categories_requirements_tree.column(
+    "category_lvl2_text",
     width=120,
     stretch=False,
 )
@@ -2614,62 +2829,6 @@ categories_requirements_tree.column(
 
 categories_requirements_tree.bind("<Delete>", tk_categories_requirements_delete)
 
-"""
-
-
-
-# Listbox with multiple selection
-tk.Label(requirements_frame_left, text="Statement List").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
-requirements_listbox = tk.Listbox(requirements_frame_left, selectmode=tk.EXTENDED, height=5)
-requirements_listbox.pack(fill="both", expand=True, padx=10, pady=10)
-
-tk.Label(requirements_frame_left, text="Requirement Text").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
-requirements_text_requirement_text = tk.Text(requirements_frame_left, wrap="word", height=10)
-requirements_text_requirement_text.pack(fill="x", padx=(padx, padx))
-
-def requirements_listbox_item_delete(event=None):
-    for index in reversed(requirements_listbox.curselection()):
-        text = requirements_listbox.get(index)
-        requirements_statements_list_cur.remove(text)  # Remove matching string from your list
-        requirements_listbox.delete(index)
-        tk_statements_view()
-
-requirements_listbox.bind("<Delete>", requirements_listbox_item_delete)
-
-
-tk.Button(
-    requirements_frame_left,
-    text="Update Requirement",
-    command=tk_requirements_update
-).pack(fill="x", padx=(padx, padx), pady=(10, 0))
-
-# ..........................................................
-# REQUIREMENTS FRAME CENTER
-# ..........................................................
-
-
-def on_key_release(event):
-    entry_text = requirements_entry_search.get()
-    sql_requirements_items = sql_requirements_get_all()
-    sql_requirements_items_filter = [
-        item
-        for item in sql_requirements_items
-        if entry_text in item['requirement_text']
-    ]
-    tk_requirements_view(sql_requirements_items_filter)
-
-    print(entry_text)  # Current text
-    print(sql_requirements_items)
-
-requirements_entry_search.bind("<KeyRelease>", on_key_release)
-
-
-
-
-requirements_tree.bind("<Control-Up>", lambda e: move_record("up"))
-requirements_tree.bind("<Control-Down>", lambda e: move_record("down"))
-
-"""
 
 
 ###########################################################
