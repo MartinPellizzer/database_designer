@@ -85,30 +85,6 @@
             "id": 2
         },
         {
-            "world_x": -16.25,
-            "world_y": -3.0,
-            "world_w": 20,
-            "world_h": 100,
-            "title": "activities",
-            "kind": "data",
-            "description": "",
-            "fields": [
-                {
-                    "name": "activity_id",
-                    "key": "primary_key"
-                },
-                {
-                    "name": "activity_name_reference",
-                    "key": "none"
-                },
-                {
-                    "name": "activity_name_reference_normalize",
-                    "key": ""
-                }
-            ],
-            "id": 3
-        },
-        {
             "world_x": -16.8125,
             "world_y": 9.3125,
             "world_w": 20,
@@ -183,6 +159,194 @@
                 }
             ],
             "id": 6
+        },
+        {
+            "world_x": -16.9375,
+            "world_y": -3.0625,
+            "world_w": 20,
+            "world_h": 100,
+            "title": "activities",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "activity_id",
+                    "key": "primary_key"
+                },
+                {
+                    "name": "activity_name_reference",
+                    "key": "none"
+                },
+                {
+                    "name": "activity_name_reference_normalize",
+                    "key": ""
+                }
+            ],
+            "id": 3
+        },
+        {
+            "id": 11,
+            "world_x": -15.375,
+            "world_y": -29.25,
+            "world_w": 20,
+            "world_h": 0,
+            "title": "sources",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "source_id",
+                    "key": "none"
+                },
+                {
+                    "name": "source_name_reference",
+                    "key": "none"
+                }
+            ]
+        },
+        {
+            "id": 9,
+            "world_x": 17.5,
+            "world_y": -42.125,
+            "world_w": 20,
+            "world_h": 0,
+            "title": "plants__plants_names_common",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "plant_name_id",
+                    "key": "none"
+                },
+                {
+                    "name": "plant_id",
+                    "key": "none"
+                },
+                {
+                    "name": "plant_name_common_id",
+                    "key": ""
+                },
+                {
+                    "name": "source_id",
+                    "key": ""
+                }
+            ]
+        },
+        {
+            "id": 10,
+            "world_x": -15.0625,
+            "world_y": -49.25,
+            "world_w": 20,
+            "world_h": 0,
+            "title": "plants_names_common",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "plant_name_common_id",
+                    "key": "none"
+                },
+                {
+                    "name": "plant_name_common_reference",
+                    "key": "none"
+                },
+                {
+                    "name": "plant_name_common_reference_normalize",
+                    "key": ""
+                },
+                {
+                    "name": "plant_name_common_transliteration",
+                    "key": ""
+                },
+                {
+                    "name": "plant_name_common_language",
+                    "key": ""
+                },
+                {
+                    "name": "plant_name_common_preferred",
+                    "key": ""
+                },
+                {
+                    "name": "plant_name_common_country",
+                    "key": ""
+                },
+                {
+                    "name": "plant_name_common_area",
+                    "key": ""
+                }
+            ]
+        },
+        {
+            "id": 7,
+            "world_x": -80.9375,
+            "world_y": -68.3125,
+            "world_w": 20,
+            "world_h": 0,
+            "title": "ref_col_name_usage",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "_id",
+                    "key": ""
+                },
+                {
+                    "name": "col_id",
+                    "key": "foreign_key"
+                },
+                {
+                    "name": "plant_name_scientific",
+                    "key": "none"
+                },
+                {
+                    "name": "plant_name_scientific_normalize",
+                    "key": ""
+                }
+            ]
+        },
+        {
+            "id": 8,
+            "world_x": -52.1875,
+            "world_y": -68.375,
+            "world_w": 20,
+            "world_h": 0,
+            "title": "ref_col_vernacular_name",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "_id",
+                    "key": ""
+                },
+                {
+                    "name": "col_id",
+                    "key": "foreign_key"
+                },
+                {
+                    "name": "name",
+                    "key": "none"
+                },
+                {
+                    "name": "transliteration",
+                    "key": ""
+                },
+                {
+                    "name": "language",
+                    "key": ""
+                },
+                {
+                    "name": "preferred",
+                    "key": ""
+                },
+                {
+                    "name": "country",
+                    "key": ""
+                },
+                {
+                    "name": "area",
+                    "key": ""
+                }
+            ]
         }
     ],
     "edges": [
@@ -250,8 +414,8 @@
         {
             "edge_start": {
                 "node": {
-                    "world_x": -16.25,
-                    "world_y": -3.0,
+                    "world_x": -16.9375,
+                    "world_y": -3.0625,
                     "world_w": 20,
                     "world_h": 100,
                     "title": "activities",
@@ -549,6 +713,87 @@
                     "id": 6
                 },
                 "field_i": 4
+            },
+            "edge_type": "1:N"
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "id": 7,
+                    "world_x": -80.9375,
+                    "world_y": -68.3125,
+                    "world_w": 20,
+                    "world_h": 0,
+                    "title": "ref_col_name_usage",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "_id",
+                            "key": ""
+                        },
+                        {
+                            "name": "col_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "plant_name_scientific",
+                            "key": "none"
+                        },
+                        {
+                            "name": "plant_name_scientific_normalize",
+                            "key": ""
+                        }
+                    ]
+                },
+                "field_i": 2
+            },
+            "edge_end": {
+                "node": {
+                    "id": 8,
+                    "world_x": -52.1875,
+                    "world_y": -68.375,
+                    "world_w": 20,
+                    "world_h": 0,
+                    "title": "ref_col_vernacular_name",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "_id",
+                            "key": ""
+                        },
+                        {
+                            "name": "col_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "name",
+                            "key": "none"
+                        },
+                        {
+                            "name": "transliteration",
+                            "key": ""
+                        },
+                        {
+                            "name": "language",
+                            "key": ""
+                        },
+                        {
+                            "name": "preferred",
+                            "key": ""
+                        },
+                        {
+                            "name": "country",
+                            "key": ""
+                        },
+                        {
+                            "name": "area",
+                            "key": ""
+                        }
+                    ]
+                },
+                "field_i": 2
             },
             "edge_type": "1:N"
         }

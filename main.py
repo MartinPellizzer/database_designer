@@ -45,12 +45,16 @@ interaction = {
     'camera_y_start': 0,
     'mouse_x_start': 0,
     'mouse_y_start': 0,
+    'button_visible': False,
 }
 
 font_size_base = 1
+font_comment_size_base = 16
+
 font = pygame.font.Font(None, font_size_base*int(camera['scale']))
 font_debug = pygame.font.Font(None, 24)
-font_ui = pygame.font.Font(None, 18)
+font_ui = pygame.font.Font(None, 16)
+font_comment = pygame.font.Font(None, font_comment_size_base*int(camera['scale']))
 
 frame_left = {
     'x': 0,
@@ -66,7 +70,35 @@ frame_center = {
     'h': screen_h,
 }
 
+menu_context = {
+    'name': 'viewport',
+    'x': 0,
+    'y': 0,
+    'items': [
+        {'name': 'Add Node'},
+        {'name': 'Add Comment'},
+    ]
+}
+menu_context_visible = False
+
 nodes = []
+
+def button_create(text):
+    item = {
+        'screen_x': 0,
+        'screen_y': 0,
+        'screen_w': 100,
+        'screen_h': 24,
+        'text': text,
+    }
+    return item
+
+button_1 = button_create('Add Node')
+button_2 = button_create('Add Comment')
+
+buttons = []
+buttons.append(button_1)
+buttons.append(button_2)
 
 # ============================================================
 # NODES
@@ -724,6 +756,7 @@ def inputs_key_down(event):
 
 def inputs_mouse_wheel(event):
     global font
+    global font_comment
     if event.y == 1:
         if camera['scale'] < 256:
             camera['scale'] *= 2
@@ -731,17 +764,7 @@ def inputs_mouse_wheel(event):
         if camera['scale'] > 1:
             camera['scale'] /= 2
     font = pygame.font.Font(None, font_size_base*int(camera['scale']))
-
-menu_context = {
-    'name': 'viewport',
-    'x': 0,
-    'y': 0,
-    'items': [
-        {'name': 'Add Node'},
-        {'name': 'Add Comment'},
-    ]
-}
-menu_context_visible = False
+    font_comment = pygame.font.Font(None, font_comment_size_base*int(camera['scale']))
 
 def menu_context_open():
     global menu_context_visible
@@ -762,6 +785,36 @@ def menu_context_open():
         {'name': 'name', 'key': 'none'}, 
     ]
     node_create(x, y, w, h, title, kind, description, fields)
+
+def node_create_from_mouse():
+    x = mouse['world_x']
+    y = mouse['world_y']
+    w = 20
+    h = 0
+    title = 'table_name'
+    kind = 'data'
+    description = ''
+    fields = [
+        {'name': 'id', 'key': 'none'}, 
+        {'name': 'name', 'key': 'none'}, 
+    ]
+    node_create(x, y, w, h, title, kind, description, fields)
+
+comments = []
+
+def comment_create(world_x, world_y, text):
+    item = {
+        'world_x': world_x,
+        'world_y': world_y,
+        'text': text,
+    }
+    comments.append(item)
+
+def comment_create_from_mouse():
+    x = mouse['world_x']
+    y = mouse['world_y']
+    title = 'comment'
+    comment_create(x, y, title)
 
 def main_inputs():
     global font
@@ -815,6 +868,21 @@ def main_inputs():
                             interaction['drag_offset_y'] = mouse['world_y'] - node['world_y']
                             break
                 else:
+                    ### CONTEXT MENU (buttons)
+                    if interaction['button_visible'] == True:
+                        interaction['button_visible'] = False
+                        for item in buttons:
+                            if (
+                                mouse['screen_x'] >= item['screen_x'] and 
+                                mouse['screen_y'] >= item['screen_y'] and 
+                                mouse['screen_x'] <= item['screen_x'] + item['screen_w'] and 
+                                mouse['screen_y'] <= item['screen_y'] + item['screen_h']
+                            ):
+                                if item['text'] == 'Add Node':
+                                    node_create_from_mouse()
+                                elif item['text'] == 'Add Comment':
+                                    comment_create_from_mouse()
+                        
                     interaction['node_focus'] = None
                     interaction['field_focus'] = None
                     interaction['field_i_focus'] = None
@@ -840,7 +908,11 @@ def main_inputs():
                 interaction['mouse_x_start'] = event.pos[0]
                 interaction['mouse_y_start'] = event.pos[1]
             elif event.button == 3:
-                menu_context_open()
+                for i, item in enumerate(buttons):
+                    item['screen_x'] = mouse['screen_x']
+                    item['screen_y'] = mouse['screen_y'] + (24 * i)
+                interaction['button_visible'] = True
+                # menu_context_open()
 
         elif event.type == pygame.MOUSEBUTTONUP:
             if event.button == 1:
@@ -941,6 +1013,44 @@ def draw_viewport_menu_context():
             screen.blit(text, (x, y))
             i += 1
 
+def draw_button():
+    if interaction['button_visible'] == True:
+        screen_x = button_1['screen_x']
+        screen_y = button_1['screen_y']
+        screen_w = button_1['screen_w']
+        screen_h = button_1['screen_h']
+        color_gray = 60
+        pygame.draw.rect(screen, (color_gray, color_gray, color_gray), (screen_x, screen_y, screen_w, screen_h))
+        ### TEXT
+        padding = 6 
+        text = button_1['text']
+        text_surface = font_ui.render(f"{text}", True, (255, 255, 255))
+        screen.blit(text_surface, (screen_x + padding, screen_y + padding))
+
+def draw_buttons():
+    if interaction['button_visible'] == True:
+        for item in buttons:
+            screen_x = item['screen_x']
+            screen_y = item['screen_y']
+            screen_w = item['screen_w']
+            screen_h = item['screen_h']
+            color_gray = 60
+            pygame.draw.rect(screen, (color_gray, color_gray, color_gray), (screen_x, screen_y, screen_w, screen_h))
+            ### TEXT
+            padding = 6 
+            text = item['text']
+            text_surface = font_ui.render(f"{text}", True, (255, 255, 255))
+            screen.blit(text_surface, (screen_x + padding, screen_y + padding))
+
+def draw_comments():
+    for item in comments:
+        world_x = item['world_x']
+        world_y = item['world_y']
+        text = item['text']
+        screen_x, screen_y = world_to_screen(world_x, world_y)
+        text_surface = font_comment.render(f"{text}", True, (255, 255, 255))
+        screen.blit(text_surface, (screen_x, screen_y))
+
 def main_draw():
     draw_background()
 
@@ -959,6 +1069,10 @@ def main_draw():
     draw_viewport_menu_context()
 
     draw_debug()
+
+    # draw_button()
+    draw_buttons()
+    draw_comments()
 
 
     pygame.display.flip()
