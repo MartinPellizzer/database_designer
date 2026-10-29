@@ -1681,26 +1681,6 @@ def tk_compile_markdown():
     markdown_statements_create()
     # markdown_requirements_create()
     markdown_categories_create()
-    from textwrap import dedent
-    items = sql_answers_get_all()
-    output_text = ''
-    for item in items:
-        print(item)
-        question_item = sql_questions_get_by_id(item['question_id'])
-        stakeholder_item = sql_stakeholders_get_by_id(question_item['stakeholder_id'])
-        print(stakeholder_item)
-        output_text += dedent(f'''
-            | Field              | Value                      |
-            | ------------------ | -------------------------- |
-            | Question ID        | {item['question_id']}      |
-            | Answer ID          | {item['answer_id']}        |
-            | Stakeholder Role   | {stakeholder_item['stakeholder_role']}        |
-            | Question Text      | {item['question_text']}    |
-            | Answer Text        | {item['answer_text']}      |
-        ''').strip()
-        output_text += f'\n\n'
-    with open('output.md', 'w', encoding="utf-8") as f: f.write(output_text)
-
 
 
 # # Example:
@@ -1980,6 +1960,7 @@ def markdown_categories_create():
         ### LVL 1
         if category_lvl2_text.strip() == '':
             lvl_1_i += 1
+            lvl_2_i = 0
             output_text += dedent(f'''
                 # {lvl_1_i}. {category_item['category_lvl1_text']}
             ''')
