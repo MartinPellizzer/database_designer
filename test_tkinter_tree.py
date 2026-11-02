@@ -14,6 +14,7 @@ statements_table_name = 'statements'
 requirements_table_name = 'requirements'
 categories_table_name = 'categories'
 categories_requirements_table_name = 'categories_requirements'
+specifications_table_name = 'specifications'
 
 
 requirements_statements_list_cur = []
@@ -722,6 +723,78 @@ def sql_categories_requirements_delete(category_id, requirement_id):
 #     category_id=1, 
 #     requirement_id=2, 
 # )
+
+
+
+# ----------------------------------------------------------
+# SQLITE SPECIFICATIONS
+# ----------------------------------------------------------
+
+def sql_specifications_drop():
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        DROP TABLE IF EXISTS {specifications_table_name}
+    ''')
+    db.commit()
+    db.close()
+
+def sql_specifications_create():
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        CREATE TABLE IF NOT EXISTS {specifications_table_name} (
+            specification_id INTEGER PRIMARY KEY, 
+            specification_heading_1_text TEXT,
+            specification_heading_2_text TEXT,
+            specification_heading_3_text TEXT,
+            specification_heading_4_text TEXT,
+            sort_order INTEGER NOT NULL DEFAULT 0
+        )'''
+    )
+    db.commit()
+    db.close()
+
+def sql_specifications_get_all():
+    db = sqlite3.connect(db_filepath)
+    db.row_factory = sqlite3.Row
+    cur = db.cursor()
+    rows = db.execute(f"SELECT * FROM {specifications_table_name}").fetchall()
+    items = [dict(row) for row in rows]
+    db.close()
+    return items
+
+def sql_specifications_insert(
+    specification_heading_1_text, 
+    specification_heading_2_text, 
+    specification_heading_3_text, 
+    specification_heading_4_text, 
+    sort_order,
+):
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        INSERT INTO {specifications_table_name} (
+            specification_heading_1_text,
+            specification_heading_2_text,
+            specification_heading_3_text,
+            specification_heading_4_text,
+            sort_order
+        ) 
+        VALUES (?, ?, ?, ?, ?)
+    ''', (
+        specification_heading_1_text,
+        specification_heading_2_text,
+        specification_heading_3_text,
+        specification_heading_4_text,
+        sort_order,
+    ))
+    db.commit()
+    db.close()
+
+# sql_specifications_drop()
+# sql_specifications_create()
+
 
 ############################################################
 # TKINTER FUNCTIONS
@@ -1670,6 +1743,57 @@ def tk_categories_requirements_delete(event):
     categories_requirements_tree.delete(item)
     tk_requirements_view()
 
+
+
+# ----------------------------------------------------------
+# TKINTER SPECIFICATIONS
+# ----------------------------------------------------------
+
+def tk_specifications_view(items=None):
+    if not items:
+        items = sql_specifications_get_all()
+    # print(items)
+    items = sorted(items, key=lambda x: x['sort_order'])
+    specifications_tree.delete(*specifications_tree.get_children())
+    rows = []
+    for item in items:
+        row = [
+            item['specification_id'], 
+            item['specification_heading_1_text'],
+            item['specification_heading_2_text'],
+            item['specification_heading_3_text'],
+            item['specification_heading_4_text'],
+        ]
+        rows.append(row)
+    for row in rows:
+        specifications_tree.insert("", tk.END, values=list(row))
+
+def tk_specifications_insert():
+    specification_heading_1_text = specifications_entry_heading_1_text.get()
+    specification_heading_2_text = specifications_entry_heading_2_text.get()
+    specification_heading_3_text = specifications_entry_heading_3_text.get()
+    specification_heading_4_text = specifications_entry_heading_4_text.get()
+    if specification_heading_1_text.strip() == '':
+        print('ERR: specification_heading_1_text text NOT valid')
+        return
+    specifications_items = sql_specifications_get_all()
+    sort_order_last = -1
+    for item in specifications_items:
+        sort_order = item['sort_order']
+        if sort_order_last < item['sort_order']: sort_order_last = item['sort_order']
+    sort_order_new = sort_order_last + 1
+    # return
+    sql_specifications_insert(
+        specification_heading_1_text,
+        specification_heading_2_text,
+        specification_heading_3_text,
+        specification_heading_4_text,
+        sort_order_new,
+    )
+    tk_specifications_view()
+
+
+
 # ----------------------------------------------------------
 # TKINTER FUNCTIONS COMPILE
 # ----------------------------------------------------------
@@ -1705,6 +1829,7 @@ def refresh_all():
     tk_statements_view()
     tk_requirements_view()
     tk_categories_view()
+    tk_specifications_view()
     
     new_values = [
         f"{item['stakeholder_id']} "
@@ -1745,6 +1870,8 @@ def open_project():
     # sql_categories_create()
     # sql_categories_requirements_drop()
     # sql_categories_requirements_create()
+    # sql_specifications_drop()
+    # sql_specifications_create()
     refresh_all()
 
 def save_project():
@@ -2810,6 +2937,100 @@ categories_requirements_tree.column(
 
 categories_requirements_tree.bind("<Delete>", tk_categories_requirements_delete)
 
+
+###########################################################
+# SPECIFICATIONS TAB
+###########################################################
+
+# ..........................................................
+# SPECIFICATIONS FRAME LEFT
+# ..........................................................
+
+specifications_tab = tk.Frame(tabs)
+tabs.add(specifications_tab, text="Specifications")
+
+specifications_frame_left = tk.Frame(specifications_tab, width=200)
+specifications_frame_left.pack(side="left", fill="y")
+specifications_frame_left.pack_propagate(False)
+
+tk.Label(specifications_frame_left, text="Heading 1").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+specifications_entry_heading_1_text = tk.Entry(specifications_frame_left)
+specifications_entry_heading_1_text.pack(fill="x", padx=(padx, padx))
+
+tk.Label(specifications_frame_left, text="Heading 2").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+specifications_entry_heading_2_text = tk.Entry(specifications_frame_left)
+specifications_entry_heading_2_text.pack(fill="x", padx=(padx, padx))
+
+tk.Label(specifications_frame_left, text="Heading 3").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+specifications_entry_heading_3_text = tk.Entry(specifications_frame_left)
+specifications_entry_heading_3_text.pack(fill="x", padx=(padx, padx))
+
+tk.Label(specifications_frame_left, text="Heading 4").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+specifications_entry_heading_4_text = tk.Entry(specifications_frame_left)
+specifications_entry_heading_4_text.pack(fill="x", padx=(padx, padx))
+
+tk.Button(
+    specifications_frame_left,
+    text="Insert Specification",
+    command=tk_specifications_insert
+).pack(fill="x", padx=(padx, padx), pady=(10, 0))
+
+# ..........................................................
+# SPECIFICATIONS FRAME CENTER
+# ..........................................................
+
+specifications_fields = [
+    "specification_id",
+    "specification_heading_1_text",
+    "specification_heading_2_text",
+    "specification_heading_3_text",
+    "specification_heading_4_text",
+]
+
+specifications_frame_center = tk.Frame(specifications_tab)
+specifications_frame_center.pack(side="left", fill="both", expand=True)
+
+specifications_tree = ttk.Treeview(
+    specifications_frame_center,
+    columns=specifications_fields,
+    show="headings"
+)
+specifications_tree.pack(fill="both", expand=True)
+
+for col in specifications_fields:
+    specifications_tree.heading(col, text=col)
+    specifications_tree.column(
+        col, 
+        stretch=False
+    )
+specifications_tree.column(
+    "specification_id",
+    width=120,
+    stretch=False,
+)
+specifications_tree.column(
+    "specification_heading_1_text",
+    width=180,
+    stretch=False,
+)
+specifications_tree.column(
+    "specification_heading_2_text",
+    width=180,
+    stretch=False,
+)
+specifications_tree.column(
+    "specification_heading_3_text",
+    width=180,
+    stretch=False,
+)
+specifications_tree.column(
+    "specification_heading_4_text",
+    width=180,
+    stretch=False,
+)
+
+# tk_categories_view()
+tk_specifications_view()
 
 
 ###########################################################
