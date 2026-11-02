@@ -792,6 +792,16 @@ def sql_specifications_insert(
     db.commit()
     db.close()
 
+def sql_specifications_delete(id):
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        DELETE FROM {specifications_table_name} 
+        WHERE specification_id = ?
+    ''', (id,))
+    db.commit()
+    db.close()
+
 # sql_specifications_drop()
 # sql_specifications_create()
 
@@ -1792,7 +1802,85 @@ def tk_specifications_insert():
     )
     tk_specifications_view()
 
+def tk_specifications_delete(event):
+    if not specifications_tree.selection(): return
+    item = specifications_tree.selection()[0]
+    id = specifications_tree.item(item)["values"][0]
+    ###
+    sql_specifications_delete(id)
+    specifications_tree.delete(item)
 
+def tk_specifications_move_record(direction):
+    selected = specifications_tree.selection()
+    if not selected: return
+
+    item = selected[0]
+    current = specifications_tree.item(item, "values")
+    current_id = current[0]  # Adjust index to your ID column
+    print(f'''CURRENT ID: {current_id}''')
+    # return
+
+    conn = sqlite3.connect(db_filepath)
+    cur = conn.cursor()
+    
+    # cur.execute(f"PRAGMA table_info({requirements_table_name})")
+    # print([column[1] for column in cur.fetchall()])
+    # quit()
+
+    cur.execute(f'''
+        SELECT sort_order 
+        FROM {specifications_table_name} 
+        WHERE specification_id = ?
+    ''', (current_id,))
+    current_order = cur.fetchone()[0]
+    print(f'''CURRENT ORDER: {current_order}''')
+    # quit()
+
+    if direction == "up":
+        cur.execute(f'''
+            SELECT specification_id, sort_order 
+            FROM {specifications_table_name} 
+            WHERE sort_order < ?
+            ORDER BY sort_order DESC LIMIT 1
+        ''', (current_order,))
+    else:
+        cur.execute(f'''
+            SELECT specification_id, sort_order 
+            FROM {specifications_table_name} 
+            WHERE sort_order > ?
+            ORDER BY sort_order ASC LIMIT 1
+        ''', (current_order,))
+    neighbor = cur.fetchone()
+    print(f'''neighbor: {neighbor}''')
+    # return
+
+    if neighbor:
+        neighbor_id, neighbor_order = neighbor
+        cur.execute(f"UPDATE {specifications_table_name} SET sort_order = ? WHERE specification_id = ?",
+                    (neighbor_order, current_id))
+        cur.execute(f"UPDATE {specifications_table_name} SET sort_order = ? WHERE specification_id = ?",
+                    (current_order, neighbor_id))
+        conn.commit()
+    conn.close()
+    tk_specifications_view()
+
+    print(f'CURRENT_ID: {current_id}')
+    for item in specifications_tree.get_children():
+        if specifications_tree.item(item, "values")[0] == current_id:
+            print(specifications_tree.item(item, "values"))
+            specifications_tree.selection_set(item)
+            # specifications_tree.focus(item)
+
+            specifications_tree.after_idle(
+                lambda item=item: specifications_tree.focus(item)
+            )
+            specifications_tree.see(item)
+            break
+
+    # print(direction)
+    # print(current_id)
+    # print(f'''CURRENT ORDER: {current_order}''')
+    # print(f'''NEIGHBOR ORDER: {neighbor}''')
 
 # ----------------------------------------------------------
 # TKINTER FUNCTIONS COMPILE
@@ -3032,6 +3120,12 @@ specifications_tree.column(
 # tk_categories_view()
 tk_specifications_view()
 
+# categories_tree.bind("<Delete>", tk_categories_delete)
+specifications_tree.bind("<Delete>", tk_specifications_delete)
+
+# specifications_tree.bind("<Control-Down>", lambda e: tk_categories_move_record("down"))
+specifications_tree.bind("<Control-Up>", lambda e: tk_specifications_move_record("up"))
+specifications_tree.bind("<Control-Down>", lambda e: tk_specifications_move_record("down"))
 
 ###########################################################
 # TAB COMPILE
