@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
 import sqlite3
+import json
 
 from textwrap import dedent
 
@@ -15,6 +16,7 @@ requirements_table_name = 'requirements'
 categories_table_name = 'categories'
 categories_requirements_table_name = 'categories_requirements'
 specifications_table_name = 'specifications'
+specifications_modbus_table_name = 'specifications_modbus'
 
 
 requirements_statements_list_cur = []
@@ -450,7 +452,7 @@ def sql_statements_get_by_id(id):
     return item
 
 # sql_statements_drop()
-sql_statements_create()
+# sql_statements_create()
 
 # ----------------------------------------------------------
 # SQLITE REQUIREMENTS
@@ -551,7 +553,7 @@ def sql_requirement_get_by_id(id):
 """
 
 # sql_requirements_drop()
-sql_requirements_create()
+# sql_requirements_create()
 
 # ----------------------------------------------------------
 # SQLITE CATEGORIES
@@ -749,6 +751,7 @@ def sql_specifications_create():
             specification_heading_2_text TEXT,
             specification_heading_3_text TEXT,
             specification_heading_4_text TEXT,
+            specification_template_text TEXT,
             sort_order INTEGER NOT NULL DEFAULT 0
         )'''
     )
@@ -769,6 +772,7 @@ def sql_specifications_insert(
     specification_heading_2_text, 
     specification_heading_3_text, 
     specification_heading_4_text, 
+    specification_template_text, 
     sort_order,
 ):
     db = sqlite3.connect(db_filepath)
@@ -779,14 +783,16 @@ def sql_specifications_insert(
             specification_heading_2_text,
             specification_heading_3_text,
             specification_heading_4_text,
+            specification_template_text,
             sort_order
         ) 
-        VALUES (?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?)
     ''', (
         specification_heading_1_text,
         specification_heading_2_text,
         specification_heading_3_text,
         specification_heading_4_text,
+        specification_template_text,
         sort_order,
     ))
     db.commit()
@@ -801,10 +807,159 @@ def sql_specifications_delete(id):
     ''', (id,))
     db.commit()
     db.close()
+    
+def sql_specifications_get_by_specification_id(id):
+    db = sqlite3.connect(db_filepath)
+    db.row_factory = sqlite3.Row
+    cur = db.cursor()
+    records = db.execute(f'''
+        SELECT * 
+        FROM {specifications_table_name}
+        WHERE specification_id = ?
+    ''', (id,))
+    rows = records.fetchall()
+    items = [dict(row) for row in rows]
+    db.close()
+    return items
 
 # sql_specifications_drop()
 # sql_specifications_create()
 
+# ----------------------------------------------------------
+# SQLITE SPECIFICATIONS MODBUS
+# ----------------------------------------------------------
+
+def sql_specifications_modbus_drop():
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        DROP TABLE IF EXISTS {specifications_modbus_table_name}
+    ''')
+    db.commit()
+    db.close()
+
+def sql_specifications_modbus_create():
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        CREATE TABLE IF NOT EXISTS {specifications_modbus_table_name} (
+            specification_modbus_id INTEGER PRIMARY KEY, 
+            specification_id TEXT UNIQUE,
+            specification_modbus_mode_text TEXT,
+            specification_modbus_role_text TEXT,
+            specification_modbus_baud_rate_text TEXT
+        )'''
+    )
+    db.commit()
+    db.close()
+
+def sql_specifications_modbus_get_all():
+    db = sqlite3.connect(db_filepath)
+    db.row_factory = sqlite3.Row
+    cur = db.cursor()
+    rows = db.execute(f"SELECT * FROM {specifications_modbus_table_name}").fetchall()
+    items = [dict(row) for row in rows]
+    db.close()
+    return items
+
+def sql_specifications_modbus_insert(
+    specification_id,
+    specification_modbus_mode_text, 
+    specification_modbus_role_text, 
+    specification_modbus_baud_rate_text, 
+):
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        INSERT INTO {specifications_modbus_table_name} (
+            specification_id,
+            specification_modbus_mode_text,
+            specification_modbus_role_text,
+            specification_modbus_baud_rate_text
+        ) 
+        VALUES (?, ?, ?, ?)
+    ''', (
+        specification_id,
+        specification_modbus_mode_text,
+        specification_modbus_role_text,
+        specification_modbus_baud_rate_text,
+    ))
+    db.commit()
+    db.close()
+
+def sql_specifications_modbus_set(
+    specification_id,
+    specification_modbus_mode_text, 
+    specification_modbus_role_text, 
+    specification_modbus_baud_rate_text, 
+):
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        INSERT INTO {specifications_modbus_table_name} (
+            specification_id,
+            specification_modbus_mode_text,
+            specification_modbus_role_text,
+            specification_modbus_baud_rate_text
+        ) 
+        VALUES (?, ?, ?, ?)
+        ON CONFLICT(specification_id) DO UPDATE SET
+            specification_modbus_mode_text = excluded.specification_modbus_mode_text,
+            specification_modbus_role_text = excluded.specification_modbus_role_text,
+            specification_modbus_baud_rate_text = excluded.specification_modbus_baud_rate_text
+    ''', (
+        specification_id,
+        specification_modbus_mode_text,
+        specification_modbus_role_text,
+        specification_modbus_baud_rate_text,
+    ))
+    db.commit()
+    db.close()
+
+def sql_specifications_modbus_get_by_id(id):
+    db = sqlite3.connect(db_filepath)
+    db.row_factory = sqlite3.Row
+    cur = db.cursor()
+    records = db.execute(f'''
+        SELECT * 
+        FROM {specifications_modbus_table_name}
+        WHERE specification_modbus_id = ?
+    ''', (id,))
+    rows = records.fetchall()
+    items = [dict(row) for row in rows]
+    if items != []: item = items[0]
+    else: item = None
+    db.close()
+    return item
+
+def sql_specifications_modbus_get_by_specification_id(id):
+    db = sqlite3.connect(db_filepath)
+    db.row_factory = sqlite3.Row
+    cur = db.cursor()
+    records = db.execute(f'''
+        SELECT * 
+        FROM {specifications_modbus_table_name}
+        WHERE specification_id = ?
+    ''', (id,))
+    rows = records.fetchall()
+    items = [dict(row) for row in rows]
+    if items != []: item = items[0]
+    else: item = None
+    db.close()
+    return item
+
+def sql_specifications_modbus_delete(id):
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        DELETE FROM {specifications_modbus_table_name} 
+        WHERE specification_id = ?
+    ''', (id,))
+    db.commit()
+    db.close()
+    
+# sql_specifications_modbus_drop()
+# sql_specifications_modbus_create()
 
 ############################################################
 # TKINTER FUNCTIONS
@@ -1766,13 +1921,45 @@ def tk_specifications_view(items=None):
     items = sorted(items, key=lambda x: x['sort_order'])
     specifications_tree.delete(*specifications_tree.get_children())
     rows = []
+    h1_num = 0
+    h2_num = 0
+    h3_num = 0
+    h4_num = 0
     for item in items:
+        level = 0
+        if item['specification_heading_4_text'].strip() != '':
+            h4_num += 1
+            level = 4
+        elif item['specification_heading_3_text'].strip() != '':
+            h3_num += 1
+            h4_num = 0
+            level = 3
+        elif item['specification_heading_2_text'].strip() != '':
+            h4_num = 0
+            h3_num = 0
+            h2_num += 1
+            level = 2
+        elif item['specification_heading_1_text'].strip() != '':
+            h4_num = 0
+            h3_num = 0
+            h2_num = 0
+            h1_num += 1
+            level = 1
+        # print(json.dumps(item, indent=4))
+        # quit()
+        level_text = ''
+        if level == 1: level_text = f'{h1_num}.'
+        elif level == 2: level_text = f'{h1_num}.{h2_num}'
+        elif level == 3: level_text = f'{h1_num}.{h2_num}.{h3_num}'
+        elif level == 4: level_text = f'{h1_num}.{h2_num}.{h3_num}.{h4_num}'
         row = [
             item['specification_id'], 
+            level_text, 
             item['specification_heading_1_text'],
             item['specification_heading_2_text'],
             item['specification_heading_3_text'],
             item['specification_heading_4_text'],
+            item['specification_template_text'],
         ]
         rows.append(row)
     for row in rows:
@@ -1783,6 +1970,7 @@ def tk_specifications_insert():
     specification_heading_2_text = specifications_entry_heading_2_text.get()
     specification_heading_3_text = specifications_entry_heading_3_text.get()
     specification_heading_4_text = specifications_entry_heading_4_text.get()
+    specification_template_text = specifications_entry_template_text.get()
     if specification_heading_1_text.strip() == '':
         print('ERR: specification_heading_1_text text NOT valid')
         return
@@ -1798,8 +1986,55 @@ def tk_specifications_insert():
         specification_heading_2_text,
         specification_heading_3_text,
         specification_heading_4_text,
+        specification_template_text,
         sort_order_new,
     )
+    tk_specifications_view()
+
+def tk_specifications_update():
+    if not specifications_tree.selection(): return
+    item = specifications_tree.selection()[0]
+    specification_id = specifications_tree.item(item)["values"][0]
+
+    specification_heading_1_text = specifications_entry_heading_1_text.get()
+    specification_heading_2_text = specifications_entry_heading_2_text.get()
+    specification_heading_3_text = specifications_entry_heading_3_text.get()
+    specification_heading_4_text = specifications_entry_heading_4_text.get()
+    specification_template_text = specifications_entry_template_text.get()
+    if specification_heading_1_text.strip() == '':
+        print('ERR: specification_heading_1_text text NOT valid')
+        return
+        
+    db = sqlite3.connect(db_filepath)
+    db.execute(f"""
+        UPDATE {specifications_table_name}
+        SET 
+            specification_heading_1_text=?,
+            specification_heading_2_text=?,
+            specification_heading_3_text=?,
+            specification_heading_4_text=?,
+            specification_template_text=?
+        WHERE specification_id=?
+    """, (
+        specification_heading_1_text,
+        specification_heading_2_text,
+        specification_heading_3_text,
+        specification_heading_4_text,
+        specification_template_text,
+        specification_id,
+    ))
+    db.commit()
+    db.close()
+
+    # # return
+    # sql_specifications_update(
+    #     specification_heading_1_text,
+    #     specification_heading_2_text,
+    #     specification_heading_3_text,
+    #     specification_heading_4_text,
+    #     specification_template_text,
+    #     sort_order_new,
+    # )
     tk_specifications_view()
 
 def tk_specifications_delete(event):
@@ -1809,6 +2044,35 @@ def tk_specifications_delete(event):
     ###
     sql_specifications_delete(id)
     specifications_tree.delete(item)
+
+def tk_specifications_select(event):
+    if not specifications_tree.selection(): return
+    item = specifications_tree.selection()[0]
+    specification_id = specifications_tree.item(item)["values"][0]
+
+    specification_modbus_items = sql_specifications_modbus_get_by_specification_id(specification_id)
+    print(json.dumps(specification_modbus_items, indent=4))
+
+    specification_items = sql_specifications_get_by_specification_id(specification_id)
+    specification_item = specification_items[0]
+    # print(specification_items)
+
+    specification_heading_1_text = specification_item['specification_heading_1_text']
+    specification_heading_2_text = specification_item['specification_heading_2_text']
+    specification_heading_3_text = specification_item['specification_heading_3_text']
+    specification_heading_4_text = specification_item['specification_heading_4_text']
+    specification_template_text = specification_item['specification_template_text']
+    
+    specifications_entry_heading_1_text.delete(0, tk.END)
+    specifications_entry_heading_1_text.insert(0, specification_heading_1_text)
+    specifications_entry_heading_2_text.delete(0, tk.END)
+    specifications_entry_heading_2_text.insert(0, specification_heading_2_text)
+    specifications_entry_heading_3_text.delete(0, tk.END)
+    specifications_entry_heading_3_text.insert(0, specification_heading_3_text)
+    specifications_entry_heading_4_text.delete(0, tk.END)
+    specifications_entry_heading_4_text.insert(0, specification_heading_4_text)
+    specifications_entry_template_text.delete(0, tk.END)
+    specifications_entry_template_text.insert(0, specification_template_text)
 
 def tk_specifications_move_record(direction):
     selected = specifications_tree.selection()
@@ -1882,6 +2146,42 @@ def tk_specifications_move_record(direction):
     # print(f'''CURRENT ORDER: {current_order}''')
     # print(f'''NEIGHBOR ORDER: {neighbor}''')
 
+def tk_specifications_modbus_set():
+    specification_modbus_mode_text = specifications_modbus_entry_mode_text.get()
+    specification_modbus_role_text = specifications_modbus_entry_role_text.get()
+    specification_modbus_baud_rate_text = specifications_modbus_entry_baud_rate_text.get()
+    # print(specification_modbus_mode_text)
+    # print(specification_modbus_role_text)
+    # print(specification_modbus_baud_rate_text)
+    if specification_modbus_mode_text.strip() == '':
+        print('ERR: specification_modbus_mode_text text NOT valid')
+        return
+    if specification_modbus_role_text.strip() == '':
+        print('ERR: specification_modbus_role_text text NOT valid')
+        return
+    if specification_modbus_baud_rate_text.strip() == '':
+        print('ERR: specification_modbus_baud_rate_text text NOT valid')
+        return
+    if not specifications_tree.selection(): return
+    item = specifications_tree.selection()[0]
+    specification_id = specifications_tree.item(item)["values"][0]
+    print(specification_id)
+    sql_specifications_modbus_set(
+        specification_id,
+        specification_modbus_mode_text,
+        specification_modbus_role_text,
+        specification_modbus_baud_rate_text,
+    )
+    # tk_specifications_view()
+
+def tk_specifications_modbus_delete():
+    if not specifications_tree.selection(): return
+    item = specifications_tree.selection()[0]
+    specification_id = specifications_tree.item(item)["values"][0]
+    ###
+    sql_specifications_modbus_delete(specification_id)
+    # specifications_tree.delete(item)
+
 # ----------------------------------------------------------
 # TKINTER FUNCTIONS COMPILE
 # ----------------------------------------------------------
@@ -1893,6 +2193,7 @@ def tk_compile_markdown():
     markdown_statements_create()
     # markdown_requirements_create()
     markdown_categories_create()
+    markdown_specifications_create()
 
 
 # # Example:
@@ -1960,6 +2261,8 @@ def open_project():
     # sql_categories_requirements_create()
     # sql_specifications_drop()
     # sql_specifications_create()
+    # sql_specifications_modbus_drop()
+    # sql_specifications_modbus_create()
     refresh_all()
 
 def save_project():
@@ -2142,7 +2445,6 @@ def markdown_statements_create():
     ''').strip() + '\n'
     with open(output_filepath, 'w', encoding="utf-8") as f: f.write(output_text)
 
-# ;jump
 def markdown_categories_create():
     categories_items = sql_categories_get_all()
     categories_items = sorted(categories_items, key=lambda x: x['sort_order'])
@@ -2325,6 +2627,76 @@ def markdown_categories_create():
                 ---
             ''')
             output_text += f'\n\n'
+    output_text += dedent(f'''
+        </body>
+    ''').strip() + '\n'
+    with open(output_filepath, 'w', encoding="utf-8") as f: f.write(output_text)
+
+def markdown_specifications_create():
+    specifications_items = sql_specifications_get_all()
+    specifications_items = sorted(specifications_items, key=lambda x: x['sort_order'])
+    output_filepath = f'C:/og-new/products/aurora_module_relay_x8/v0_1_0/docs/inputs/specifications.md'
+    output_text = ''
+    output_text += dedent(f'''
+        <head>
+        <title>
+        Aurora: Module Relay x8
+        </title>
+        <subtitle>
+        Specifications
+        </subtitle>
+        </head>
+        <rev>
+        Version, Date, Author, Description
+        0.1.0, 2026-07-02, Martin Pellizzer, Starting version
+        </rev>
+        <body>
+    ''').strip() + '\n'
+        # 1. Categories
+
+    for item_i, specification_item in enumerate(specifications_items):
+        specification_id = specification_item['specification_id']
+        specification_heading_1_text = specification_item['specification_heading_1_text']
+        specification_heading_2_text = specification_item['specification_heading_2_text']
+        specification_heading_3_text = specification_item['specification_heading_3_text']
+        specification_heading_4_text = specification_item['specification_heading_4_text']
+        specification_template_text = specification_item['specification_template_text']
+        
+        if specification_heading_1_text.strip() != '':
+
+            output_text += dedent(f'''
+                # {1}. {specification_heading_1_text}
+            ''')
+
+            if specification_template_text.strip().lower() == 'modbus':
+                specification_modbus_item = sql_specifications_modbus_get_by_specification_id(specification_id)
+                specification_modbus_mode_text = specification_modbus_item['specification_modbus_mode_text']
+                specification_modbus_role_text = specification_modbus_item['specification_modbus_role_text']
+                specification_modbus_baud_rate_text = specification_modbus_item['specification_modbus_baud_rate_text']
+
+                # print(json.dumps(specification_modbus_item, indent=4))
+                # break
+                # ;jump
+                # categories_requirements_items = sql_categories_requirements_get_by_category_id(category_item['category_id'])
+            
+                output_text += dedent(f'''
+                    | Setting            | Value                                |
+                    | ------------------ | ------------------------------------ |
+                    | Mode               | {specification_modbus_mode_text} |
+                    | Role               | {specification_modbus_role_text} |
+                    | Module ID          | 0x01                                 |
+                    | Baud rate          | {specification_modbus_baud_rate_text} bps |
+                    | Data format        | 8 bits, no parity, 1 stop bit (8N1)  |
+                ''')
+                
+            output_text += dedent(f'''
+                ---
+            ''')
+
+        # print(json.dumps(specification_item, indent=4))
+        # quit()
+
+    output_text += f'\n\n'
     output_text += dedent(f'''
         </body>
     ''').strip() + '\n'
@@ -2808,6 +3180,7 @@ def on_key_release(event):
 requirements_entry_search.bind("<KeyRelease>", on_key_release)
 
 
+
 requirements_tree = ttk.Treeview(
     requirements_frame_center,
     columns=requirements_fields,
@@ -2843,10 +3216,10 @@ requirements_tree.bind("<Delete>", tk_requirements_delete)
 requirements_tree.bind("<<TreeviewSelect>>", tk_requirements_select)
 
 
+
 requirements_tree.tag_configure("blank", background="white")
 requirements_tree.tag_configure("tmp", background="yellow")
 requirements_tree.tag_configure("done", background="green")
-
 
 requirements_statements_tree = ttk.Treeview(
     requirements_frame_center,
@@ -3057,10 +3430,20 @@ tk.Label(specifications_frame_left, text="Heading 4").pack(anchor="w", pady=(10,
 specifications_entry_heading_4_text = tk.Entry(specifications_frame_left)
 specifications_entry_heading_4_text.pack(fill="x", padx=(padx, padx))
 
+tk.Label(specifications_frame_left, text="Template").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+specifications_entry_template_text = tk.Entry(specifications_frame_left)
+specifications_entry_template_text.pack(fill="x", padx=(padx, padx))
+
 tk.Button(
     specifications_frame_left,
     text="Insert Specification",
     command=tk_specifications_insert
+).pack(fill="x", padx=(padx, padx), pady=(10, 0))
+
+tk.Button(
+    specifications_frame_left,
+    text="Update Specification",
+    command=tk_specifications_update
 ).pack(fill="x", padx=(padx, padx), pady=(10, 0))
 
 # ..........................................................
@@ -3068,18 +3451,25 @@ tk.Button(
 # ..........................................................
 
 specifications_fields = [
-    "specification_id",
-    "specification_heading_1_text",
-    "specification_heading_2_text",
-    "specification_heading_3_text",
-    "specification_heading_4_text",
+    "_id",
+    "_number",
+    "_heading_1_text",
+    "_heading_2_text",
+    "_heading_3_text",
+    "_heading_4_text",
+    "_template_text",
 ]
 
 specifications_frame_center = tk.Frame(specifications_tab)
 specifications_frame_center.pack(side="left", fill="both", expand=True)
 
+specifications_frame_center_top = tk.Frame(specifications_frame_center)
+specifications_frame_center_top.pack(side="top", fill="both", expand=False)
+specifications_frame_center_top.configure(height=300)
+specifications_frame_center_top.pack_propagate(False)
+
 specifications_tree = ttk.Treeview(
-    specifications_frame_center,
+    specifications_frame_center_top,
     columns=specifications_fields,
     show="headings"
 )
@@ -3092,28 +3482,38 @@ for col in specifications_fields:
         stretch=False
     )
 specifications_tree.column(
-    "specification_id",
+    "_id",
     width=120,
     stretch=False,
 )
 specifications_tree.column(
-    "specification_heading_1_text",
-    width=180,
+    "_number",
+    width=120,
     stretch=False,
 )
 specifications_tree.column(
-    "specification_heading_2_text",
-    width=180,
+    "_heading_1_text",
+    width=120,
     stretch=False,
 )
 specifications_tree.column(
-    "specification_heading_3_text",
-    width=180,
+    "_heading_2_text",
+    width=120,
     stretch=False,
 )
 specifications_tree.column(
-    "specification_heading_4_text",
-    width=180,
+    "_heading_3_text",
+    width=120,
+    stretch=False,
+)
+specifications_tree.column(
+    "_heading_4_text",
+    width=120,
+    stretch=False,
+)
+specifications_tree.column(
+    "_template_text",
+    width=120,
     stretch=False,
 )
 
@@ -3126,6 +3526,56 @@ specifications_tree.bind("<Delete>", tk_specifications_delete)
 # specifications_tree.bind("<Control-Down>", lambda e: tk_categories_move_record("down"))
 specifications_tree.bind("<Control-Up>", lambda e: tk_specifications_move_record("up"))
 specifications_tree.bind("<Control-Down>", lambda e: tk_specifications_move_record("down"))
+
+specifications_tree.bind("<<TreeviewSelect>>", tk_specifications_select)
+
+# ..........................................................
+# SPECIFICATIONS CENTER BOTTOM
+# ..........................................................
+
+specifications_frame_center_bottom = tk.Frame(specifications_frame_center)
+specifications_frame_center_bottom = tk.Frame(specifications_frame_center)
+specifications_frame_center_bottom.pack(side="top", fill="both", expand=True)
+
+specifications_frame_center_bottom_tabs = ttk.Notebook(specifications_frame_center_bottom)
+specifications_frame_center_bottom_tabs.pack(fill="both", expand=True)
+
+specifications_frame_center_bottom_modbus_tab = tk.Frame(specifications_frame_center_bottom_tabs)
+specifications_frame_center_bottom_tabs.add(specifications_frame_center_bottom_modbus_tab, text="Modbus")
+
+specifications_frame_modbus = tk.Frame(specifications_frame_center_bottom_modbus_tab)
+specifications_frame_modbus.pack(side="left", fill="both", expand=True)
+
+tk.Label(specifications_frame_modbus, text="Mode").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+specifications_modbus_entry_mode_text = tk.Entry(specifications_frame_modbus)
+specifications_modbus_entry_mode_text.pack(fill="x", padx=(padx, padx))
+specifications_modbus_entry_mode_text.delete(0, tk.END)
+specifications_modbus_entry_mode_text.insert(0, "RTU")
+
+tk.Label(specifications_frame_modbus, text="Role").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+specifications_modbus_entry_role_text = tk.Entry(specifications_frame_modbus)
+specifications_modbus_entry_role_text.pack(fill="x", padx=(padx, padx))
+specifications_modbus_entry_role_text.delete(0, tk.END)
+specifications_modbus_entry_role_text.insert(0, "Slave")
+
+tk.Label(specifications_frame_modbus, text="Baud rate").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+specifications_modbus_entry_baud_rate_text = tk.Entry(specifications_frame_modbus)
+specifications_modbus_entry_baud_rate_text.pack(fill="x", padx=(padx, padx))
+specifications_modbus_entry_baud_rate_text.delete(0, tk.END)
+specifications_modbus_entry_baud_rate_text.insert(0, 9600)
+
+tk.Button(
+    specifications_frame_modbus,
+    text="Set Specifications",
+    command=tk_specifications_modbus_set
+).pack(fill="x", padx=(padx, padx), pady=(10, 0))
+
+tk.Button(
+    specifications_frame_modbus,
+    text="Delete Specifications",
+    command=tk_specifications_modbus_delete
+).pack(fill="x", padx=(padx, padx), pady=(10, 0))
+
 
 ###########################################################
 # TAB COMPILE
