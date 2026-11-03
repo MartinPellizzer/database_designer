@@ -2654,6 +2654,12 @@ def markdown_specifications_create():
     ''').strip() + '\n'
         # 1. Categories
 
+    h1_num = 0
+    h2_num = 0
+    h3_num = 0
+    h4_num = 0
+    heading_text = ''
+
     for item_i, specification_item in enumerate(specifications_items):
         specification_id = specification_item['specification_id']
         specification_heading_1_text = specification_item['specification_heading_1_text']
@@ -2662,36 +2668,53 @@ def markdown_specifications_create():
         specification_heading_4_text = specification_item['specification_heading_4_text']
         specification_template_text = specification_item['specification_template_text']
         
-        if specification_heading_1_text.strip() != '':
+        if specification_heading_4_text.strip() != '':
+            h4_num += 1
+            heading_text = f'#### {h1_num}.{h2_num}.{h3_num}.{h4_num} {specification_heading_1_text} {specification_heading_2_text} {specification_heading_3_text} {specification_heading_4_text}'
+        elif specification_heading_3_text.strip() != '':
+            h4_num = 0
+            h3_num += 1
+            heading_text = f'### {h1_num}.{h2_num}.{h3_num} {specification_heading_1_text} {specification_heading_2_text} {specification_heading_3_text}'
+        elif specification_heading_2_text.strip() != '':
+            h4_num = 0
+            h3_num = 0
+            h2_num += 1
+            heading_text = f'## {h1_num}.{h2_num} {specification_heading_1_text} {specification_heading_2_text}'
+        elif specification_heading_1_text.strip() != '':
+            h4_num = 0
+            h3_num = 0
+            h2_num = 0
+            h1_num += 1
+            heading_text = f'# {h1_num}. {specification_heading_1_text}'
 
+        output_text += dedent(f'''
+            {heading_text}
+        ''')
+
+        if specification_template_text.strip().lower() == 'modbus':
+            specification_modbus_item = sql_specifications_modbus_get_by_specification_id(specification_id)
+            specification_modbus_mode_text = specification_modbus_item['specification_modbus_mode_text']
+            specification_modbus_role_text = specification_modbus_item['specification_modbus_role_text']
+            specification_modbus_baud_rate_text = specification_modbus_item['specification_modbus_baud_rate_text']
+
+            # print(json.dumps(specification_modbus_item, indent=4))
+            # break
+            # ;jump
+            # categories_requirements_items = sql_categories_requirements_get_by_category_id(category_item['category_id'])
+        
             output_text += dedent(f'''
-                # {1}. {specification_heading_1_text}
+                | Setting            | Value                                |
+                | ------------------ | ------------------------------------ |
+                | Mode               | {specification_modbus_mode_text} |
+                | Role               | {specification_modbus_role_text} |
+                | Module ID          | 0x01                                 |
+                | Baud rate          | {specification_modbus_baud_rate_text} bps |
+                | Data format        | 8 bits, no parity, 1 stop bit (8N1)  |
             ''')
-
-            if specification_template_text.strip().lower() == 'modbus':
-                specification_modbus_item = sql_specifications_modbus_get_by_specification_id(specification_id)
-                specification_modbus_mode_text = specification_modbus_item['specification_modbus_mode_text']
-                specification_modbus_role_text = specification_modbus_item['specification_modbus_role_text']
-                specification_modbus_baud_rate_text = specification_modbus_item['specification_modbus_baud_rate_text']
-
-                # print(json.dumps(specification_modbus_item, indent=4))
-                # break
-                # ;jump
-                # categories_requirements_items = sql_categories_requirements_get_by_category_id(category_item['category_id'])
             
-                output_text += dedent(f'''
-                    | Setting            | Value                                |
-                    | ------------------ | ------------------------------------ |
-                    | Mode               | {specification_modbus_mode_text} |
-                    | Role               | {specification_modbus_role_text} |
-                    | Module ID          | 0x01                                 |
-                    | Baud rate          | {specification_modbus_baud_rate_text} bps |
-                    | Data format        | 8 bits, no parity, 1 stop bit (8N1)  |
-                ''')
-                
-            output_text += dedent(f'''
-                ---
-            ''')
+        output_text += dedent(f'''
+            ---
+        ''')
 
         # print(json.dumps(specification_item, indent=4))
         # quit()
