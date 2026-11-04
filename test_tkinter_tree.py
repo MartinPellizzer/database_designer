@@ -5,6 +5,7 @@ import sqlite3
 import json
 
 from textwrap import dedent
+from lib import sql_utils
 
 ### TODO: change db_filepath based on project
 db_filepath = 'test.db'
@@ -17,6 +18,8 @@ categories_table_name = 'categories'
 categories_requirements_table_name = 'categories_requirements'
 specifications_table_name = 'specifications'
 specifications_modbus_table_name = 'specifications_modbus'
+specifications_modbus_write_table_name = 'specifications_modbus_write'
+specifications_rs485_table_name = 'specifications_rs485'
 
 
 requirements_statements_list_cur = []
@@ -847,7 +850,8 @@ def sql_specifications_modbus_create():
             specification_id TEXT UNIQUE,
             specification_modbus_mode_text TEXT,
             specification_modbus_role_text TEXT,
-            specification_modbus_baud_rate_text TEXT
+            specification_modbus_baud_rate_text TEXT,
+            specification_modbus_device_id_text TEXT
         )'''
     )
     db.commit()
@@ -892,6 +896,10 @@ def sql_specifications_modbus_set(
     specification_modbus_mode_text, 
     specification_modbus_role_text, 
     specification_modbus_baud_rate_text, 
+    specification_modbus_device_id_text, 
+    specification_modbus_data_bits_text, 
+    specification_modbus_stop_bits_text, 
+    specification_modbus_parity_text, 
 ):
     db = sqlite3.connect(db_filepath)
     cur = db.cursor()
@@ -900,18 +908,30 @@ def sql_specifications_modbus_set(
             specification_id,
             specification_modbus_mode_text,
             specification_modbus_role_text,
-            specification_modbus_baud_rate_text
+            specification_modbus_baud_rate_text,
+            specification_modbus_device_id_text,
+            specification_modbus_data_bits_text, 
+            specification_modbus_stop_bits_text, 
+            specification_modbus_parity_text
         ) 
-        VALUES (?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(specification_id) DO UPDATE SET
             specification_modbus_mode_text = excluded.specification_modbus_mode_text,
             specification_modbus_role_text = excluded.specification_modbus_role_text,
-            specification_modbus_baud_rate_text = excluded.specification_modbus_baud_rate_text
+            specification_modbus_baud_rate_text = excluded.specification_modbus_baud_rate_text,
+            specification_modbus_device_id_text = excluded.specification_modbus_device_id_text,
+            specification_modbus_data_bits_text = excluded.specification_modbus_data_bits_text,
+            specification_modbus_stop_bits_text = excluded.specification_modbus_stop_bits_text,
+            specification_modbus_parity_text = excluded.specification_modbus_parity_text
     ''', (
         specification_id,
         specification_modbus_mode_text,
         specification_modbus_role_text,
         specification_modbus_baud_rate_text,
+        specification_modbus_device_id_text,
+        specification_modbus_data_bits_text, 
+        specification_modbus_stop_bits_text, 
+        specification_modbus_parity_text, 
     ))
     db.commit()
     db.close()
@@ -2050,9 +2070,6 @@ def tk_specifications_select(event):
     item = specifications_tree.selection()[0]
     specification_id = specifications_tree.item(item)["values"][0]
 
-    specification_modbus_items = sql_specifications_modbus_get_by_specification_id(specification_id)
-    print(json.dumps(specification_modbus_items, indent=4))
-
     specification_items = sql_specifications_get_by_specification_id(specification_id)
     specification_item = specification_items[0]
     # print(specification_items)
@@ -2062,7 +2079,7 @@ def tk_specifications_select(event):
     specification_heading_3_text = specification_item['specification_heading_3_text']
     specification_heading_4_text = specification_item['specification_heading_4_text']
     specification_template_text = specification_item['specification_template_text']
-    
+
     specifications_entry_heading_1_text.delete(0, tk.END)
     specifications_entry_heading_1_text.insert(0, specification_heading_1_text)
     specifications_entry_heading_2_text.delete(0, tk.END)
@@ -2073,6 +2090,24 @@ def tk_specifications_select(event):
     specifications_entry_heading_4_text.insert(0, specification_heading_4_text)
     specifications_entry_template_text.delete(0, tk.END)
     specifications_entry_template_text.insert(0, specification_template_text)
+
+    if specification_template_text == 'modbus':
+        specification_modbus_items = sql_specifications_modbus_get_by_specification_id(specification_id)
+        print(json.dumps(specification_modbus_items, indent=4))
+    elif specification_template_text == 'rs485':
+        items = sql_utils.sql_specifications_rs485_get_by_specification_id(
+            db_filepath,
+            specifications_rs485_table_name,
+            specification_id,
+        )
+        print(json.dumps(items, indent=4))
+    elif specification_template_text == 'modbus_write':
+        items = sql_utils.sql_specifications_modbus_write_get_by_specification_id(
+            db_filepath,
+            specifications_modbus_write_table_name,
+            specification_id,
+        )
+        print(json.dumps(items, indent=4))
 
 def tk_specifications_move_record(direction):
     selected = specifications_tree.selection()
@@ -2150,9 +2185,10 @@ def tk_specifications_modbus_set():
     specification_modbus_mode_text = specifications_modbus_entry_mode_text.get()
     specification_modbus_role_text = specifications_modbus_entry_role_text.get()
     specification_modbus_baud_rate_text = specifications_modbus_entry_baud_rate_text.get()
-    # print(specification_modbus_mode_text)
-    # print(specification_modbus_role_text)
-    # print(specification_modbus_baud_rate_text)
+    specification_modbus_device_id_text = specifications_modbus_entry_device_id_text.get()
+    specification_modbus_data_bits_text = specifications_modbus_entry_data_bits_text.get()
+    specification_modbus_stop_bits_text = specifications_modbus_entry_stop_bits_text.get()
+    specification_modbus_parity_text = specifications_modbus_entry_parity_text.get()
     if specification_modbus_mode_text.strip() == '':
         print('ERR: specification_modbus_mode_text text NOT valid')
         return
@@ -2161,6 +2197,18 @@ def tk_specifications_modbus_set():
         return
     if specification_modbus_baud_rate_text.strip() == '':
         print('ERR: specification_modbus_baud_rate_text text NOT valid')
+        return
+    if specification_modbus_device_id_text.strip() == '':
+        print('ERR: specification_modbus_device_id_text text NOT valid')
+        return
+    if specification_modbus_data_bits_text.strip() == '':
+        print('ERR: specification_modbus_device_id_text text NOT valid')
+        return
+    if specification_modbus_stop_bits_text.strip() == '':
+        print('ERR: specification_modbus_device_id_text text NOT valid')
+        return
+    if specification_modbus_parity_text.strip() == '':
+        print('ERR: specification_modbus_device_id_text text NOT valid')
         return
     if not specifications_tree.selection(): return
     item = specifications_tree.selection()[0]
@@ -2171,6 +2219,10 @@ def tk_specifications_modbus_set():
         specification_modbus_mode_text,
         specification_modbus_role_text,
         specification_modbus_baud_rate_text,
+        specification_modbus_device_id_text,
+        specification_modbus_data_bits_text,
+        specification_modbus_stop_bits_text,
+        specification_modbus_parity_text,
     )
     # tk_specifications_view()
 
@@ -2181,6 +2233,65 @@ def tk_specifications_modbus_delete():
     ###
     sql_specifications_modbus_delete(specification_id)
     # specifications_tree.delete(item)
+
+def tk_specifications_rs485_set():
+    specification_rs485_wires_text = specifications_rs485_entry_wires_text.get()
+    if specification_rs485_wires_text.strip() == '':
+        print('ERR: specification_rs485_wires_text text NOT valid')
+        return
+    if not specifications_tree.selection(): return
+    item = specifications_tree.selection()[0]
+    specification_id = specifications_tree.item(item)["values"][0]
+    print(specification_id)
+    sql_utils.sql_specifications_rs485_set(
+        db_filepath,
+        specifications_rs485_table_name,
+        specification_id,
+        specification_rs485_wires_text,
+    )
+    res = sql_utils.sql_specifications_rs485_get_all(
+        db_filepath, 
+        specifications_rs485_table_name,
+    )
+    print(res)
+    
+def tk_specifications_rs485_delete():
+    if not specifications_tree.selection(): return
+    item = specifications_tree.selection()[0]
+    specification_id = specifications_tree.item(item)["values"][0]
+    ###
+    sql_utils.sql_specifications_rs485_delete(
+        db_filepath,
+        specifications_rs485_table_name,
+        specification_id,
+    )
+    # specifications_tree.delete(item)
+
+def tk_specifications_modbus_write_set():
+    specification_modbus_write_function_code_text = specifications_modbus_write_entry_function_code_text.get()
+    if specification_modbus_write_function_code_text.strip() == '':
+        print('ERR: specification_modbus_write_function_code_text text NOT valid')
+        return
+    if not specifications_tree.selection(): return
+    item = specifications_tree.selection()[0]
+    specification_id = specifications_tree.item(item)["values"][0]
+    print(specification_id)
+    ###
+    sql_utils.sql_specifications_modbus_write_set(
+        db_filepath,
+        specifications_modbus_write_table_name,
+        specification_id,
+        specification_modbus_write_function_code_text,
+    )
+    res = sql_utils.sql_specifications_modbus_write_get_all(
+        db_filepath, 
+        specifications_modbus_write_table_name,
+    )
+    print(res)
+
+def tk_specifications_modbus_write_delete():
+    pass
+
 
 # ----------------------------------------------------------
 # TKINTER FUNCTIONS COMPILE
@@ -2263,6 +2374,11 @@ def open_project():
     # sql_specifications_create()
     # sql_specifications_modbus_drop()
     # sql_specifications_modbus_create()
+    # sql_utils.sql_specifications_modbus_write_drop()
+    sql_utils.sql_specifications_modbus_write_create(
+        db_filepath,
+        specifications_modbus_write_table_name,
+    )
     refresh_all()
 
 def save_project():
@@ -2696,22 +2812,59 @@ def markdown_specifications_create():
             specification_modbus_mode_text = specification_modbus_item['specification_modbus_mode_text']
             specification_modbus_role_text = specification_modbus_item['specification_modbus_role_text']
             specification_modbus_baud_rate_text = specification_modbus_item['specification_modbus_baud_rate_text']
+            specification_modbus_device_id_text = specification_modbus_item['specification_modbus_device_id_text']
+            specification_modbus_data_bits_text = specification_modbus_item['specification_modbus_data_bits_text']
+            specification_modbus_stop_bits_text = specification_modbus_item['specification_modbus_stop_bits_text']
+            specification_modbus_parity_text = specification_modbus_item['specification_modbus_parity_text']
 
             # print(json.dumps(specification_modbus_item, indent=4))
             # break
             # ;jump
             # categories_requirements_items = sql_categories_requirements_get_by_category_id(category_item['category_id'])
-        
+
             output_text += dedent(f'''
                 | Setting            | Value                                |
                 | ------------------ | ------------------------------------ |
+                | Protocol           | Modbus |
                 | Mode               | {specification_modbus_mode_text} |
                 | Role               | {specification_modbus_role_text} |
-                | Module ID          | 0x01                                 |
+                | Device ID          | {specification_modbus_device_id_text}                                 |
                 | Baud rate          | {specification_modbus_baud_rate_text} bps |
-                | Data format        | 8 bits, no parity, 1 stop bit (8N1)  |
+                | Data bits          | {specification_modbus_data_bits_text} |
+                | Parity             | {specification_modbus_parity_text}  |
+                | Stop bits          | {specification_modbus_stop_bits_text}  |
             ''')
-            
+
+        elif specification_template_text.strip().lower() == 'rs485':
+            specification_rs485_item = sql_utils.sql_specifications_rs485_get_by_specification_id(
+                db_filepath,
+                specifications_rs485_table_name,
+                specification_id,
+            )
+            specification_rs485_wires_text = specification_rs485_item['specification_rs485_wires_text']
+            output_text += dedent(f'''
+                | Setting            | Value                                |
+                | ------------------ | ------------------------------------ |
+                | Physical interface | RS485 |
+                | Wires              | {specification_rs485_wires_text} |
+            ''')
+
+        elif specification_template_text.strip().lower() == 'modbus_write':
+            print('######################################')
+            print('######################################')
+            print('######################################')
+            specification_modbus_write_item = sql_utils.sql_specifications_modbus_write_get_by_specification_id(
+                db_filepath,
+                specifications_modbus_write_table_name,
+                specification_id,
+            )
+            specification_modbus_write_function_code_text = specification_modbus_write_item['specification_modbus_write_function_code_text']
+            output_text += dedent(f'''
+                | Setting            | Value                                |
+                | ------------------ | ------------------------------------ |
+                | Function code      | {specification_modbus_write_function_code_text} |
+            ''')
+
         output_text += dedent(f'''
             ---
         ''')
@@ -3563,42 +3716,146 @@ specifications_frame_center_bottom.pack(side="top", fill="both", expand=True)
 specifications_frame_center_bottom_tabs = ttk.Notebook(specifications_frame_center_bottom)
 specifications_frame_center_bottom_tabs.pack(fill="both", expand=True)
 
+# MODBUS
+# ..........................................................
+
 specifications_frame_center_bottom_modbus_tab = tk.Frame(specifications_frame_center_bottom_tabs)
 specifications_frame_center_bottom_tabs.add(specifications_frame_center_bottom_modbus_tab, text="Modbus")
 
 specifications_frame_modbus = tk.Frame(specifications_frame_center_bottom_modbus_tab)
 specifications_frame_modbus.pack(side="left", fill="both", expand=True)
 
-tk.Label(specifications_frame_modbus, text="Mode").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
-specifications_modbus_entry_mode_text = tk.Entry(specifications_frame_modbus)
+specifications_frame_modbus_1 = tk.Frame(specifications_frame_modbus, width=100)
+specifications_frame_modbus_1.pack(side="left", fill="y")
+specifications_frame_modbus_1.pack_propagate(False)
+
+specifications_frame_modbus_2 = tk.Frame(specifications_frame_modbus, width=200)
+specifications_frame_modbus_2.pack(side="left", fill="y")
+specifications_frame_modbus_2.pack_propagate(False)
+
+tk.Label(specifications_frame_modbus_1, text="Mode").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+specifications_modbus_entry_mode_text = tk.Entry(specifications_frame_modbus_1)
 specifications_modbus_entry_mode_text.pack(fill="x", padx=(padx, padx))
 specifications_modbus_entry_mode_text.delete(0, tk.END)
 specifications_modbus_entry_mode_text.insert(0, "RTU")
 
-tk.Label(specifications_frame_modbus, text="Role").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
-specifications_modbus_entry_role_text = tk.Entry(specifications_frame_modbus)
+tk.Label(specifications_frame_modbus_1, text="Role").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+specifications_modbus_entry_role_text = tk.Entry(specifications_frame_modbus_1)
 specifications_modbus_entry_role_text.pack(fill="x", padx=(padx, padx))
 specifications_modbus_entry_role_text.delete(0, tk.END)
 specifications_modbus_entry_role_text.insert(0, "Slave")
 
-tk.Label(specifications_frame_modbus, text="Baud rate").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
-specifications_modbus_entry_baud_rate_text = tk.Entry(specifications_frame_modbus)
+tk.Label(specifications_frame_modbus_1, text="Baud rate").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+specifications_modbus_entry_baud_rate_text = tk.Entry(specifications_frame_modbus_1)
 specifications_modbus_entry_baud_rate_text.pack(fill="x", padx=(padx, padx))
 specifications_modbus_entry_baud_rate_text.delete(0, tk.END)
 specifications_modbus_entry_baud_rate_text.insert(0, 9600)
 
+tk.Label(specifications_frame_modbus_1, text="Device ID").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+specifications_modbus_entry_device_id_text = tk.Entry(specifications_frame_modbus_1)
+specifications_modbus_entry_device_id_text.pack(fill="x", padx=(padx, padx))
+specifications_modbus_entry_device_id_text.delete(0, tk.END)
+specifications_modbus_entry_device_id_text.insert(0, 1)
+
+tk.Label(specifications_frame_modbus_1, text="Data bits").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+specifications_modbus_entry_data_bits_text = tk.Entry(specifications_frame_modbus_1)
+specifications_modbus_entry_data_bits_text.pack(fill="x", padx=(padx, padx))
+specifications_modbus_entry_data_bits_text.delete(0, tk.END)
+specifications_modbus_entry_data_bits_text.insert(0, 8)
+
+tk.Label(specifications_frame_modbus_1, text="Parity").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+specifications_modbus_entry_parity_text = tk.Entry(specifications_frame_modbus_1)
+specifications_modbus_entry_parity_text.pack(fill="x", padx=(padx, padx))
+specifications_modbus_entry_parity_text.delete(0, tk.END)
+specifications_modbus_entry_parity_text.insert(0, 'None')
+
+tk.Label(specifications_frame_modbus_1, text="Stop bits").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+specifications_modbus_entry_stop_bits_text = tk.Entry(specifications_frame_modbus_1)
+specifications_modbus_entry_stop_bits_text.pack(fill="x", padx=(padx, padx))
+specifications_modbus_entry_stop_bits_text.delete(0, tk.END)
+specifications_modbus_entry_stop_bits_text.insert(0, 1)
+
 tk.Button(
-    specifications_frame_modbus,
+    specifications_frame_modbus_2,
     text="Set Specifications",
     command=tk_specifications_modbus_set
 ).pack(fill="x", padx=(padx, padx), pady=(10, 0))
 
 tk.Button(
-    specifications_frame_modbus,
+    specifications_frame_modbus_2,
     text="Delete Specifications",
     command=tk_specifications_modbus_delete
 ).pack(fill="x", padx=(padx, padx), pady=(10, 0))
 
+# RS485
+# ..........................................................
+
+specifications_frame_center_bottom_rs485_tab = tk.Frame(specifications_frame_center_bottom_tabs)
+specifications_frame_center_bottom_tabs.add(specifications_frame_center_bottom_rs485_tab, text="RS485")
+
+specifications_frame_rs485 = tk.Frame(specifications_frame_center_bottom_rs485_tab)
+specifications_frame_rs485.pack(side="left", fill="both", expand=True)
+
+specifications_frame_rs485_1 = tk.Frame(specifications_frame_rs485, width=100)
+specifications_frame_rs485_1.pack(side="left", fill="y")
+specifications_frame_rs485_1.pack_propagate(False)
+
+tk.Label(specifications_frame_rs485_1, text="Wires").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+specifications_rs485_entry_wires_text = tk.Entry(specifications_frame_rs485_1)
+specifications_rs485_entry_wires_text.pack(fill="x", padx=(padx, padx))
+specifications_rs485_entry_wires_text.delete(0, tk.END)
+specifications_rs485_entry_wires_text.insert(0, "2 wires (A, B)")
+
+specifications_frame_rs485_2 = tk.Frame(specifications_frame_rs485, width=200)
+specifications_frame_rs485_2.pack(side="left", fill="y")
+specifications_frame_rs485_2.pack_propagate(False)
+
+tk.Button(
+    specifications_frame_rs485_2,
+    text="Set Specifications",
+    command=tk_specifications_rs485_set
+).pack(fill="x", padx=(padx, padx), pady=(10, 0))
+
+tk.Button(
+    specifications_frame_rs485_2,
+    text="Delete Specifications",
+    command=tk_specifications_rs485_delete
+).pack(fill="x", padx=(padx, padx), pady=(10, 0))
+
+# MODBUS WRITE
+# ..........................................................
+
+specifications_frame_center_bottom_modbus_write_tab = tk.Frame(specifications_frame_center_bottom_tabs)
+specifications_frame_center_bottom_tabs.add(specifications_frame_center_bottom_modbus_write_tab, text="Modbus Write")
+
+specifications_frame_modbus_write = tk.Frame(specifications_frame_center_bottom_modbus_write_tab)
+specifications_frame_modbus_write.pack(side="left", fill="both", expand=True)
+
+specifications_frame_modbus_write_1 = tk.Frame(specifications_frame_modbus_write, width=200)
+specifications_frame_modbus_write_1.pack(side="left", fill="y")
+specifications_frame_modbus_write_1.pack_propagate(False)
+
+tk.Label(specifications_frame_modbus_write_1, text="Function code").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+specifications_modbus_write_entry_function_code_text = tk.Entry(specifications_frame_modbus_write_1)
+specifications_modbus_write_entry_function_code_text.pack(fill="x", padx=(padx, padx))
+specifications_modbus_write_entry_function_code_text.delete(0, tk.END)
+specifications_modbus_write_entry_function_code_text.insert(0, "Write Single Coil (0x05)")
+
+specifications_frame_modbus_write_2 = tk.Frame(specifications_frame_modbus_write, width=200)
+specifications_frame_modbus_write_2.pack(side="left", fill="y")
+specifications_frame_modbus_write_2.pack_propagate(False)
+
+tk.Button(
+    specifications_frame_modbus_write_2,
+    text="Set Specifications",
+    command=tk_specifications_modbus_write_set
+).pack(fill="x", padx=(padx, padx), pady=(10, 0))
+
+tk.Button(
+    specifications_frame_modbus_write_2,
+    text="Delete Specifications",
+    command=tk_specifications_modbus_write_delete
+).pack(fill="x", padx=(padx, padx), pady=(10, 0))
 
 ###########################################################
 # TAB COMPILE
