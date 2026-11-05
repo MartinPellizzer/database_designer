@@ -19,6 +19,7 @@ categories_requirements_table_name = 'categories_requirements'
 specifications_table_name = 'specifications'
 specifications_modbus_table_name = 'specifications_modbus'
 specifications_modbus_write_table_name = 'specifications_modbus_write'
+specifications_modbus_report_table_name = 'specifications_modbus_report'
 specifications_rs485_table_name = 'specifications_rs485'
 
 
@@ -2268,9 +2269,25 @@ def tk_specifications_rs485_delete():
     # specifications_tree.delete(item)
 
 def tk_specifications_modbus_write_set():
+    specification_modbus_write_module_id_text = specifications_modbus_write_entry_module_id_text.get()
     specification_modbus_write_function_code_text = specifications_modbus_write_entry_function_code_text.get()
+    specification_modbus_write_register_address_text = specifications_modbus_write_entry_register_address_text.get()
+    specification_modbus_write_action_text = specifications_modbus_write_entry_action_text.get()
+    specification_modbus_write_crc16_text = specifications_modbus_write_entry_crc16_text.get()
+    if specification_modbus_write_module_id_text.strip() == '':
+        print('ERR: specification_modbus_write_module_id_text text NOT valid')
+        return
     if specification_modbus_write_function_code_text.strip() == '':
         print('ERR: specification_modbus_write_function_code_text text NOT valid')
+        return
+    if specification_modbus_write_register_address_text.strip() == '':
+        print('ERR: specification_modbus_write_register_address_text text NOT valid')
+        return
+    if specification_modbus_write_action_text.strip() == '':
+        print('ERR: specification_modbus_write_action_text text NOT valid')
+        return
+    if specification_modbus_write_crc16_text.strip() == '':
+        print('ERR: specification_modbus_write_crc16_text text NOT valid')
         return
     if not specifications_tree.selection(): return
     item = specifications_tree.selection()[0]
@@ -2281,7 +2298,11 @@ def tk_specifications_modbus_write_set():
         db_filepath,
         specifications_modbus_write_table_name,
         specification_id,
+        specification_modbus_write_module_id_text,
         specification_modbus_write_function_code_text,
+        specification_modbus_write_register_address_text,
+        specification_modbus_write_action_text,
+        specification_modbus_write_crc16_text,
     )
     res = sql_utils.sql_specifications_modbus_write_get_all(
         db_filepath, 
@@ -2290,6 +2311,51 @@ def tk_specifications_modbus_write_set():
     print(res)
 
 def tk_specifications_modbus_write_delete():
+    pass
+
+def tk_specifications_modbus_report_set():
+    specification_modbus_report_module_id_text = specifications_modbus_report_entry_module_id_text.get()
+    specification_modbus_report_function_code_text = specifications_modbus_report_entry_function_code_text.get()
+    specification_modbus_report_bytes_number_text = specifications_modbus_report_entry_bytes_number_text.get()
+    specification_modbus_report_register_value_text = specifications_modbus_report_entry_register_value_text.get()
+    specification_modbus_report_crc16_text = specifications_modbus_report_entry_crc16_text.get()
+    if specification_modbus_report_module_id_text.strip() == '':
+        print('ERR: specification_modbus_report_module_id_text text NOT valid')
+        return
+    if specification_modbus_report_function_code_text.strip() == '':
+        print('ERR: specification_modbus_report_function_code_text text NOT valid')
+        return
+    if specification_modbus_report_bytes_number_text.strip() == '':
+        print('ERR: specification_modbus_report_bytes_number_text text NOT valid')
+        return
+    if specification_modbus_report_register_value_text.strip() == '':
+        print('ERR: specification_modbus_report_register_value_text text NOT valid')
+        return
+    if specification_modbus_report_crc16_text.strip() == '':
+        print('ERR: specification_modbus_report_crc16_text text NOT valid')
+        return
+    if not specifications_tree.selection(): return
+    item = specifications_tree.selection()[0]
+    specification_id = specifications_tree.item(item)["values"][0]
+    print(specification_id)
+    ###
+    sql_utils.sql_specifications_modbus_report_set(
+        db_filepath,
+        specifications_modbus_report_table_name,
+        specification_id,
+        specification_modbus_report_module_id_text,
+        specification_modbus_report_function_code_text,
+        specification_modbus_report_bytes_number_text,
+        specification_modbus_report_register_value_text,
+        specification_modbus_report_crc16_text,
+    )
+    res = sql_utils.sql_specifications_modbus_report_get_all(
+        db_filepath, 
+        specifications_modbus_report_table_name,
+    )
+    print(res)
+
+def tk_specifications_modbus_report_delete():
     pass
 
 
@@ -2783,7 +2849,7 @@ def markdown_specifications_create():
         specification_heading_3_text = specification_item['specification_heading_3_text']
         specification_heading_4_text = specification_item['specification_heading_4_text']
         specification_template_text = specification_item['specification_template_text']
-        
+
         if specification_heading_4_text.strip() != '':
             h4_num += 1
             heading_text = f'#### {h1_num}.{h2_num}.{h3_num}.{h4_num} {specification_heading_1_text} {specification_heading_2_text} {specification_heading_3_text} {specification_heading_4_text}'
@@ -2850,19 +2916,65 @@ def markdown_specifications_create():
             ''')
 
         elif specification_template_text.strip().lower() == 'modbus_write':
-            print('######################################')
-            print('######################################')
-            print('######################################')
             specification_modbus_write_item = sql_utils.sql_specifications_modbus_write_get_by_specification_id(
                 db_filepath,
                 specifications_modbus_write_table_name,
                 specification_id,
             )
+            specification_modbus_write_module_id_text = specification_modbus_write_item['specification_modbus_write_module_id_text']
             specification_modbus_write_function_code_text = specification_modbus_write_item['specification_modbus_write_function_code_text']
+            specification_modbus_write_register_address_text = specification_modbus_write_item['specification_modbus_write_register_address_text']
+            specification_modbus_write_action_text = specification_modbus_write_item['specification_modbus_write_action_text']
+            specification_modbus_write_crc16_text = specification_modbus_write_item['specification_modbus_write_crc16_text']
             output_text += dedent(f'''
                 | Setting            | Value                                |
                 | ------------------ | ------------------------------------ |
-                | Function code      | {specification_modbus_write_function_code_text} |
+                | Module ID          | {specification_modbus_write_module_id_text} |
+                | Function Code      | {specification_modbus_write_function_code_text} |
+                | Register Address   | {specification_modbus_write_register_address_text} |
+                | Action             | {specification_modbus_write_action_text} |
+                | CRC16              | {specification_modbus_write_crc16_text} |
+            ''')
+            data_frame = ' '.join([
+                specification_modbus_write_module_id_text,
+                specification_modbus_write_function_code_text,
+                specification_modbus_write_register_address_text,
+                specification_modbus_write_action_text,
+                specification_modbus_write_crc16_text,
+            ])
+            output_text += dedent(f'''
+                The complete data frame is: {data_frame}
+            ''')
+
+        elif specification_template_text.strip().lower() == 'modbus_report':
+            specification_modbus_report_item = sql_utils.sql_specifications_modbus_report_get_by_specification_id(
+                db_filepath,
+                specifications_modbus_report_table_name,
+                specification_id,
+            )
+            specification_modbus_report_module_id_text = specification_modbus_report_item['specification_modbus_report_module_id_text']
+            specification_modbus_report_function_code_text = specification_modbus_report_item['specification_modbus_report_function_code_text']
+            specification_modbus_report_bytes_number_text = specification_modbus_report_item['specification_modbus_report_bytes_number_text']
+            specification_modbus_report_register_value_text = specification_modbus_report_item['specification_modbus_report_register_value_text']
+            specification_modbus_report_crc16_text = specification_modbus_report_item['specification_modbus_report_crc16_text']
+            output_text += dedent(f'''
+                | Setting              | Value                                |
+                | ------------------   | ------------------------------------ |
+                | Module ID            | {specification_modbus_report_module_id_text} |
+                | Function Code        | {specification_modbus_report_function_code_text} |
+                | Number of data bytes | {specification_modbus_report_bytes_number_text} |
+                | Register value       | {specification_modbus_report_register_value_text} |
+                | CRC16                | {specification_modbus_report_crc16_text} |
+            ''')
+            data_frame = ' '.join([
+                specification_modbus_write_module_id_text,
+                specification_modbus_write_function_code_text,
+                specification_modbus_report_bytes_number_text,
+                specification_modbus_report_register_value_text,
+                specification_modbus_write_crc16_text,
+            ])
+            output_text += dedent(f'''
+                The complete data frame is: {data_frame}
             ''')
 
         output_text += dedent(f'''
@@ -3713,11 +3825,11 @@ specifications_frame_center_bottom = tk.Frame(specifications_frame_center)
 specifications_frame_center_bottom = tk.Frame(specifications_frame_center)
 specifications_frame_center_bottom.pack(side="top", fill="both", expand=True)
 
-specifications_frame_center_bottom_tabs = ttk.Notebook(specifications_frame_center_bottom)
-specifications_frame_center_bottom_tabs.pack(fill="both", expand=True)
-
 # MODBUS
 # ..........................................................
+
+specifications_frame_center_bottom_tabs = ttk.Notebook(specifications_frame_center_bottom)
+specifications_frame_center_bottom_tabs.pack(fill="both", expand=True)
 
 specifications_frame_center_bottom_modbus_tab = tk.Frame(specifications_frame_center_bottom_tabs)
 specifications_frame_center_bottom_tabs.add(specifications_frame_center_bottom_modbus_tab, text="Modbus")
@@ -3725,13 +3837,22 @@ specifications_frame_center_bottom_tabs.add(specifications_frame_center_bottom_m
 specifications_frame_modbus = tk.Frame(specifications_frame_center_bottom_modbus_tab)
 specifications_frame_modbus.pack(side="left", fill="both", expand=True)
 
-specifications_frame_modbus_1 = tk.Frame(specifications_frame_modbus, width=100)
+
+
+specifications_frame_modbus_tabs = ttk.Notebook(specifications_frame_modbus)
+specifications_frame_modbus_tabs.pack(fill="both", expand=True)
+
+specifications_frame_modbus_general_tab = tk.Frame(specifications_frame_modbus_tabs)
+specifications_frame_modbus_tabs.add(specifications_frame_modbus_general_tab, text="Modbus General")
+
+specifications_frame_modbus_general = tk.Frame(specifications_frame_modbus_general_tab)
+specifications_frame_modbus_general.pack(side="left", fill="both", expand=True)
+
+
+
+specifications_frame_modbus_1 = tk.Frame(specifications_frame_modbus_general, width=100)
 specifications_frame_modbus_1.pack(side="left", fill="y")
 specifications_frame_modbus_1.pack_propagate(False)
-
-specifications_frame_modbus_2 = tk.Frame(specifications_frame_modbus, width=200)
-specifications_frame_modbus_2.pack(side="left", fill="y")
-specifications_frame_modbus_2.pack_propagate(False)
 
 tk.Label(specifications_frame_modbus_1, text="Mode").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
 specifications_modbus_entry_mode_text = tk.Entry(specifications_frame_modbus_1)
@@ -3775,6 +3896,10 @@ specifications_modbus_entry_stop_bits_text.pack(fill="x", padx=(padx, padx))
 specifications_modbus_entry_stop_bits_text.delete(0, tk.END)
 specifications_modbus_entry_stop_bits_text.insert(0, 1)
 
+specifications_frame_modbus_2 = tk.Frame(specifications_frame_modbus_general, width=200)
+specifications_frame_modbus_2.pack(side="left", fill="y")
+specifications_frame_modbus_2.pack_propagate(False)
+
 tk.Button(
     specifications_frame_modbus_2,
     text="Set Specifications",
@@ -3785,6 +3910,138 @@ tk.Button(
     specifications_frame_modbus_2,
     text="Delete Specifications",
     command=tk_specifications_modbus_delete
+).pack(fill="x", padx=(padx, padx), pady=(10, 0))
+
+# MODBUS WRITE
+# ..........................................................
+
+specifications_frame_center_bottom_modbus_write_tab = tk.Frame(specifications_frame_modbus_tabs)
+specifications_frame_modbus_tabs.add(specifications_frame_center_bottom_modbus_write_tab, text="Modbus Write")
+
+specifications_frame_modbus_write = tk.Frame(specifications_frame_center_bottom_modbus_write_tab)
+specifications_frame_modbus_write.pack(side="left", fill="both", expand=True)
+
+specifications_frame_modbus_write_1 = tk.Frame(specifications_frame_modbus_write, width=200)
+specifications_frame_modbus_write_1.pack(side="left", fill="y")
+specifications_frame_modbus_write_1.pack_propagate(False)
+
+tk.Label(specifications_frame_modbus_write_1, text="Module ID").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+specifications_modbus_write_entry_module_id_text = tk.Entry(specifications_frame_modbus_write_1)
+specifications_modbus_write_entry_module_id_text.pack(fill="x", padx=(padx, padx))
+specifications_modbus_write_entry_module_id_text.delete(0, tk.END)
+specifications_modbus_write_entry_module_id_text.insert(0, "0x01")
+
+tk.Label(specifications_frame_modbus_write_1, text="Function Code").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+specifications_modbus_write_entry_function_code_text = tk.Entry(specifications_frame_modbus_write_1)
+specifications_modbus_write_entry_function_code_text.pack(fill="x", padx=(padx, padx))
+specifications_modbus_write_entry_function_code_text.delete(0, tk.END)
+specifications_modbus_write_entry_function_code_text.insert(0, "0x05")
+
+tk.Label(specifications_frame_modbus_write_1, text="Register Address").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+specifications_modbus_write_entry_register_address_text = tk.Entry(specifications_frame_modbus_write_1)
+specifications_modbus_write_entry_register_address_text.pack(fill="x", padx=(padx, padx))
+specifications_modbus_write_entry_register_address_text.delete(0, tk.END)
+specifications_modbus_write_entry_register_address_text.insert(0, "0x00 0x00")
+
+tk.Label(specifications_frame_modbus_write_1, text="Action").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+specifications_modbus_write_entry_action_text = tk.Entry(specifications_frame_modbus_write_1)
+specifications_modbus_write_entry_action_text.pack(fill="x", padx=(padx, padx))
+specifications_modbus_write_entry_action_text.delete(0, tk.END)
+specifications_modbus_write_entry_action_text.insert(0, "0xFF 0x00")
+
+tk.Label(specifications_frame_modbus_write_1, text="CRC16").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+specifications_modbus_write_entry_crc16_text = tk.Entry(specifications_frame_modbus_write_1)
+specifications_modbus_write_entry_crc16_text.pack(fill="x", padx=(padx, padx))
+specifications_modbus_write_entry_crc16_text.delete(0, tk.END)
+specifications_modbus_write_entry_crc16_text.insert(0, "0xXX 0xXX")
+
+specifications_frame_modbus_write_2 = tk.Frame(specifications_frame_modbus_write, width=200)
+specifications_frame_modbus_write_2.pack(side="left", fill="y")
+specifications_frame_modbus_write_2.pack_propagate(False)
+
+tk.Button(
+    specifications_frame_modbus_write_2,
+    text="Set Specifications",
+    command=tk_specifications_modbus_write_set
+).pack(fill="x", padx=(padx, padx), pady=(10, 0))
+
+tk.Button(
+    specifications_frame_modbus_write_2,
+    text="Delete Specifications",
+    command=tk_specifications_modbus_write_delete
+).pack(fill="x", padx=(padx, padx), pady=(10, 0))
+
+# MODBUS REPORT
+# ..........................................................
+
+specifications_frame_center_bottom_modbus_report_tab = tk.Frame(specifications_frame_modbus_tabs)
+specifications_frame_modbus_tabs.add(specifications_frame_center_bottom_modbus_report_tab, text="Modbus Report")
+
+specifications_frame_modbus_report = tk.Frame(specifications_frame_center_bottom_modbus_report_tab)
+specifications_frame_modbus_report.pack(side="left", fill="both", expand=True)
+
+
+
+
+specifications_frame_modbus_report_1 = tk.Frame(specifications_frame_modbus_report, width=200)
+specifications_frame_modbus_report_1.pack(side="left", fill="y")
+specifications_frame_modbus_report_1.pack_propagate(False)
+
+tk.Label(specifications_frame_modbus_report_1, text="Intro").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+specifications_text_specification_text = tk.Text(specifications_frame_modbus_report_1, wrap="word", height=5)
+specifications_text_specification_text.pack(fill="x", padx=(padx, padx))
+# specifications_text_specification_text.config(state="disabled", bg=bg, fg=fg)
+
+
+
+specifications_frame_modbus_report_2 = tk.Frame(specifications_frame_modbus_report, width=200)
+specifications_frame_modbus_report_2.pack(side="left", fill="y")
+specifications_frame_modbus_report_2.pack_propagate(False)
+
+tk.Label(specifications_frame_modbus_report_2, text="Module ID").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+specifications_modbus_report_entry_module_id_text = tk.Entry(specifications_frame_modbus_report_2)
+specifications_modbus_report_entry_module_id_text.pack(fill="x", padx=(padx, padx))
+specifications_modbus_report_entry_module_id_text.delete(0, tk.END)
+specifications_modbus_report_entry_module_id_text.insert(0, "0x01")
+
+tk.Label(specifications_frame_modbus_report_2, text="Function Code").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+specifications_modbus_report_entry_function_code_text = tk.Entry(specifications_frame_modbus_report_2)
+specifications_modbus_report_entry_function_code_text.pack(fill="x", padx=(padx, padx))
+specifications_modbus_report_entry_function_code_text.delete(0, tk.END)
+specifications_modbus_report_entry_function_code_text.insert(0, "0x04")
+
+tk.Label(specifications_frame_modbus_report_2, text="Number of data bytes").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+specifications_modbus_report_entry_bytes_number_text = tk.Entry(specifications_frame_modbus_report_2)
+specifications_modbus_report_entry_bytes_number_text.pack(fill="x", padx=(padx, padx))
+specifications_modbus_report_entry_bytes_number_text.delete(0, tk.END)
+specifications_modbus_report_entry_bytes_number_text.insert(0, "0x00 0x02")
+
+tk.Label(specifications_frame_modbus_report_2, text="Register value").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+specifications_modbus_report_entry_register_value_text = tk.Entry(specifications_frame_modbus_report_2)
+specifications_modbus_report_entry_register_value_text.pack(fill="x", padx=(padx, padx))
+specifications_modbus_report_entry_register_value_text.delete(0, tk.END)
+specifications_modbus_report_entry_register_value_text.insert(0, "0x00 0x00")
+
+tk.Label(specifications_frame_modbus_report_2, text="CRC16").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+specifications_modbus_report_entry_crc16_text = tk.Entry(specifications_frame_modbus_report_2)
+specifications_modbus_report_entry_crc16_text.pack(fill="x", padx=(padx, padx))
+specifications_modbus_report_entry_crc16_text.delete(0, tk.END)
+specifications_modbus_report_entry_crc16_text.insert(0, "0xXX 0xXX")
+
+specifications_frame_modbus_report_3 = tk.Frame(specifications_frame_modbus_report, width=200)
+specifications_frame_modbus_report_3.pack(side="left", fill="y")
+specifications_frame_modbus_report_3.pack_propagate(False)
+
+tk.Button(
+    specifications_frame_modbus_report_3,
+    text="Set Specifications",
+    command=tk_specifications_modbus_report_set
+).pack(fill="x", padx=(padx, padx), pady=(10, 0))
+
+tk.Button(
+    specifications_frame_modbus_report_3,
+    text="Delete Specifications",
+    command=tk_specifications_modbus_report_delete
 ).pack(fill="x", padx=(padx, padx), pady=(10, 0))
 
 # RS485
@@ -3822,40 +4079,6 @@ tk.Button(
     command=tk_specifications_rs485_delete
 ).pack(fill="x", padx=(padx, padx), pady=(10, 0))
 
-# MODBUS WRITE
-# ..........................................................
-
-specifications_frame_center_bottom_modbus_write_tab = tk.Frame(specifications_frame_center_bottom_tabs)
-specifications_frame_center_bottom_tabs.add(specifications_frame_center_bottom_modbus_write_tab, text="Modbus Write")
-
-specifications_frame_modbus_write = tk.Frame(specifications_frame_center_bottom_modbus_write_tab)
-specifications_frame_modbus_write.pack(side="left", fill="both", expand=True)
-
-specifications_frame_modbus_write_1 = tk.Frame(specifications_frame_modbus_write, width=200)
-specifications_frame_modbus_write_1.pack(side="left", fill="y")
-specifications_frame_modbus_write_1.pack_propagate(False)
-
-tk.Label(specifications_frame_modbus_write_1, text="Function code").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
-specifications_modbus_write_entry_function_code_text = tk.Entry(specifications_frame_modbus_write_1)
-specifications_modbus_write_entry_function_code_text.pack(fill="x", padx=(padx, padx))
-specifications_modbus_write_entry_function_code_text.delete(0, tk.END)
-specifications_modbus_write_entry_function_code_text.insert(0, "Write Single Coil (0x05)")
-
-specifications_frame_modbus_write_2 = tk.Frame(specifications_frame_modbus_write, width=200)
-specifications_frame_modbus_write_2.pack(side="left", fill="y")
-specifications_frame_modbus_write_2.pack_propagate(False)
-
-tk.Button(
-    specifications_frame_modbus_write_2,
-    text="Set Specifications",
-    command=tk_specifications_modbus_write_set
-).pack(fill="x", padx=(padx, padx), pady=(10, 0))
-
-tk.Button(
-    specifications_frame_modbus_write_2,
-    text="Delete Specifications",
-    command=tk_specifications_modbus_write_delete
-).pack(fill="x", padx=(padx, padx), pady=(10, 0))
 
 ###########################################################
 # TAB COMPILE
