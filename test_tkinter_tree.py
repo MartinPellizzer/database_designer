@@ -1,3 +1,8 @@
+
+### TODO: change name of "modbus_write" to "modbus_request"
+### TODO: change name of "modbus_report" to "modbus_response"
+
+
 import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
@@ -7,7 +12,6 @@ import json
 from textwrap import dedent
 from lib import sql_utils
 
-### TODO: change db_filepath based on project
 db_filepath = 'test.db'
 stakeholders_table_name = 'stakeholders'
 questions_table_name = 'questions'
