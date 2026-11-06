@@ -2109,6 +2109,37 @@ def tk_specifications_select(event):
             specification_id,
         )
         print(json.dumps(items, indent=4))
+    elif specification_template_text == 'modbus_report':
+        item = sql_utils.sql_specifications_modbus_report_get_by_specification_id(
+            db_filepath,
+            specifications_modbus_report_table_name,
+            specification_id,
+        )
+        print(json.dumps(item, indent=4))
+        # ;jump
+        specifications_frame_modbus_tabs.select(specifications_frame_center_bottom_modbus_report_tab)
+        
+        specification_modbus_report_intro_text = item['specification_modbus_report_intro_text']
+        specification_modbus_report_module_id_text = item['specification_modbus_report_module_id_text']
+        specification_modbus_report_function_code_text = item['specification_modbus_report_function_code_text']
+        specification_modbus_report_bytes_number_text = item['specification_modbus_report_bytes_number_text']
+        specification_modbus_report_register_value_text = item['specification_modbus_report_register_value_text']
+        specification_modbus_report_crc16_text = item['specification_modbus_report_crc16_text']
+
+        specifications_modbus_report_text_intro_text.delete("1.0", tk.END)
+        specifications_modbus_report_text_intro_text.insert("1.0", specification_modbus_report_intro_text)
+        
+        specifications_modbus_report_entry_module_id_text.delete(0, tk.END)
+        specifications_modbus_report_entry_module_id_text.insert(0, specification_modbus_report_module_id_text)
+        specifications_modbus_report_entry_function_code_text.delete(0, tk.END)
+        specifications_modbus_report_entry_function_code_text.insert(0, specification_modbus_report_function_code_text)
+        specifications_modbus_report_entry_bytes_number_text.delete(0, tk.END)
+        specifications_modbus_report_entry_bytes_number_text.insert(0, specification_modbus_report_bytes_number_text)
+        specifications_modbus_report_entry_register_value_text.delete(0, tk.END)
+        specifications_modbus_report_entry_register_value_text.insert(0, specification_modbus_report_register_value_text)
+        specifications_modbus_report_entry_crc16_text.delete(0, tk.END)
+        specifications_modbus_report_entry_crc16_text.insert(0, specification_modbus_report_crc16_text)
+
 
 def tk_specifications_move_record(direction):
     selected = specifications_tree.selection()
@@ -2314,11 +2345,15 @@ def tk_specifications_modbus_write_delete():
     pass
 
 def tk_specifications_modbus_report_set():
+    specification_modbus_report_intro_text = specifications_modbus_report_text_intro_text.get("1.0", tk.END).strip()
     specification_modbus_report_module_id_text = specifications_modbus_report_entry_module_id_text.get()
     specification_modbus_report_function_code_text = specifications_modbus_report_entry_function_code_text.get()
     specification_modbus_report_bytes_number_text = specifications_modbus_report_entry_bytes_number_text.get()
     specification_modbus_report_register_value_text = specifications_modbus_report_entry_register_value_text.get()
     specification_modbus_report_crc16_text = specifications_modbus_report_entry_crc16_text.get()
+    if specification_modbus_report_intro_text.strip() == '':
+        print('ERR: specification_modbus_report_intro_text text NOT valid')
+        return
     if specification_modbus_report_module_id_text.strip() == '':
         print('ERR: specification_modbus_report_module_id_text text NOT valid')
         return
@@ -2343,6 +2378,7 @@ def tk_specifications_modbus_report_set():
         db_filepath,
         specifications_modbus_report_table_name,
         specification_id,
+        specification_modbus_report_intro_text,
         specification_modbus_report_module_id_text,
         specification_modbus_report_function_code_text,
         specification_modbus_report_bytes_number_text,
@@ -2353,7 +2389,7 @@ def tk_specifications_modbus_report_set():
         db_filepath, 
         specifications_modbus_report_table_name,
     )
-    print(res)
+    print(json.dumps(res, indent=4))
 
 def tk_specifications_modbus_report_delete():
     pass
@@ -2885,7 +2921,6 @@ def markdown_specifications_create():
 
             # print(json.dumps(specification_modbus_item, indent=4))
             # break
-            # ;jump
             # categories_requirements_items = sql_categories_requirements_get_by_category_id(category_item['category_id'])
 
             output_text += dedent(f'''
@@ -2952,11 +2987,22 @@ def markdown_specifications_create():
                 specifications_modbus_report_table_name,
                 specification_id,
             )
-            specification_modbus_report_module_id_text = specification_modbus_report_item['specification_modbus_report_module_id_text']
-            specification_modbus_report_function_code_text = specification_modbus_report_item['specification_modbus_report_function_code_text']
-            specification_modbus_report_bytes_number_text = specification_modbus_report_item['specification_modbus_report_bytes_number_text']
-            specification_modbus_report_register_value_text = specification_modbus_report_item['specification_modbus_report_register_value_text']
-            specification_modbus_report_crc16_text = specification_modbus_report_item['specification_modbus_report_crc16_text']
+            try: specification_modbus_report_intro_text = specification_modbus_report_item['specification_modbus_report_intro_text']
+            except: specification_modbus_report_intro_text = 'ERR'
+            try: specification_modbus_report_module_id_text = specification_modbus_report_item['specification_modbus_report_module_id_text']
+            except: specification_modbus_report_module_id_text = 'ERR'
+            try: specification_modbus_report_function_code_text = specification_modbus_report_item['specification_modbus_report_function_code_text']
+            except: specification_modbus_report_function_code_text = 'ERR'
+            try: specification_modbus_report_bytes_number_text = specification_modbus_report_item['specification_modbus_report_bytes_number_text']
+            except: specification_modbus_report_bytes_number_text = 'ERR'
+            try: specification_modbus_report_register_value_text = specification_modbus_report_item['specification_modbus_report_register_value_text']
+            except: specification_modbus_report_register_value_text = 'ERR'
+            try: specification_modbus_report_crc16_text = specification_modbus_report_item['specification_modbus_report_crc16_text']
+            except: specification_modbus_report_crc16_text = 'ERR'
+            ###
+            output_text += dedent(f'''
+                {specification_modbus_report_intro_text}
+            ''')
             output_text += dedent(f'''
                 | Setting              | Value                                |
                 | ------------------   | ------------------------------------ |
@@ -3838,7 +3884,7 @@ specifications_frame_modbus = tk.Frame(specifications_frame_center_bottom_modbus
 specifications_frame_modbus.pack(side="left", fill="both", expand=True)
 
 
-
+# ;jump
 specifications_frame_modbus_tabs = ttk.Notebook(specifications_frame_modbus)
 specifications_frame_modbus_tabs.pack(fill="both", expand=True)
 
@@ -3982,14 +4028,13 @@ specifications_frame_modbus_report.pack(side="left", fill="both", expand=True)
 
 
 
-
 specifications_frame_modbus_report_1 = tk.Frame(specifications_frame_modbus_report, width=200)
 specifications_frame_modbus_report_1.pack(side="left", fill="y")
 specifications_frame_modbus_report_1.pack_propagate(False)
 
 tk.Label(specifications_frame_modbus_report_1, text="Intro").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
-specifications_text_specification_text = tk.Text(specifications_frame_modbus_report_1, wrap="word", height=5)
-specifications_text_specification_text.pack(fill="x", padx=(padx, padx))
+specifications_modbus_report_text_intro_text = tk.Text(specifications_frame_modbus_report_1, wrap="word", height=5)
+specifications_modbus_report_text_intro_text.pack(fill="x", padx=(padx, padx))
 # specifications_text_specification_text.config(state="disabled", bg=bg, fg=fg)
 
 
@@ -4078,7 +4123,6 @@ tk.Button(
     text="Delete Specifications",
     command=tk_specifications_rs485_delete
 ).pack(fill="x", padx=(padx, padx), pady=(10, 0))
-
 
 ###########################################################
 # TAB COMPILE

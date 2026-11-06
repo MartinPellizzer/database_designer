@@ -289,6 +289,7 @@ def sql_specifications_modbus_report_create(
         CREATE TABLE IF NOT EXISTS {table_name} (
             specification_modbus_id INTEGER PRIMARY KEY, 
             specification_id TEXT UNIQUE,
+            specification_modbus_report_intro_text TEXT,
             specification_modbus_report_module_id_text TEXT,
             specification_modbus_report_function_code_text TEXT,
             specification_modbus_report_bytes_number_text TEXT,
@@ -306,6 +307,7 @@ def sql_specifications_modbus_report_update(
     db = sqlite3.connect(db_filepath)
     cur = db.cursor()
     columns = {
+        "specification_modbus_report_intro_text": "TEXT",
         "specification_modbus_report_module_id_text": "TEXT",
         "specification_modbus_report_function_code_text": "TEXT",
         "specification_modbus_report_bytes_number_text": "TEXT",
@@ -323,6 +325,7 @@ def sql_specifications_modbus_report_set(
     db_filepath,
     table_name,
     specification_id,
+    specification_modbus_report_intro_text,
     specification_modbus_report_module_id_text,
     specification_modbus_report_function_code_text,
     specification_modbus_report_bytes_number_text,
@@ -336,14 +339,16 @@ def sql_specifications_modbus_report_set(
     cur.execute(f'''
         INSERT INTO {table_name} (
             specification_id,
+            specification_modbus_report_intro_text,
             specification_modbus_report_module_id_text,
             specification_modbus_report_function_code_text,
             specification_modbus_report_bytes_number_text,
             specification_modbus_report_register_value_text,
             specification_modbus_report_crc16_text
         ) 
-        VALUES (?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(specification_id) DO UPDATE SET
+            specification_modbus_report_intro_text = excluded.specification_modbus_report_intro_text,
             specification_modbus_report_module_id_text = excluded.specification_modbus_report_module_id_text,
             specification_modbus_report_function_code_text = excluded.specification_modbus_report_function_code_text,
             specification_modbus_report_bytes_number_text = excluded.specification_modbus_report_bytes_number_text,
@@ -351,6 +356,7 @@ def sql_specifications_modbus_report_set(
             specification_modbus_report_crc16_text = excluded.specification_modbus_report_crc16_text
     ''', (
         specification_id,
+        specification_modbus_report_intro_text,
         specification_modbus_report_module_id_text,
         specification_modbus_report_function_code_text,
         specification_modbus_report_bytes_number_text,
