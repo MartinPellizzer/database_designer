@@ -15,6 +15,7 @@ core = {
     'running': True,
 }
 
+grid_size = 4
 
 current_file = None
 
@@ -46,6 +47,8 @@ interaction = {
     'mouse_x_start': 0,
     'mouse_y_start': 0,
     'button_visible': False,
+    'comment_drag': None,
+    'comment_focus': None,
 }
 
 font_size_base = 1
@@ -149,7 +152,6 @@ def screen_to_world(x, y):
 # ============================================================
 
 def draw_grid():
-    grid_size = 100
     color = (28, 28, 28)
 
     # Get visible world boundaries
@@ -248,6 +250,7 @@ def project_new():
     global current_file
     global nodes
     global edges
+    global comments
     filename = subprocess.run(
         [
             "zenity",
@@ -265,11 +268,13 @@ def project_new():
             filename += ".json"
         nodes = []
         edges = []
+        comments = []
         current_file = filename
         with open(filename, "w") as f:
             output = {
                 'nodes': nodes,
                 'edges': edges,
+                'comments': comments,
             }
             json.dump(output, f, indent=4)
 
@@ -279,6 +284,7 @@ def project_save():
             output = {
                 'nodes': nodes,
                 'edges': edges,
+                'comments': comments,
             }
             json.dump(output, f, indent=4)
     else:
@@ -288,6 +294,7 @@ def project_open(filename=''):
     global current_file
     global nodes
     global edges
+    global comments
     if filename == '':
         ### LINUX
         filename = os.path.dirname(os.path.abspath(__file__)) + '/uncategorized'
@@ -307,6 +314,7 @@ def project_open(filename=''):
             data = json.load(f)
             nodes = data['nodes']
             edges = data['edges']
+            comments = data['comments']
         current_file = filename
     for edge in edges:
         for node in nodes: 
@@ -510,18 +518,18 @@ def draw_edge(edge):
             line_end_x2_2 = line_end_x
             line_end_y2_2 = line_end_y - 1
         else:
-            line_start_x1 = line_start_x - 20
-            line_start_y1 = line_start_y + 10
-            line_start_x2 = line_start_x - 20
-            line_start_y2 = line_start_y - 10
-            line_end_x1_1 = line_end_x + 20
+            line_start_x1 = line_start_x - 2
+            line_start_y1 = line_start_y + 1
+            line_start_x2 = line_start_x - 2
+            line_start_y2 = line_start_y - 1
+            line_end_x1_1 = line_end_x + 2
             line_end_y1_1 = line_end_y
             line_end_x2_1 = line_end_x
-            line_end_y2_1 = line_end_y + 10
-            line_end_x1_2 = line_end_x + 20
+            line_end_y2_1 = line_end_y + 1
+            line_end_x1_2 = line_end_x + 2
             line_end_y1_2 = line_end_y
             line_end_x2_2 = line_end_x
-            line_end_y2_2 = line_end_y - 10
+            line_end_y2_2 = line_end_y - 1
         ### TODO
         screen_line_start_x1, screen_line_start_y1 = world_to_screen(line_start_x1, line_start_y1)
         screen_line_start_x2, screen_line_start_y2 = world_to_screen(line_start_x2, line_start_y2)
@@ -593,6 +601,7 @@ def draw_edge(edge):
 
 def inputs_key_down(event):
     global nodes
+    global comments
     # Ctrl+N
     if event.key == pygame.K_n and pygame.key.get_mods() & pygame.KMOD_CTRL:
         project_new()
@@ -740,6 +749,8 @@ def inputs_key_down(event):
                 if interaction['field_i_focus'] != None:
                     i = interaction['field_i_focus']-1
                     interaction['node_focus']['fields'][i]['name'] = interaction['node_focus']['fields'][i]['name'][:-1]
+        elif interaction['comment_focus'] != None:
+            interaction['comment_focus']['text'] = interaction['comment_focus']['text'][:-1]
     else:
         if (pygame.K_a <= event.key <= pygame.K_z or 
             pygame.K_0 <= event.key <= pygame.K_9 or 
@@ -753,6 +764,8 @@ def inputs_key_down(event):
                     if interaction['field_i_focus'] != None:
                         i = interaction['field_i_focus']-1
                         interaction['node_focus']['fields'][i]['name'] += letter
+            elif interaction['comment_focus'] != None:
+                interaction['comment_focus']['text'] += letter
 
 def inputs_mouse_wheel(event):
     global font
@@ -815,6 +828,51 @@ def comment_create_from_mouse():
     y = mouse['world_y']
     title = 'comment'
     comment_create(x, y, title)
+
+def input_mouse_left_click_node():
+    interaction['comment_focus'] = None
+    interaction['node_focus'] = None
+    interaction['field_focus'] = None
+    interaction['field_i_focus'] = None
+    for node in reversed(nodes):
+        if (
+            mouse['world_x'] >= node['world_x'] and 
+            mouse['world_y'] >= node['world_y'] and 
+            mouse['world_x'] <= node['world_x'] + node['world_w'] and 
+            mouse['world_y'] <= node['world_y'] + row_h * (len(node['fields'])+1)
+        ):
+            nodes.remove(node)
+            nodes.append(node)
+            interaction['node_focus'] = node
+            interaction['node_drag'] = node
+            interaction['action'] = 'drag_snap'
+            interaction['drag_offset_x'] = mouse['world_x'] - node['world_x']
+            interaction['drag_offset_y'] = mouse['world_y'] - node['world_y']
+            break
+
+def input_mouse_left_click_comment():
+    interaction['comment_focus'] = None
+    interaction['node_focus'] = None
+    interaction['field_focus'] = None
+    interaction['field_i_focus'] = None
+    for comment in reversed(comments):
+        comment_screen_w, comment_screen_h = font_comment.size(comment['text'])
+        comment_world_w = comment_screen_w / camera['scale']
+        comment_world_h = comment_screen_h / camera['scale']
+        if (
+            mouse['world_x'] >= comment['world_x'] and 
+            mouse['world_y'] >= comment['world_y'] and 
+            mouse['world_x'] <= comment['world_x'] + comment_world_w and 
+            mouse['world_y'] <= comment['world_y'] + comment_world_h
+        ):
+            comments.remove(comment)
+            comments.append(comment)
+            interaction['comment_focus'] = comment
+            interaction['comment_drag'] = comment
+            interaction['action'] = 'drag_snap'
+            interaction['drag_offset_x'] = mouse['world_x'] - comment['world_x']
+            interaction['drag_offset_y'] = mouse['world_y'] - comment['world_y']
+            break
 
 def main_inputs():
     global font
@@ -883,24 +941,8 @@ def main_inputs():
                                 elif item['text'] == 'Add Comment':
                                     comment_create_from_mouse()
                         
-                    interaction['node_focus'] = None
-                    interaction['field_focus'] = None
-                    interaction['field_i_focus'] = None
-                    for node in reversed(nodes):
-                        if (
-                            mouse['world_x'] >= node['world_x'] and 
-                            mouse['world_y'] >= node['world_y'] and 
-                            mouse['world_x'] <= node['world_x'] + node['world_w'] and 
-                            mouse['world_y'] <= node['world_y'] + row_h * (len(node['fields'])+1)
-                        ):
-                            nodes.remove(node)
-                            nodes.append(node)
-                            interaction['node_focus'] = node
-                            interaction['action'] = 'drag'
-                            interaction['node_drag'] = node
-                            interaction['drag_offset_x'] = mouse['world_x'] - node['world_x']
-                            interaction['drag_offset_y'] = mouse['world_y'] - node['world_y']
-                            break
+                    input_mouse_left_click_node()
+                    input_mouse_left_click_comment()
             elif event.button == 2:
                 interaction['action'] = 'pan'
                 interaction['camera_x_start'] = camera['world_x']
@@ -920,9 +962,11 @@ def main_inputs():
                     edge_end()
                 interaction['action'] = None
                 interaction['node_drag'] = None
+                interaction['comment_drag'] = None
             elif event.button == 2:
                 interaction['action'] = None
                 interaction['node_drag'] = None
+                interaction['comment_drag'] = None
 
         elif event.type == pygame.MOUSEWHEEL:
             inputs_mouse_wheel(event)
@@ -945,8 +989,17 @@ def main_update():
         interaction['node_drag']['world_y'] = (mouse['world_y'] - interaction['drag_offset_y'])
 
     if interaction['action'] == 'drag_snap':
-        interaction['node_drag']['world_x'] = (mouse['world_x'] - interaction['drag_offset_x']) // 100 * 100
-        interaction['node_drag']['world_y'] = (mouse['world_y'] - interaction['drag_offset_y']) // 100 * 100
+        if interaction['node_drag'] != None:
+            interaction['node_drag']['world_x'] = (mouse['world_x'] - interaction['drag_offset_x']) // grid_size * grid_size
+            interaction['node_drag']['world_y'] = (mouse['world_y'] - interaction['drag_offset_y']) // grid_size * grid_size
+
+    if interaction['action'] == 'drag_snap':
+        if interaction['comment_drag'] != None:
+            interaction['comment_drag']['world_x'] = (mouse['world_x'] - interaction['drag_offset_x']) // grid_size * grid_size
+            interaction['comment_drag']['world_y'] = (mouse['world_y'] - interaction['drag_offset_y']) // grid_size * grid_size
+    # print(interaction['node_drag'])
+    # print(interaction['comment_drag'])
+    # print()
 
 def draw_background():
     screen.fill((40, 40, 40))
@@ -1013,6 +1066,7 @@ def draw_viewport_menu_context():
             screen.blit(text, (x, y))
             i += 1
 
+"""
 def draw_button():
     if interaction['button_visible'] == True:
         screen_x = button_1['screen_x']
@@ -1026,6 +1080,7 @@ def draw_button():
         text = button_1['text']
         text_surface = font_ui.render(f"{text}", True, (255, 255, 255))
         screen.blit(text_surface, (screen_x + padding, screen_y + padding))
+"""
 
 def draw_buttons():
     if interaction['button_visible'] == True:
@@ -1048,8 +1103,13 @@ def draw_comments():
         world_y = item['world_y']
         text = item['text']
         screen_x, screen_y = world_to_screen(world_x, world_y)
-        text_surface = font_comment.render(f"{text}", True, (255, 255, 255))
-        screen.blit(text_surface, (screen_x, screen_y))
+        ### FOCUSED
+        if item == interaction['comment_focus']:
+            text_surface = font_comment.render(f"{text}", True, (0, 0, 255))
+            screen.blit(text_surface, (screen_x, screen_y))
+        else:
+            text_surface = font_comment.render(f"{text}", True, (255, 255, 255))
+            screen.blit(text_surface, (screen_x, screen_y))
 
 def main_draw():
     draw_background()
@@ -1064,16 +1124,15 @@ def main_draw():
     for node in nodes:
         draw_node(node)
     
+    # draw_button()
+    draw_buttons()
+    draw_comments()
+
     draw_frame_left()
 
     draw_viewport_menu_context()
 
     draw_debug()
-
-    # draw_button()
-    draw_buttons()
-    draw_comments()
-
 
     pygame.display.flip()
 
@@ -1109,3 +1168,4 @@ def main():
     pygame.quit()
 
 main()
+
