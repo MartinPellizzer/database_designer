@@ -264,10 +264,10 @@ def sql_specifications_modbus_write_get_by_specification_id(
 
 
 # ----------------------------------------------------------
-# SQLITE SPECIFICATIONS MODBUS REPORT
+# SQLITE SPECIFICATIONS MODBUS READ
 # ----------------------------------------------------------
 
-def sql_specifications_modbus_report_get_all(
+def sql_specifications_modbus_read_get_all(
     db_filepath,
     table_name,
 ):
@@ -279,7 +279,7 @@ def sql_specifications_modbus_report_get_all(
     db.close()
     return items
 
-def sql_specifications_modbus_report_create(
+def sql_specifications_modbus_read_create(
     db_filepath,
     table_name,
 ):
@@ -289,30 +289,30 @@ def sql_specifications_modbus_report_create(
         CREATE TABLE IF NOT EXISTS {table_name} (
             specification_modbus_id INTEGER PRIMARY KEY, 
             specification_id TEXT UNIQUE,
-            specification_modbus_report_intro_text TEXT,
-            specification_modbus_report_module_id_text TEXT,
-            specification_modbus_report_function_code_text TEXT,
-            specification_modbus_report_bytes_number_text TEXT,
-            specification_modbus_report_register_value_text TEXT,
-            specification_modbus_report_crc16_text TEXT
+            specification_modbus_read_intro_text TEXT,
+            specification_modbus_read_module_id_text TEXT,
+            specification_modbus_read_function_code_text TEXT,
+            specification_modbus_read_bytes_number_text TEXT,
+            specification_modbus_read_register_value_text TEXT,
+            specification_modbus_read_crc16_text TEXT
         )'''
     )
     db.commit()
     db.close()
 
-def sql_specifications_modbus_report_update(
+def sql_specifications_modbus_read_update(
     db_filepath,
     table_name,
 ):
     db = sqlite3.connect(db_filepath)
     cur = db.cursor()
     columns = {
-        "specification_modbus_report_intro_text": "TEXT",
-        "specification_modbus_report_module_id_text": "TEXT",
-        "specification_modbus_report_function_code_text": "TEXT",
-        "specification_modbus_report_bytes_number_text": "TEXT",
-        "specification_modbus_report_register_value_text": "TEXT",
-        "specification_modbus_report_crc16_text": "TEXT",
+        "specification_modbus_read_intro_text": "TEXT",
+        "specification_modbus_read_module_id_text": "TEXT",
+        "specification_modbus_read_function_code_text": "TEXT",
+        "specification_modbus_read_bytes_number_text": "TEXT",
+        "specification_modbus_read_register_value_text": "TEXT",
+        "specification_modbus_read_crc16_text": "TEXT",
     }
     existing = {row[1] for row in cur.execute(f"PRAGMA table_info({table_name})")}
     for name, definition in columns.items():
@@ -321,52 +321,52 @@ def sql_specifications_modbus_report_update(
     db.commit()
     db.close()
 
-def sql_specifications_modbus_report_set(
+def sql_specifications_modbus_read_set(
     db_filepath,
     table_name,
     specification_id,
-    specification_modbus_report_intro_text,
-    specification_modbus_report_module_id_text,
-    specification_modbus_report_function_code_text,
-    specification_modbus_report_bytes_number_text,
-    specification_modbus_report_register_value_text,
-    specification_modbus_report_crc16_text,
+    specification_modbus_read_intro_text,
+    specification_modbus_read_module_id_text,
+    specification_modbus_read_function_code_text,
+    specification_modbus_read_bytes_number_text,
+    specification_modbus_read_register_value_text,
+    specification_modbus_read_crc16_text,
 ):
-    sql_specifications_modbus_report_create(db_filepath, table_name,)
-    sql_specifications_modbus_report_update(db_filepath, table_name,)
+    sql_specifications_modbus_read_create(db_filepath, table_name,)
+    sql_specifications_modbus_read_update(db_filepath, table_name,)
     db = sqlite3.connect(db_filepath)
     cur = db.cursor()
     cur.execute(f'''
         INSERT INTO {table_name} (
             specification_id,
-            specification_modbus_report_intro_text,
-            specification_modbus_report_module_id_text,
-            specification_modbus_report_function_code_text,
-            specification_modbus_report_bytes_number_text,
-            specification_modbus_report_register_value_text,
-            specification_modbus_report_crc16_text
+            specification_modbus_read_intro_text,
+            specification_modbus_read_module_id_text,
+            specification_modbus_read_function_code_text,
+            specification_modbus_read_bytes_number_text,
+            specification_modbus_read_register_value_text,
+            specification_modbus_read_crc16_text
         ) 
         VALUES (?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(specification_id) DO UPDATE SET
-            specification_modbus_report_intro_text = excluded.specification_modbus_report_intro_text,
-            specification_modbus_report_module_id_text = excluded.specification_modbus_report_module_id_text,
-            specification_modbus_report_function_code_text = excluded.specification_modbus_report_function_code_text,
-            specification_modbus_report_bytes_number_text = excluded.specification_modbus_report_bytes_number_text,
-            specification_modbus_report_register_value_text = excluded.specification_modbus_report_register_value_text,
-            specification_modbus_report_crc16_text = excluded.specification_modbus_report_crc16_text
+            specification_modbus_read_intro_text = excluded.specification_modbus_read_intro_text,
+            specification_modbus_read_module_id_text = excluded.specification_modbus_read_module_id_text,
+            specification_modbus_read_function_code_text = excluded.specification_modbus_read_function_code_text,
+            specification_modbus_read_bytes_number_text = excluded.specification_modbus_read_bytes_number_text,
+            specification_modbus_read_register_value_text = excluded.specification_modbus_read_register_value_text,
+            specification_modbus_read_crc16_text = excluded.specification_modbus_read_crc16_text
     ''', (
         specification_id,
-        specification_modbus_report_intro_text,
-        specification_modbus_report_module_id_text,
-        specification_modbus_report_function_code_text,
-        specification_modbus_report_bytes_number_text,
-        specification_modbus_report_register_value_text,
-        specification_modbus_report_crc16_text,
+        specification_modbus_read_intro_text,
+        specification_modbus_read_module_id_text,
+        specification_modbus_read_function_code_text,
+        specification_modbus_read_bytes_number_text,
+        specification_modbus_read_register_value_text,
+        specification_modbus_read_crc16_text,
     ))
     db.commit()
     db.close()
 
-def sql_specifications_modbus_report_get_by_specification_id(
+def sql_specifications_modbus_read_get_by_specification_id(
     db_filepath,
     table_name,
     specification_id,
