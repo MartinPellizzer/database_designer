@@ -5,9 +5,9 @@
 # conn.commit()
 # conn.close()
 
-import sqlite3
+# import sqlite3
 
-conn = sqlite3.connect("requirements_projects/modulo_relay_x8.db")
+# conn = sqlite3.connect("requirements_projects/modulo_relay_x8.db")
 # conn = sqlite3.connect("test.db")
 # conn.execute("ALTER TABLE categories RENAME COLUMN category_text TO category_lvl1_text")
 # conn.execute("ALTER TABLE statements RENAME COLUMN requirement_text TO statement_text")
@@ -21,12 +21,36 @@ conn = sqlite3.connect("requirements_projects/modulo_relay_x8.db")
 # conn.execute("ALTER TABLE specifications_modbus ADD COLUMN specification_modbus_stop_bits_text TEXT")
 # conn.execute("ALTER TABLE specifications_modbus ADD COLUMN specification_modbus_parity_text TEXT")
 # conn.execute("ALTER TABLE specifications_modbus_report RENAME TO specifications_modbus_read;")
-conn.execute("ALTER TABLE specifications_modbus_read RENAME COLUMN specification_modbus_report_intro_text TO specification_modbus_read_intro_text")
-conn.execute("ALTER TABLE specifications_modbus_read RENAME COLUMN specification_modbus_report_module_id_text TO specification_modbus_read_module_id_text")
-conn.execute("ALTER TABLE specifications_modbus_read RENAME COLUMN specification_modbus_report_function_code_text TO specification_modbus_read_function_code_text")
-conn.execute("ALTER TABLE specifications_modbus_read RENAME COLUMN specification_modbus_report_bytes_number_text TO specification_modbus_read_bytes_number_text")
-conn.execute("ALTER TABLE specifications_modbus_read RENAME COLUMN specification_modbus_report_register_value_text TO specification_modbus_read_register_value_text")
-conn.execute("ALTER TABLE specifications_modbus_read RENAME COLUMN specification_modbus_report_crc16_text TO specification_modbus_read_crc16_text")
+# conn.execute("ALTER TABLE specifications_modbus_read RENAME COLUMN specification_modbus_report_intro_text TO specification_modbus_read_intro_text")
+# conn.execute("ALTER TABLE specifications_modbus_read RENAME COLUMN specification_modbus_report_module_id_text TO specification_modbus_read_module_id_text")
+# conn.execute("ALTER TABLE specifications_modbus_read RENAME COLUMN specification_modbus_report_function_code_text TO specification_modbus_read_function_code_text")
+# conn.execute("ALTER TABLE specifications_modbus_read RENAME COLUMN specification_modbus_report_bytes_number_text TO specification_modbus_read_bytes_number_text")
+# conn.execute("ALTER TABLE specifications_modbus_read RENAME COLUMN specification_modbus_report_register_value_text TO specification_modbus_read_register_value_text")
+# conn.execute("ALTER TABLE specifications_modbus_read RENAME COLUMN specification_modbus_report_crc16_text TO specification_modbus_read_crc16_text")
             
-conn.commit()
-conn.close()
+# conn.commit()
+# conn.close()
+
+import json
+from lib import sql_utils
+
+db_filepath = 'requirements_projects/modulo_relay_x8.db'
+table_name = 'specifications_modbus_write_table_name'
+sql_utils.sql_specifications_modbus_write_drop(db_filepath, table_name)
+sql_utils.sql_specifications_modbus_write_create(db_filepath, table_name)
+sql_utils.sql_specifications_modbus_write_update(db_filepath, table_name)
+print(sql_utils.sql_specifications_modbus_write_get_all(db_filepath, table_name))
+
+sql_utils.sql_specifications_modbus_write_set(
+    db_filepath,
+    table_name,
+    '0',
+    '01',
+    '05',
+    '00',
+    '00',
+    'FF',
+    '00',
+)
+
+print(json.dumps(sql_utils.sql_specifications_modbus_write_get_all(db_filepath, table_name), indent=4))
