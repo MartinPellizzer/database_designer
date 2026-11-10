@@ -224,50 +224,182 @@ def sql_specifications_modbus_write_set(
     db_filepath,
     table_name,
     specification_id,
-    specification_modbus_write_slave_id_text,
-    specification_modbus_write_function_code_text,
-    specification_modbus_write_coil_address_hb_text,
-    specification_modbus_write_coil_address_lb_text,
-    specification_modbus_write_coil_value_hb_text,
-    specification_modbus_write_coil_value_lb_text,
+    specification_fields,
 ):
-    specifications_modbus_write_fields
-
     sql_specifications_modbus_write_create(db_filepath, table_name,)
     sql_specifications_modbus_write_update(db_filepath, table_name,)
     db = sqlite3.connect(db_filepath)
     cur = db.cursor()
+    
+    fields_insert = []
+    for field in specifications_modbus_write_fields:
+        fields_insert.append(f'{field}')
+    fields_insert = ',\n'.join(fields_insert)
+    
+    fields_update = []
+    for field in specifications_modbus_write_fields:
+        fields_update.append(f'{field} = excluded.{field}')
+    fields_update = ',\n'.join(fields_update)
+    
+    fields_items = specification_fields
+
     cur.execute(f'''
         INSERT INTO {table_name} (
             specification_id,
-            specification_modbus_write_slave_id_text,
-            specification_modbus_write_function_code_text,
-            specification_modbus_write_coil_address_hb_text,
-            specification_modbus_write_coil_address_lb_text,
-            specification_modbus_write_coil_value_hb_text,
-            specification_modbus_write_coil_value_lb_text
+            {fields_insert}
         ) 
         VALUES (?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(specification_id) DO UPDATE SET
-            specification_modbus_write_slave_id_text = excluded.specification_modbus_write_slave_id_text,
-            specification_modbus_write_function_code_text = excluded.specification_modbus_write_function_code_text,
-            specification_modbus_write_coil_address_hb_text = excluded.specification_modbus_write_coil_address_hb_text,
-            specification_modbus_write_coil_address_lb_text = excluded.specification_modbus_write_coil_address_lb_text,
-            specification_modbus_write_coil_value_hb_text = excluded.specification_modbus_write_coil_value_hb_text,
-            specification_modbus_write_coil_value_lb_text = excluded.specification_modbus_write_coil_value_lb_text
+            {fields_update}
     ''', (
         specification_id,
-        specification_modbus_write_slave_id_text,
-        specification_modbus_write_function_code_text,
-        specification_modbus_write_coil_address_hb_text,
-        specification_modbus_write_coil_address_lb_text,
-        specification_modbus_write_coil_value_hb_text,
-        specification_modbus_write_coil_value_lb_text,
+        *fields_items,
     ))
     db.commit()
     db.close()
 
 def sql_specifications_modbus_write_get_by_specification_id(
+    db_filepath,
+    table_name,
+    specification_id,
+):
+    db = sqlite3.connect(db_filepath)
+    db.row_factory = sqlite3.Row
+    cur = db.cursor()
+    records = db.execute(f'''
+        SELECT * 
+        FROM {table_name}
+        WHERE specification_id = ?
+    ''', (specification_id,))
+    rows = records.fetchall()
+    items = [dict(row) for row in rows]
+    if items != []: item = items[0]
+    else: item = None
+    db.close()
+    return item
+
+# ----------------------------------------------------------
+# SQLITE SPECIFICATIONS MODBUS WRITE RESPONSE
+# ----------------------------------------------------------
+
+specifications_modbus_write_response_fields = [
+    'specification_modbus_write_response_slave_id_text',
+    'specification_modbus_write_response_function_code_text',
+    'specification_modbus_write_response_coil_address_hb_text',
+    'specification_modbus_write_response_coil_address_lb_text',
+    'specification_modbus_write_response_coil_value_hb_text',
+    'specification_modbus_write_response_coil_value_lb_text',
+]
+
+def sql_specifications_modbus_write_response_drop(
+    db_filepath,
+    table_name,
+):
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        DROP TABLE IF EXISTS {table_name}
+    ''')
+    db.commit()
+    db.close()
+
+def sql_specifications_modbus_write_response_create(
+    db_filepath,
+    table_name,
+):
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    fields = []
+    for field in specifications_modbus_write_response_fields:
+        fields.append(f'{field} TEXT')
+    fields = ',\n'.join(fields)
+    query = f'''
+        CREATE TABLE IF NOT EXISTS {table_name} (
+            specification_modbus_id INTEGER PRIMARY KEY, 
+            specification_id TEXT UNIQUE,
+            {fields}
+        )
+    '''
+    cur.execute(query)
+    db.commit()
+    db.close()
+
+def sql_specifications_modbus_write_response_get_all(
+    db_filepath,
+    table_name,
+):
+    db = sqlite3.connect(db_filepath)
+    db.row_factory = sqlite3.Row
+    cur = db.cursor()
+    rows = db.execute(f"SELECT * FROM {table_name}").fetchall()
+    items = [dict(row) for row in rows]
+    db.close()
+    return items
+
+def sql_specifications_modbus_write_response_update(
+    db_filepath,
+    table_name,
+):
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    columns = {}
+    for field in specifications_modbus_write_response_fields:
+        columns[field] = 'TEXT'
+    existing = {row[1] for row in cur.execute(f"PRAGMA table_info({table_name})")}
+    for name, definition in columns.items():
+        if name not in existing:
+            cur.execute(f"ALTER TABLE {table_name} ADD COLUMN {name} {definition}")
+    db.commit()
+    db.close()
+
+def sql_specifications_modbus_write_response_set(
+    db_filepath,
+    table_name,
+    specification_id,
+    specification_fields,
+):
+    # print(db_filepath)
+    # print(table_name)
+    # print(specification_id)
+    # print(specification_fields)
+    sql_specifications_modbus_write_response_create(db_filepath, table_name,)
+    sql_specifications_modbus_write_response_update(db_filepath, table_name,)
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+
+    # fields = [row[1] for row in cur.execute(f"PRAGMA table_info({table_name})")]
+    # for field in fields:
+    #     print(field)
+    # return
+    
+    fields_insert = []
+    for field in specifications_modbus_write_response_fields:
+        fields_insert.append(f'{field}')
+    fields_insert = ',\n'.join(fields_insert)
+    
+    fields_update = []
+    for field in specifications_modbus_write_response_fields:
+        fields_update.append(f'{field} = excluded.{field}')
+    fields_update = ',\n'.join(fields_update)
+    
+    fields_items = specification_fields
+
+    cur.execute(f'''
+        INSERT INTO {table_name} (
+            specification_id,
+            {fields_insert}
+        ) 
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(specification_id) DO UPDATE SET
+            {fields_update}
+    ''', (
+        specification_id,
+        *fields_items,
+    ))
+    db.commit()
+    db.close()
+
+def sql_specifications_modbus_write_response_get_by_specification_id(
     db_filepath,
     table_name,
     specification_id,

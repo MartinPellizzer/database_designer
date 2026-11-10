@@ -31,26 +31,48 @@
 # conn.commit()
 # conn.close()
 
+import sqlite3
 import json
 from lib import sql_utils
 
+conn = sqlite3.connect("mydb.sqlite")
+fields = [row[1] for row in conn.execute("PRAGMA table_info(mytable)")]
+
 db_filepath = 'requirements_projects/modulo_relay_x8.db'
 table_name = 'specifications_modbus_write_table_name'
+# table_name = 'specifications_modbus_write_response_table_name'
+
+# sql_utils.sql_specifications_modbus_write_create(db_filepath, table_name,)
+# conn = sqlite3.connect(db_filepath)
+# fields = [row[1] for row in conn.execute(f"PRAGMA table_info({table_name})")]
+# for field in fields:
+#     print(field)
+# quit()
+
+# table specifications_modbus_write_response has no column named specification_modbus_write_response_slave_id_text
+
 sql_utils.sql_specifications_modbus_write_drop(db_filepath, table_name)
 sql_utils.sql_specifications_modbus_write_create(db_filepath, table_name)
 sql_utils.sql_specifications_modbus_write_update(db_filepath, table_name)
 print(sql_utils.sql_specifications_modbus_write_get_all(db_filepath, table_name))
 
-sql_utils.sql_specifications_modbus_write_set(
-    db_filepath,
-    table_name,
-    '0',
+specification_fields = [
     '01',
     '05',
     '00',
     '00',
     'FF',
     '00',
+]
+
+sql_utils.sql_specifications_modbus_write_set(
+    db_filepath,
+    table_name,
+    '0',
+    specification_fields,
 )
 
 print(json.dumps(sql_utils.sql_specifications_modbus_write_get_all(db_filepath, table_name), indent=4))
+
+
+# sql_utils.sql_specifications_modbus_write_response_drop(db_filepath, table_name,)
