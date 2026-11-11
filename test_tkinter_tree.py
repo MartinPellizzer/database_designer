@@ -2071,6 +2071,7 @@ def tk_specifications_delete(event):
     sql_specifications_delete(id)
     specifications_tree.delete(item)
 
+# ;jump
 def tk_specifications_select(event):
     if not specifications_tree.selection(): return
     item = specifications_tree.selection()[0]
@@ -2108,18 +2109,75 @@ def tk_specifications_select(event):
         )
         print(json.dumps(items, indent=4))
     elif specification_template_text == 'modbus_write':
-        items = sql_utils.sql_specifications_modbus_write_get_by_specification_id(
+        specifications_frame_modbus_tabs.select(specifications_frame_center_bottom_modbus_write_tab)
+        ###
+        item = sql_utils.sql_specifications_modbus_write_get_by_specification_id(
             db_filepath,
             specifications_modbus_write_table_name,
             specification_id,
         )
-        print(json.dumps(items, indent=4))
-        items = sql_utils.sql_specifications_modbus_write_response_get_by_specification_id(
+        print(json.dumps(item, indent=4))
+        specifications_modbus_write_intro_text = item['specification_modbus_write_intro_text']
+        specification_modbus_write_intro_text = item['specification_modbus_write_intro_text']
+        specification_modbus_write_slave_id_text = item['specification_modbus_write_slave_id_text']
+        specification_modbus_write_function_code_text = item['specification_modbus_write_function_code_text']
+        specification_modbus_write_coil_address_hb_text = item['specification_modbus_write_coil_address_hb_text']
+        specification_modbus_write_coil_address_lb_text = item['specification_modbus_write_coil_address_lb_text']
+        specification_modbus_write_coil_value_hb_text = item['specification_modbus_write_coil_value_hb_text']
+        specification_modbus_write_coil_value_lb_text = item['specification_modbus_write_coil_value_lb_text']
+        if specification_modbus_write_intro_text == None: specification_modbus_write_response_intro_text = ''
+        specifications_modbus_write_request_text_intro_text.delete("1.0", tk.END)
+        specifications_modbus_write_request_text_intro_text.insert("1.0", specifications_modbus_write_intro_text)
+        specifications_modbus_write_request_entry_slave_id_text.delete(0, tk.END)
+        specifications_modbus_write_request_entry_slave_id_text.insert(0, specification_modbus_write_slave_id_text)
+        specifications_modbus_write_request_entry_function_code_text.delete(0, tk.END)
+        specifications_modbus_write_request_entry_function_code_text.insert(0, specification_modbus_write_function_code_text)
+        specifications_modbus_write_request_entry_coil_address_hb_text.delete(0, tk.END)
+        specifications_modbus_write_request_entry_coil_address_hb_text.insert(0, specification_modbus_write_coil_address_hb_text)
+        specifications_modbus_write_request_entry_coil_address_lb_text.delete(0, tk.END)
+        specifications_modbus_write_request_entry_coil_address_lb_text.insert(0, specification_modbus_write_coil_address_lb_text)
+        specifications_modbus_write_request_entry_coil_value_hb_text.delete(0, tk.END)
+        specifications_modbus_write_request_entry_coil_value_hb_text.insert(0, specification_modbus_write_coil_value_hb_text)
+        specifications_modbus_write_request_entry_coil_value_lb_text.delete(0, tk.END)
+        specifications_modbus_write_request_entry_coil_value_lb_text.insert(0, specification_modbus_write_coil_value_lb_text)
+
+        ###
+        item = sql_utils.sql_specifications_modbus_write_response_get_by_specification_id(
             db_filepath,
             specifications_modbus_write_response_table_name,
             specification_id,
         )
-        print(json.dumps(items, indent=4))
+        print(json.dumps(item, indent=4))
+        specification_modbus_write_response_intro_text = item['specification_modbus_write_response_intro_text']
+        specification_modbus_write_response_slave_id_text = item['specification_modbus_write_response_slave_id_text']
+        specification_modbus_write_response_function_code_text = item['specification_modbus_write_response_function_code_text']
+        specification_modbus_write_response_coil_address_hb_text = item['specification_modbus_write_response_coil_address_hb_text']
+        specification_modbus_write_response_coil_address_lb_text = item['specification_modbus_write_response_coil_address_lb_text']
+        specification_modbus_write_response_coil_value_hb_text = item['specification_modbus_write_response_coil_value_hb_text']
+        specification_modbus_write_response_coil_value_lb_text = item['specification_modbus_write_response_coil_value_lb_text']
+        if specification_modbus_write_response_intro_text == None: specification_modbus_write_response_intro_text = ''
+        # print(specification_modbus_write_response_intro_text)
+        # print(specification_modbus_write_response_slave_id_text)
+        # print(specification_modbus_write_response_function_code_text)
+        # print(specification_modbus_write_response_coil_address_hb_text)
+        # print(specification_modbus_write_response_coil_address_lb_text)
+        # print(specification_modbus_write_response_coil_value_hb_text)
+        # print(specification_modbus_write_response_coil_value_lb_text)
+        specifications_modbus_write_response_text_intro_text.delete("1.0", tk.END)
+        specifications_modbus_write_response_text_intro_text.insert("1.0", specification_modbus_write_response_intro_text)
+        specifications_modbus_write_response_entry_slave_id_text.delete(0, tk.END)
+        specifications_modbus_write_response_entry_slave_id_text.insert(0, specification_modbus_write_response_slave_id_text)
+        specifications_modbus_write_response_entry_function_code_text.delete(0, tk.END)
+        specifications_modbus_write_response_entry_function_code_text.insert(0, specification_modbus_write_response_function_code_text)
+        specifications_modbus_write_response_entry_coil_address_hb_text.delete(0, tk.END)
+        specifications_modbus_write_response_entry_coil_address_hb_text.insert(0, specification_modbus_write_response_coil_address_hb_text)
+        specifications_modbus_write_response_entry_coil_address_lb_text.delete(0, tk.END)
+        specifications_modbus_write_response_entry_coil_address_lb_text.insert(0, specification_modbus_write_response_coil_address_lb_text)
+        specifications_modbus_write_response_entry_coil_value_hb_text.delete(0, tk.END)
+        specifications_modbus_write_response_entry_coil_value_hb_text.insert(0, specification_modbus_write_response_coil_value_hb_text)
+        specifications_modbus_write_response_entry_coil_value_lb_text.delete(0, tk.END)
+        specifications_modbus_write_response_entry_coil_value_lb_text.insert(0, specification_modbus_write_response_coil_value_lb_text)
+
     elif specification_template_text == 'modbus_read':
         item = sql_utils.sql_specifications_modbus_read_get_by_specification_id(
             db_filepath,
@@ -2127,7 +2185,6 @@ def tk_specifications_select(event):
             specification_id,
         )
         print(json.dumps(item, indent=4))
-        # ;jump
         specifications_frame_modbus_tabs.select(specifications_frame_center_bottom_modbus_read_tab)
         
         specification_modbus_read_intro_text = item['specification_modbus_read_intro_text']
@@ -2310,13 +2367,18 @@ def tk_specifications_rs485_delete():
     )
     # specifications_tree.delete(item)
 
+# ;jump
 def tk_specifications_modbus_write_set():
+    specifications_modbus_write_request_intro_text = specifications_modbus_write_request_text_intro_text.get("1.0", tk.END)
     specifications_modbus_write_request_slave_id_text = specifications_modbus_write_request_entry_slave_id_text.get()
     specifications_modbus_write_request_function_code_text = specifications_modbus_write_request_entry_function_code_text.get()
     specifications_modbus_write_request_coil_address_hb_text = specifications_modbus_write_request_entry_coil_address_hb_text.get()
     specifications_modbus_write_request_coil_address_lb_text = specifications_modbus_write_request_entry_coil_address_lb_text.get()
     specifications_modbus_write_request_coil_value_hb_text = specifications_modbus_write_request_entry_coil_value_hb_text.get()
     specifications_modbus_write_request_coil_value_lb_text = specifications_modbus_write_request_entry_coil_value_lb_text.get()
+    if specifications_modbus_write_request_intro_text.strip() == '':
+        print('ERR: specifications_modbus_write_request_intro_text text NOT valid')
+        return
     if specifications_modbus_write_request_slave_id_text.strip() == '':
         print('ERR: specifications_modbus_write_request_slave_id_text text NOT valid')
         return
@@ -2340,6 +2402,7 @@ def tk_specifications_modbus_write_set():
     specification_id = specifications_tree.item(item)["values"][0]
     ###
     specification_fields = [
+        specifications_modbus_write_request_intro_text,
         specifications_modbus_write_request_slave_id_text,
         specifications_modbus_write_request_function_code_text,
         specifications_modbus_write_request_coil_address_hb_text,
@@ -2361,12 +2424,16 @@ def tk_specifications_modbus_write_set():
     ################################################################################
     ################################################################################
     ################################################################################
+    specifications_modbus_write_response_intro_text = specifications_modbus_write_response_text_intro_text.get("1.0", tk.END)
     specifications_modbus_write_response_slave_id_text = specifications_modbus_write_response_entry_slave_id_text.get()
     specifications_modbus_write_response_function_code_text = specifications_modbus_write_response_entry_function_code_text.get()
     specifications_modbus_write_response_coil_address_hb_text = specifications_modbus_write_response_entry_coil_address_hb_text.get()
     specifications_modbus_write_response_coil_address_lb_text = specifications_modbus_write_response_entry_coil_address_lb_text.get()
     specifications_modbus_write_response_coil_value_hb_text = specifications_modbus_write_response_entry_coil_value_hb_text.get()
     specifications_modbus_write_response_coil_value_lb_text = specifications_modbus_write_response_entry_coil_value_lb_text.get()
+    if specifications_modbus_write_response_intro_text.strip() == '':
+        print('ERR: specifications_modbus_write_response_intro_text text NOT valid')
+        return
     if specifications_modbus_write_response_slave_id_text.strip() == '':
         print('ERR: specifications_modbus_write_response_slave_id_text text NOT valid')
         return
@@ -2390,6 +2457,7 @@ def tk_specifications_modbus_write_set():
     specification_id = specifications_tree.item(item)["values"][0]
     ###
     specification_fields = [
+        specifications_modbus_write_response_intro_text,
         specifications_modbus_write_response_slave_id_text,
         specifications_modbus_write_response_function_code_text,
         specifications_modbus_write_response_coil_address_hb_text,
@@ -2407,7 +2475,7 @@ def tk_specifications_modbus_write_set():
         db_filepath, 
         specifications_modbus_write_response_table_name,
     )
-    print(res)
+    print(json.dumps(res, indent=4))
 
 def tk_specifications_modbus_write_delete():
     pass
@@ -3019,27 +3087,57 @@ def markdown_specifications_create():
             ''')
 
         elif specification_template_text.strip().lower() == 'modbus_write':
-            output_text += dedent(f'''
-                The Relay Module shall turn ON the relay driver number 1 when it receives the following command from CORE.
-            ''')
-
-            output_text += dedent(f'''
-                Master -> Slave (Request)
-            ''')
+            def crc16(data):
+                crc = 0xFFFF
+                for b in data:
+                    crc ^= b
+                    for _ in range(8):
+                        crc = (crc >> 1) ^ 0xA001 if crc & 1 else crc >> 1
+                return crc
 
             specification_modbus_write_item = sql_utils.sql_specifications_modbus_write_get_by_specification_id(
                 db_filepath,
                 specifications_modbus_write_table_name,
                 specification_id,
             )
+            specifications_modbus_write_intro_text = specification_modbus_write_item['specification_modbus_write_intro_text']
             specifications_modbus_write_slave_id_text = specification_modbus_write_item['specification_modbus_write_slave_id_text']
             specifications_modbus_write_function_code_text = specification_modbus_write_item['specification_modbus_write_function_code_text']
             specifications_modbus_write_coil_address_hb_text = specification_modbus_write_item['specification_modbus_write_coil_address_hb_text']
             specifications_modbus_write_coil_address_lb_text = specification_modbus_write_item['specification_modbus_write_coil_address_lb_text']
             specifications_modbus_write_coil_value_hb_text = specification_modbus_write_item['specification_modbus_write_coil_value_hb_text']
             specifications_modbus_write_coil_value_lb_text = specification_modbus_write_item['specification_modbus_write_coil_value_lb_text']
+
             output_text += dedent(f'''
-                | Setting                  | Value                                |
+                {specifications_modbus_write_intro_text}
+            ''')
+
+            hex_list = [
+                specifications_modbus_write_slave_id_text,
+                specifications_modbus_write_function_code_text,
+                specifications_modbus_write_coil_address_hb_text,
+                specifications_modbus_write_coil_address_lb_text,
+                specifications_modbus_write_coil_value_hb_text,
+                specifications_modbus_write_coil_value_lb_text,
+            ]
+
+            # print(hex_list)
+
+            data = bytes(int(x, 16) for x in hex_list)
+
+            crc = crc16(data)
+            # print(f"{crc:04X}")
+            # print(crc.to_bytes(2, 'little').hex().upper())
+
+            high_byte = (crc >> 8) & 0xFF
+            low_byte  = crc & 0xFF
+
+            # print(f"high_byte = 0x{high_byte:02X}")  # 0x3A
+            # print(f"low_byte  = 0x{low_byte:02X}")   # 0x8C
+            # quit()
+
+            output_text += dedent(f'''
+                | Setting                  | Value (HEX)                          |
                 | ------------------------ | ------------------------------------ |
                 | Slave ID                 | {specifications_modbus_write_slave_id_text} |
                 | Function Code            | {specifications_modbus_write_function_code_text} |
@@ -3047,6 +3145,8 @@ def markdown_specifications_create():
                 | Coil Address - Low Byte  | {specifications_modbus_write_coil_address_lb_text} |
                 | Coil Value - High Byte   | {specifications_modbus_write_coil_value_hb_text} |
                 | Coil Value - Low Byte    | {specifications_modbus_write_coil_value_lb_text} |
+                | CRC-16 - High Byte       | {high_byte:02X} |
+                | CRC-16 - Low Byte        | {low_byte:02X}  |
             ''')
             data_frame = ' '.join([
                 specifications_modbus_write_slave_id_text, 
@@ -3055,6 +3155,8 @@ def markdown_specifications_create():
                 specifications_modbus_write_coil_address_lb_text, 
                 specifications_modbus_write_coil_value_hb_text, 
                 specifications_modbus_write_coil_value_lb_text, 
+                f'{low_byte:02X}',
+                f'{high_byte:02X}',
             ])
             print(data_frame)
             print(specifications_modbus_write_slave_id_text)
@@ -3066,15 +3168,20 @@ def markdown_specifications_create():
             # quit()
 
             output_text += dedent(f'''
-                The complete response data frame is: {data_frame}
+                The complete request data frame is: {data_frame}
             ''')
 
             output_text += dedent(f'''
-                -
+                ---
             ''')
 
             ################################################################################
             
+                
+            output_text += dedent(f'''
+                The Relay Module (Slave) shall respond back to CORE (Master) with the following message when the request is accepted.
+            ''')
+
             output_text += dedent(f'''
                 Slave -> Master (Response)
             ''')
@@ -3090,8 +3197,22 @@ def markdown_specifications_create():
             specifications_modbus_write_response_coil_address_lb_text = specification_modbus_write_response_item['specification_modbus_write_response_coil_address_lb_text']
             specifications_modbus_write_response_coil_value_hb_text = specification_modbus_write_response_item['specification_modbus_write_response_coil_value_hb_text']
             specifications_modbus_write_response_coil_value_lb_text = specification_modbus_write_response_item['specification_modbus_write_response_coil_value_lb_text']
+            ###
+            hex_list = [
+                specifications_modbus_write_response_slave_id_text,
+                specifications_modbus_write_response_function_code_text,
+                specifications_modbus_write_response_coil_address_hb_text,
+                specifications_modbus_write_response_coil_address_lb_text,
+                specifications_modbus_write_response_coil_value_hb_text,
+                specifications_modbus_write_response_coil_value_lb_text,
+            ]
+            data = bytes(int(x, 16) for x in hex_list)
+            crc = crc16(data)
+            high_byte = (crc >> 8) & 0xFF
+            low_byte  = crc & 0xFF
+            ###
             output_text += dedent(f'''
-                | Setting                  | Value                                |
+                | Setting                  | Value (HEX)                          |
                 | ------------------------ | ------------------------------------ |
                 | Slave ID                 | {specifications_modbus_write_response_slave_id_text} |
                 | Function Code            | {specifications_modbus_write_response_function_code_text} |
@@ -3099,6 +3220,8 @@ def markdown_specifications_create():
                 | Coil Address - Low Byte  | {specifications_modbus_write_response_coil_address_lb_text} |
                 | Coil Value - High Byte   | {specifications_modbus_write_response_coil_value_hb_text} |
                 | Coil Value - Low Byte    | {specifications_modbus_write_response_coil_value_lb_text} |
+                | CRC-16 - High Byte       | {high_byte:02X} |
+                | CRC-16 - Low Byte        | {low_byte:02X}  |
             ''')
             data_frame = ' '.join([
                 specifications_modbus_write_response_slave_id_text, 
@@ -3107,6 +3230,8 @@ def markdown_specifications_create():
                 specifications_modbus_write_response_coil_address_lb_text, 
                 specifications_modbus_write_response_coil_value_hb_text, 
                 specifications_modbus_write_response_coil_value_lb_text, 
+                f'{low_byte:02X}',
+                f'{high_byte:02X}',
             ])
             print(data_frame)
             print(specifications_modbus_write_response_slave_id_text)
@@ -4026,7 +4151,6 @@ specifications_frame_modbus = tk.Frame(specifications_frame_center_bottom_modbus
 specifications_frame_modbus.pack(side="left", fill="both", expand=True)
 
 
-# ;jump
 specifications_frame_modbus_tabs = ttk.Notebook(specifications_frame_modbus)
 specifications_frame_modbus_tabs.pack(fill="both", expand=True)
 
@@ -4109,19 +4233,22 @@ specifications_frame_modbus_tabs.add(specifications_frame_center_bottom_modbus_w
 specifications_frame_modbus_write = tk.Frame(specifications_frame_center_bottom_modbus_write_tab)
 specifications_frame_modbus_write.pack(side="left", fill="both", expand=True)
 
-
-# MODBUS READ REQUEST
+# MODBUS WRITE REQUEST
 # ..........................................................
 
 specifications_frame_modbus_write_1 = tk.LabelFrame(specifications_frame_modbus_write, text="Request", width=240)
 specifications_frame_modbus_write_1.pack(side="left", fill="y")
 specifications_frame_modbus_write_1.pack_propagate(False)
 
+tk.Label(specifications_frame_modbus_write_1, text="Intro").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+specifications_modbus_write_request_text_intro_text = tk.Text(specifications_frame_modbus_write_1, wrap="word", height=5)
+specifications_modbus_write_request_text_intro_text.pack(fill="x", padx=(padx, padx))
+
 label_w = 20
 
 specifications_modbus_write_request_frame_slave_id = tk.Frame(specifications_frame_modbus_write_1)
 specifications_modbus_write_request_frame_slave_id.pack(side="top", anchor="nw", fill="x")
-tk.Label(specifications_modbus_write_request_frame_slave_id, text="Slave Address", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
+tk.Label(specifications_modbus_write_request_frame_slave_id, text="Slave ID", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
 specifications_modbus_write_request_entry_slave_id_text = tk.Entry(specifications_modbus_write_request_frame_slave_id)
 specifications_modbus_write_request_entry_slave_id_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
 specifications_modbus_write_request_entry_slave_id_text.insert(0, "01")
@@ -4161,18 +4288,22 @@ specifications_modbus_write_request_entry_coil_value_lb_text = tk.Entry(specific
 specifications_modbus_write_request_entry_coil_value_lb_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
 specifications_modbus_write_request_entry_coil_value_lb_text.insert(0, "00")
 
-# MODBUS READ RESPONSE
+# MODBUS WRITE RESPONSE
 # ..........................................................
 
-specifications_frame_modbus_write_2 = tk.LabelFrame(specifications_frame_modbus_write, text="Response OK", width=240)
+specifications_frame_modbus_write_2 = tk.LabelFrame(specifications_frame_modbus_write, text="Response Successful", width=240)
 specifications_frame_modbus_write_2.pack(side="left", fill="y")
 specifications_frame_modbus_write_2.pack_propagate(False)
+
+tk.Label(specifications_frame_modbus_write_2, text="Intro").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+specifications_modbus_write_response_text_intro_text = tk.Text(specifications_frame_modbus_write_2, wrap="word", height=5)
+specifications_modbus_write_response_text_intro_text.pack(fill="x", padx=(padx, padx))
 
 label_w = 20
 
 specifications_modbus_write_response_frame_slave_id = tk.Frame(specifications_frame_modbus_write_2)
 specifications_modbus_write_response_frame_slave_id.pack(side="top", anchor="nw", fill="x")
-tk.Label(specifications_modbus_write_response_frame_slave_id, text="Slave Address", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
+tk.Label(specifications_modbus_write_response_frame_slave_id, text="Slave ID", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
 specifications_modbus_write_response_entry_slave_id_text = tk.Entry(specifications_modbus_write_response_frame_slave_id)
 specifications_modbus_write_response_entry_slave_id_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
 specifications_modbus_write_response_entry_slave_id_text.insert(0, "01")
@@ -4243,20 +4374,52 @@ specifications_modbus_write_response_entry_coil_value_lb_text.insert(0, "00")
 # specifications_modbus_write_entry_crc16_text.delete(0, tk.END)
 # specifications_modbus_write_entry_crc16_text.insert(0, "0xXX 0xXX")
 
+
+
+# MODBUS WRITE RESPONSE (EXCEPTION)
 # ..........................................................
 
-specifications_frame_modbus_write_2 = tk.Frame(specifications_frame_modbus_write, width=200)
-specifications_frame_modbus_write_2.pack(side="left", fill="y")
-specifications_frame_modbus_write_2.pack_propagate(False)
+# specifications_frame_modbus_write_2 = tk.LabelFrame(specifications_frame_modbus_write, text="Response Exception", width=240)
+# specifications_frame_modbus_write_2.pack(side="left", fill="y")
+# specifications_frame_modbus_write_2.pack_propagate(False)
+
+# label_w = 20
+
+# specifications_modbus_write_response_exception_frame_slave_id = tk.Frame(specifications_frame_modbus_write_2)
+# specifications_modbus_write_response_exception_frame_slave_id.pack(side="top", anchor="nw", fill="x")
+# tk.Label(specifications_modbus_write_response_exception_frame_slave_id, text="Slave ID", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
+# specifications_modbus_write_response_exception_entry_slave_id_text = tk.Entry(specifications_modbus_write_response_exception_frame_slave_id)
+# specifications_modbus_write_response_exception_entry_slave_id_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+# specifications_modbus_write_response_exception_entry_slave_id_text.insert(0, "01")
+
+# specifications_modbus_write_response_exception_frame_function_code = tk.Frame(specifications_frame_modbus_write_2)
+# specifications_modbus_write_response_exception_frame_function_code.pack(side="top", anchor="nw", fill="x")
+# tk.Label(specifications_modbus_write_response_exception_frame_function_code, text="Function Code", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
+# specifications_modbus_write_response_exception_entry_function_code_text = tk.Entry(specifications_modbus_write_response_exception_frame_function_code)
+# specifications_modbus_write_response_exception_entry_function_code_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+# specifications_modbus_write_response_exception_entry_function_code_text.insert(0, "85")
+
+# specifications_modbus_write_response_exception_frame_exception_code = tk.Frame(specifications_frame_modbus_write_2)
+# specifications_modbus_write_response_exception_frame_exception_code.pack(side="top", anchor="nw", fill="x")
+# tk.Label(specifications_modbus_write_response_exception_frame_exception_code, text="Exception Code", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
+# specifications_modbus_write_response_exception_entry_exception_code_text = tk.Entry(specifications_modbus_write_response_exception_frame_exception_code)
+# specifications_modbus_write_response_exception_entry_exception_code_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+# specifications_modbus_write_response_exception_entry_exception_code_text.insert(0, "02")
+
+# ..........................................................
+
+specifications_frame_modbus_write_3 = tk.Frame(specifications_frame_modbus_write, width=200)
+specifications_frame_modbus_write_3.pack(side="left", fill="y")
+specifications_frame_modbus_write_3.pack_propagate(False)
 
 tk.Button(
-    specifications_frame_modbus_write_2,
+    specifications_frame_modbus_write_3,
     text="Set Specifications",
     command=tk_specifications_modbus_write_set
 ).pack(fill="x", padx=(padx, padx), pady=(10, 0))
 
 tk.Button(
-    specifications_frame_modbus_write_2,
+    specifications_frame_modbus_write_3,
     text="Delete Specifications",
     command=tk_specifications_modbus_write_delete
 ).pack(fill="x", padx=(padx, padx), pady=(10, 0))
@@ -4270,8 +4433,6 @@ specifications_frame_modbus_tabs.add(specifications_frame_center_bottom_modbus_r
 specifications_frame_modbus_read = tk.Frame(specifications_frame_center_bottom_modbus_read_tab)
 specifications_frame_modbus_read.pack(side="left", fill="both", expand=True)
 
-
-
 specifications_frame_modbus_read_1 = tk.Frame(specifications_frame_modbus_read, width=200)
 specifications_frame_modbus_read_1.pack(side="left", fill="y")
 specifications_frame_modbus_read_1.pack_propagate(False)
@@ -4280,7 +4441,6 @@ tk.Label(specifications_frame_modbus_read_1, text="Intro").pack(anchor="w", pady
 specifications_modbus_read_text_intro_text = tk.Text(specifications_frame_modbus_read_1, wrap="word", height=5)
 specifications_modbus_read_text_intro_text.pack(fill="x", padx=(padx, padx))
 # specifications_text_specification_text.config(state="disabled", bg=bg, fg=fg)
-
 
 # MODBUS READ REQUEST
 # ..........................................................
@@ -4348,7 +4508,7 @@ specifications_modbus_read_request_entry_coil_value_lb_text.insert(0, "00")
 # specifications_modbus_read_request_entry_crc16_lb_text.insert(0, "8C")
 
 
-# MODBUS READ RESPONSE
+# MODBUS READ RESPONSE (OK)
 # ..........................................................
 
 
@@ -4455,3 +4615,6 @@ tk.Button(
 ).pack(fill="x", padx=(padx, padx), pady=(10, 0))
 
 root.mainloop()
+
+
+# TODO: write correct data for the realy drivers using the ui

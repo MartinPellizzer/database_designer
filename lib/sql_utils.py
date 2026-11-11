@@ -151,6 +151,7 @@ def sql_specifications_rs485_get_by_specification_id(
 # ----------------------------------------------------------
 
 specifications_modbus_write_fields = [
+    'specification_modbus_write_intro_text',
     'specification_modbus_write_slave_id_text',
     'specification_modbus_write_function_code_text',
     'specification_modbus_write_coil_address_hb_text',
@@ -248,7 +249,7 @@ def sql_specifications_modbus_write_set(
             specification_id,
             {fields_insert}
         ) 
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(specification_id) DO UPDATE SET
             {fields_update}
     ''', (
@@ -283,6 +284,7 @@ def sql_specifications_modbus_write_get_by_specification_id(
 # ----------------------------------------------------------
 
 specifications_modbus_write_response_fields = [
+    'specification_modbus_write_response_intro_text',
     'specification_modbus_write_response_slave_id_text',
     'specification_modbus_write_response_function_code_text',
     'specification_modbus_write_response_coil_address_hb_text',
@@ -389,7 +391,7 @@ def sql_specifications_modbus_write_response_set(
             specification_id,
             {fields_insert}
         ) 
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(specification_id) DO UPDATE SET
             {fields_update}
     ''', (
