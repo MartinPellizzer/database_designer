@@ -1,4 +1,4 @@
-# import sqlite3
+import sqlite3
 
 # conn = sqlite3.connect("requirements_projects/modulo_relay_x8.db")
 # conn.execute("ALTER TABLE requirements RENAME TO statements")
@@ -7,7 +7,7 @@
 
 # import sqlite3
 
-# conn = sqlite3.connect("requirements_projects/modulo_relay_x8.db")
+conn = sqlite3.connect("requirements_projects/modulo_relay_x8.db")
 # conn = sqlite3.connect("test.db")
 # conn.execute("ALTER TABLE categories RENAME COLUMN category_text TO category_lvl1_text")
 # conn.execute("ALTER TABLE statements RENAME COLUMN requirement_text TO statement_text")
@@ -26,12 +26,15 @@
 # conn.execute("ALTER TABLE specifications_modbus_read RENAME COLUMN specification_modbus_report_function_code_text TO specification_modbus_read_function_code_text")
 # conn.execute("ALTER TABLE specifications_modbus_read RENAME COLUMN specification_modbus_report_bytes_number_text TO specification_modbus_read_bytes_number_text")
 # conn.execute("ALTER TABLE specifications_modbus_read RENAME COLUMN specification_modbus_report_register_value_text TO specification_modbus_read_register_value_text")
-# conn.execute("ALTER TABLE specifications_modbus_read RENAME COLUMN specification_modbus_report_crc16_text TO specification_modbus_read_crc16_text")
+# conn.execute("ALTER TABLE specifications_modbus_write RENAME COLUMN specification_modbus_write_slave_id_text TO specification_modbus_write_slave_address_text")
+conn.execute("ALTER TABLE specifications_modbus_write_response RENAME COLUMN specification_modbus_write_response_slave_id_text TO specification_modbus_write_response_slave_address_text")
+# conn.execute("ALTER TABLE specifications_modbus_read RENAME COLUMN specification_modbus_read_slave_id_text TO specification_modbus_read_slave_address_text")
             
-# conn.commit()
-# conn.close()
+conn.commit()
+conn.close()
 
-import sqlite3
+quit()
+
 import json
 from lib import sql_utils
 

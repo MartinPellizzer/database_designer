@@ -25,6 +25,8 @@ specifications_modbus_table_name = 'specifications_modbus'
 specifications_modbus_write_table_name = 'specifications_modbus_write'
 specifications_modbus_write_response_table_name = 'specifications_modbus_write_response'
 specifications_modbus_read_table_name = 'specifications_modbus_read'
+specifications_modbus_read_request_table_name = 'specifications_modbus_read_request'
+specifications_modbus_read_response_table_name = 'specifications_modbus_read_response'
 specifications_rs485_table_name = 'specifications_rs485'
 
 
@@ -2071,7 +2073,6 @@ def tk_specifications_delete(event):
     sql_specifications_delete(id)
     specifications_tree.delete(item)
 
-# ;jump
 def tk_specifications_select(event):
     if not specifications_tree.selection(): return
     item = specifications_tree.selection()[0]
@@ -2119,7 +2120,7 @@ def tk_specifications_select(event):
         print(json.dumps(item, indent=4))
         specifications_modbus_write_intro_text = item['specification_modbus_write_intro_text']
         specification_modbus_write_intro_text = item['specification_modbus_write_intro_text']
-        specification_modbus_write_slave_id_text = item['specification_modbus_write_slave_id_text']
+        specification_modbus_write_slave_address_text = item['specification_modbus_write_slave_address_text']
         specification_modbus_write_function_code_text = item['specification_modbus_write_function_code_text']
         specification_modbus_write_coil_address_hb_text = item['specification_modbus_write_coil_address_hb_text']
         specification_modbus_write_coil_address_lb_text = item['specification_modbus_write_coil_address_lb_text']
@@ -2128,8 +2129,8 @@ def tk_specifications_select(event):
         if specification_modbus_write_intro_text == None: specification_modbus_write_response_intro_text = ''
         specifications_modbus_write_request_text_intro_text.delete("1.0", tk.END)
         specifications_modbus_write_request_text_intro_text.insert("1.0", specifications_modbus_write_intro_text)
-        specifications_modbus_write_request_entry_slave_id_text.delete(0, tk.END)
-        specifications_modbus_write_request_entry_slave_id_text.insert(0, specification_modbus_write_slave_id_text)
+        specifications_modbus_write_request_entry_slave_address_text.delete(0, tk.END)
+        specifications_modbus_write_request_entry_slave_address_text.insert(0, specification_modbus_write_slave_address_text)
         specifications_modbus_write_request_entry_function_code_text.delete(0, tk.END)
         specifications_modbus_write_request_entry_function_code_text.insert(0, specification_modbus_write_function_code_text)
         specifications_modbus_write_request_entry_coil_address_hb_text.delete(0, tk.END)
@@ -2149,7 +2150,7 @@ def tk_specifications_select(event):
         )
         print(json.dumps(item, indent=4))
         specification_modbus_write_response_intro_text = item['specification_modbus_write_response_intro_text']
-        specification_modbus_write_response_slave_id_text = item['specification_modbus_write_response_slave_id_text']
+        specification_modbus_write_response_slave_address_text = item['specification_modbus_write_response_slave_address_text']
         specification_modbus_write_response_function_code_text = item['specification_modbus_write_response_function_code_text']
         specification_modbus_write_response_coil_address_hb_text = item['specification_modbus_write_response_coil_address_hb_text']
         specification_modbus_write_response_coil_address_lb_text = item['specification_modbus_write_response_coil_address_lb_text']
@@ -2157,7 +2158,7 @@ def tk_specifications_select(event):
         specification_modbus_write_response_coil_value_lb_text = item['specification_modbus_write_response_coil_value_lb_text']
         if specification_modbus_write_response_intro_text == None: specification_modbus_write_response_intro_text = ''
         # print(specification_modbus_write_response_intro_text)
-        # print(specification_modbus_write_response_slave_id_text)
+        # print(specification_modbus_write_response_slave_address_text)
         # print(specification_modbus_write_response_function_code_text)
         # print(specification_modbus_write_response_coil_address_hb_text)
         # print(specification_modbus_write_response_coil_address_lb_text)
@@ -2165,8 +2166,8 @@ def tk_specifications_select(event):
         # print(specification_modbus_write_response_coil_value_lb_text)
         specifications_modbus_write_response_text_intro_text.delete("1.0", tk.END)
         specifications_modbus_write_response_text_intro_text.insert("1.0", specification_modbus_write_response_intro_text)
-        specifications_modbus_write_response_entry_slave_id_text.delete(0, tk.END)
-        specifications_modbus_write_response_entry_slave_id_text.insert(0, specification_modbus_write_response_slave_id_text)
+        specifications_modbus_write_response_entry_slave_address_text.delete(0, tk.END)
+        specifications_modbus_write_response_entry_slave_address_text.insert(0, specification_modbus_write_response_slave_address_text)
         specifications_modbus_write_response_entry_function_code_text.delete(0, tk.END)
         specifications_modbus_write_response_entry_function_code_text.insert(0, specification_modbus_write_response_function_code_text)
         specifications_modbus_write_response_entry_coil_address_hb_text.delete(0, tk.END)
@@ -2179,35 +2180,68 @@ def tk_specifications_select(event):
         specifications_modbus_write_response_entry_coil_value_lb_text.insert(0, specification_modbus_write_response_coil_value_lb_text)
 
     elif specification_template_text == 'modbus_read':
-        item = sql_utils.sql_specifications_modbus_read_get_by_specification_id(
+        specifications_frame_modbus_tabs.select(specifications_frame_center_bottom_modbus_read_tab)
+        ###
+        item = sql_utils.sql_specifications_modbus_read_request_get_by_specification_id(
             db_filepath,
-            specifications_modbus_read_table_name,
+            specifications_modbus_read_request_table_name,
             specification_id,
         )
         print(json.dumps(item, indent=4))
+        specification_modbus_read_request_intro_text = item['specification_modbus_read_request_intro_text']
+        specification_modbus_read_request_slave_address_text = item['specification_modbus_read_request_slave_address_text']
+        specification_modbus_read_request_function_code_text = item['specification_modbus_read_request_function_code_text']
+        specification_modbus_read_request_starting_address_hb_text = item['specification_modbus_read_request_starting_address_hb_text']
+        specification_modbus_read_request_starting_address_lb_text = item['specification_modbus_read_request_starting_address_lb_text']
+        specification_modbus_read_request_quantity_of_registers_hb_text = item['specification_modbus_read_request_quantity_of_registers_hb_text']
+        specification_modbus_read_request_quantity_of_registers_lb_text = item['specification_modbus_read_request_quantity_of_registers_lb_text']
+        ###
+        specifications_modbus_read_request_text_intro_text.delete("1.0", tk.END)
+        specifications_modbus_read_request_text_intro_text.insert("1.0", specification_modbus_read_request_intro_text)
+        specifications_modbus_read_request_entry_slave_address_text.delete(0, tk.END)
+        specifications_modbus_read_request_entry_slave_address_text.insert(0, specification_modbus_read_request_slave_address_text)
+        specifications_modbus_read_request_entry_function_code_text.delete(0, tk.END)
+        specifications_modbus_read_request_entry_function_code_text.insert(0, specification_modbus_read_request_function_code_text)
+        specifications_modbus_read_request_entry_starting_address_hb_text.delete(0, tk.END)
+        specifications_modbus_read_request_entry_starting_address_hb_text.insert(0, specification_modbus_read_request_starting_address_hb_text)
+        specifications_modbus_read_request_entry_starting_address_lb_text.delete(0, tk.END)
+        specifications_modbus_read_request_entry_starting_address_lb_text.insert(0, specification_modbus_read_request_starting_address_lb_text)
+        specifications_modbus_read_request_entry_quantity_of_registers_hb_text.delete(0, tk.END)
+        specifications_modbus_read_request_entry_quantity_of_registers_hb_text.insert(0, specification_modbus_read_request_quantity_of_registers_hb_text)
+        specifications_modbus_read_request_entry_quantity_of_registers_lb_text.delete(0, tk.END)
+        specifications_modbus_read_request_entry_quantity_of_registers_lb_text.insert(0, specification_modbus_read_request_quantity_of_registers_lb_text)
+        ###
+        ###
+        ###
+        # jummp
         specifications_frame_modbus_tabs.select(specifications_frame_center_bottom_modbus_read_tab)
-        
-        specification_modbus_read_intro_text = item['specification_modbus_read_intro_text']
-        specification_modbus_read_module_id_text = item['specification_modbus_read_module_id_text']
-        specification_modbus_read_function_code_text = item['specification_modbus_read_function_code_text']
-        specification_modbus_read_bytes_number_text = item['specification_modbus_read_bytes_number_text']
-        specification_modbus_read_register_value_text = item['specification_modbus_read_register_value_text']
-        specification_modbus_read_crc16_text = item['specification_modbus_read_crc16_text']
-
-        specifications_modbus_read_text_intro_text.delete("1.0", tk.END)
-        specifications_modbus_read_text_intro_text.insert("1.0", specification_modbus_read_intro_text)
-        
-        specifications_modbus_read_entry_module_id_text.delete(0, tk.END)
-        specifications_modbus_read_entry_module_id_text.insert(0, specification_modbus_read_module_id_text)
-        specifications_modbus_read_entry_function_code_text.delete(0, tk.END)
-        specifications_modbus_read_entry_function_code_text.insert(0, specification_modbus_read_function_code_text)
-        specifications_modbus_read_entry_bytes_number_text.delete(0, tk.END)
-        specifications_modbus_read_entry_bytes_number_text.insert(0, specification_modbus_read_bytes_number_text)
-        specifications_modbus_read_entry_register_value_text.delete(0, tk.END)
-        specifications_modbus_read_entry_register_value_text.insert(0, specification_modbus_read_register_value_text)
-        specifications_modbus_read_entry_crc16_text.delete(0, tk.END)
-        specifications_modbus_read_entry_crc16_text.insert(0, specification_modbus_read_crc16_text)
-
+        ###
+        item = sql_utils.sql_specifications_modbus_read_response_get_by_specification_id(
+            db_filepath,
+            specifications_modbus_read_response_table_name,
+            specification_id,
+        )
+        print(json.dumps(item, indent=4))
+        specification_modbus_read_response_intro_text = item['specification_modbus_read_response_intro_text']
+        specification_modbus_read_response_slave_address_text = item['specification_modbus_read_response_slave_address_text']
+        specification_modbus_read_response_function_code_text = item['specification_modbus_read_response_function_code_text']
+        specification_modbus_read_response_byte_count_text = item['specification_modbus_read_response_byte_count_text']
+        specification_modbus_read_response_register_data_hb_text = item['specification_modbus_read_response_register_data_hb_text']
+        specification_modbus_read_response_register_data_lb_text = item['specification_modbus_read_response_register_data_lb_text']
+        ###
+        specifications_modbus_read_response_entry_slave_address_text
+        specifications_modbus_read_response_text_intro_text.delete("1.0", tk.END)
+        specifications_modbus_read_response_text_intro_text.insert("1.0", specification_modbus_read_response_intro_text)
+        specifications_modbus_read_response_entry_slave_address_text.delete(0, tk.END)
+        specifications_modbus_read_response_entry_slave_address_text.insert(0, specification_modbus_read_response_slave_address_text)
+        specifications_modbus_read_response_entry_function_code_text.delete(0, tk.END)
+        specifications_modbus_read_response_entry_function_code_text.insert(0, specification_modbus_read_response_function_code_text)
+        specifications_modbus_read_response_entry_byte_count_text.delete(0, tk.END)
+        specifications_modbus_read_response_entry_byte_count_text.insert(0, specification_modbus_read_response_byte_count_text)
+        specifications_modbus_read_response_entry_register_data_hb_text.delete(0, tk.END)
+        specifications_modbus_read_response_entry_register_data_hb_text.insert(0, specification_modbus_read_response_register_data_hb_text)
+        specifications_modbus_read_response_entry_register_data_lb_text.delete(0, tk.END)
+        specifications_modbus_read_response_entry_register_data_lb_text.insert(0, specification_modbus_read_response_register_data_lb_text)
 
 def tk_specifications_move_record(direction):
     selected = specifications_tree.selection()
@@ -2370,7 +2404,7 @@ def tk_specifications_rs485_delete():
 # ;jump
 def tk_specifications_modbus_write_set():
     specifications_modbus_write_request_intro_text = specifications_modbus_write_request_text_intro_text.get("1.0", tk.END)
-    specifications_modbus_write_request_slave_id_text = specifications_modbus_write_request_entry_slave_id_text.get()
+    specifications_modbus_write_request_slave_address_text = specifications_modbus_write_request_entry_slave_address_text.get()
     specifications_modbus_write_request_function_code_text = specifications_modbus_write_request_entry_function_code_text.get()
     specifications_modbus_write_request_coil_address_hb_text = specifications_modbus_write_request_entry_coil_address_hb_text.get()
     specifications_modbus_write_request_coil_address_lb_text = specifications_modbus_write_request_entry_coil_address_lb_text.get()
@@ -2379,8 +2413,8 @@ def tk_specifications_modbus_write_set():
     if specifications_modbus_write_request_intro_text.strip() == '':
         print('ERR: specifications_modbus_write_request_intro_text text NOT valid')
         return
-    if specifications_modbus_write_request_slave_id_text.strip() == '':
-        print('ERR: specifications_modbus_write_request_slave_id_text text NOT valid')
+    if specifications_modbus_write_request_slave_address_text.strip() == '':
+        print('ERR: specifications_modbus_write_request_slave_address_text text NOT valid')
         return
     if specifications_modbus_write_request_function_code_text.strip() == '':
         print('ERR: specifications_modbus_write_request_function_code_text text NOT valid')
@@ -2403,7 +2437,7 @@ def tk_specifications_modbus_write_set():
     ###
     specification_fields = [
         specifications_modbus_write_request_intro_text,
-        specifications_modbus_write_request_slave_id_text,
+        specifications_modbus_write_request_slave_address_text,
         specifications_modbus_write_request_function_code_text,
         specifications_modbus_write_request_coil_address_hb_text,
         specifications_modbus_write_request_coil_address_lb_text,
@@ -2425,7 +2459,7 @@ def tk_specifications_modbus_write_set():
     ################################################################################
     ################################################################################
     specifications_modbus_write_response_intro_text = specifications_modbus_write_response_text_intro_text.get("1.0", tk.END)
-    specifications_modbus_write_response_slave_id_text = specifications_modbus_write_response_entry_slave_id_text.get()
+    specifications_modbus_write_response_slave_address_text = specifications_modbus_write_response_entry_slave_address_text.get()
     specifications_modbus_write_response_function_code_text = specifications_modbus_write_response_entry_function_code_text.get()
     specifications_modbus_write_response_coil_address_hb_text = specifications_modbus_write_response_entry_coil_address_hb_text.get()
     specifications_modbus_write_response_coil_address_lb_text = specifications_modbus_write_response_entry_coil_address_lb_text.get()
@@ -2434,8 +2468,8 @@ def tk_specifications_modbus_write_set():
     if specifications_modbus_write_response_intro_text.strip() == '':
         print('ERR: specifications_modbus_write_response_intro_text text NOT valid')
         return
-    if specifications_modbus_write_response_slave_id_text.strip() == '':
-        print('ERR: specifications_modbus_write_response_slave_id_text text NOT valid')
+    if specifications_modbus_write_response_slave_address_text.strip() == '':
+        print('ERR: specifications_modbus_write_response_slave_address_text text NOT valid')
         return
     if specifications_modbus_write_response_function_code_text.strip() == '':
         print('ERR: specifications_modbus_write_response_function_code_text text NOT valid')
@@ -2458,7 +2492,7 @@ def tk_specifications_modbus_write_set():
     ###
     specification_fields = [
         specifications_modbus_write_response_intro_text,
-        specifications_modbus_write_response_slave_id_text,
+        specifications_modbus_write_response_slave_address_text,
         specifications_modbus_write_response_function_code_text,
         specifications_modbus_write_response_coil_address_hb_text,
         specifications_modbus_write_response_coil_address_lb_text,
@@ -2480,52 +2514,110 @@ def tk_specifications_modbus_write_set():
 def tk_specifications_modbus_write_delete():
     pass
 
+# jump
 def tk_specifications_modbus_read_set():
-    specification_modbus_read_intro_text = specifications_modbus_read_text_intro_text.get("1.0", tk.END).strip()
-    specification_modbus_read_module_id_text = specifications_modbus_read_entry_module_id_text.get()
-    specification_modbus_read_function_code_text = specifications_modbus_read_entry_function_code_text.get()
-    specification_modbus_read_bytes_number_text = specifications_modbus_read_entry_bytes_number_text.get()
-    specification_modbus_read_register_value_text = specifications_modbus_read_entry_register_value_text.get()
-    specification_modbus_read_crc16_text = specifications_modbus_read_entry_crc16_text.get()
-    if specification_modbus_read_intro_text.strip() == '':
-        print('ERR: specification_modbus_read_intro_text text NOT valid')
+    specifications_modbus_read_request_intro_text = specifications_modbus_read_request_text_intro_text.get("1.0", tk.END)
+    specifications_modbus_read_request_slave_address_text = specifications_modbus_read_request_entry_slave_address_text.get()
+    specifications_modbus_read_request_function_code_text = specifications_modbus_read_request_entry_function_code_text.get()
+    specifications_modbus_read_request_starting_address_hb_text = specifications_modbus_read_request_entry_starting_address_hb_text.get()
+    specifications_modbus_read_request_starting_address_lb_text = specifications_modbus_read_request_entry_starting_address_lb_text.get()
+    specifications_modbus_read_request_quantity_of_registers_hb_text = specifications_modbus_read_request_entry_quantity_of_registers_hb_text.get()
+    specifications_modbus_read_request_quantity_of_registers_lb_text = specifications_modbus_read_request_entry_quantity_of_registers_lb_text.get()
+    if specifications_modbus_read_request_intro_text.strip() == '':
+        print('ERR: specifications_modbus_read_request_intro_text text NOT valid')
         return
-    if specification_modbus_read_module_id_text.strip() == '':
-        print('ERR: specification_modbus_read_module_id_text text NOT valid')
+    if specifications_modbus_read_request_slave_address_text.strip() == '':
+        print('ERR: specifications_modbus_read_request_slave_address_text text NOT valid')
         return
-    if specification_modbus_read_function_code_text.strip() == '':
-        print('ERR: specification_modbus_read_function_code_text text NOT valid')
+    if specifications_modbus_read_request_function_code_text.strip() == '':
+        print('ERR: specifications_modbus_read_request_function_code_text text NOT valid')
         return
-    if specification_modbus_read_bytes_number_text.strip() == '':
-        print('ERR: specification_modbus_read_bytes_number_text text NOT valid')
+    if specifications_modbus_read_request_starting_address_hb_text.strip() == '':
+        print('ERR: specifications_modbus_read_request_starting_address_hb_text text NOT valid')
         return
-    if specification_modbus_read_register_value_text.strip() == '':
-        print('ERR: specification_modbus_read_register_value_text text NOT valid')
+    if specifications_modbus_read_request_starting_address_lb_text.strip() == '':
+        print('ERR: specifications_modbus_read_request_starting_address_lb_text text NOT valid')
         return
-    if specification_modbus_read_crc16_text.strip() == '':
-        print('ERR: specification_modbus_read_crc16_text text NOT valid')
+    if specifications_modbus_read_request_quantity_of_registers_hb_text.strip() == '':
+        print('ERR: specifications_modbus_read_request_quantity_of_registers_hb_text text NOT valid')
+        return
+    if specifications_modbus_read_request_quantity_of_registers_lb_text.strip() == '':
+        print('ERR: specifications_modbus_read_request_quantity_of_registers_lb_text text NOT valid')
         return
     if not specifications_tree.selection(): return
     item = specifications_tree.selection()[0]
     specification_id = specifications_tree.item(item)["values"][0]
-    print(specification_id)
     ###
-    sql_utils.sql_specifications_modbus_read_set(
+    specification_fields = [
+        specifications_modbus_read_request_intro_text,
+        specifications_modbus_read_request_slave_address_text,
+        specifications_modbus_read_request_function_code_text,
+        specifications_modbus_read_request_starting_address_hb_text,
+        specifications_modbus_read_request_starting_address_lb_text,
+        specifications_modbus_read_request_quantity_of_registers_hb_text,
+        specifications_modbus_read_request_quantity_of_registers_lb_text,
+    ]
+    sql_utils.sql_specifications_modbus_read_request_set(
         db_filepath,
-        specifications_modbus_read_table_name,
+        specifications_modbus_read_request_table_name,
         specification_id,
-        specification_modbus_read_intro_text,
-        specification_modbus_read_module_id_text,
-        specification_modbus_read_function_code_text,
-        specification_modbus_read_bytes_number_text,
-        specification_modbus_read_register_value_text,
-        specification_modbus_read_crc16_text,
+        specification_fields,
     )
-    res = sql_utils.sql_specifications_modbus_read_get_all(
+    res = sql_utils.sql_specifications_modbus_read_request_get_all(
         db_filepath, 
-        specifications_modbus_read_table_name,
+        specifications_modbus_read_request_table_name,
     )
-    print(json.dumps(res, indent=4))
+    print(res)
+    ###
+    ###
+    ###
+    specifications_modbus_read_response_intro_text = specifications_modbus_read_response_text_intro_text.get("1.0", tk.END)
+    specifications_modbus_read_response_slave_address_text = specifications_modbus_read_response_entry_slave_address_text.get()
+    specifications_modbus_read_response_function_code_text = specifications_modbus_read_response_entry_function_code_text.get()
+    specifications_modbus_read_response_byte_count_text = specifications_modbus_read_response_entry_byte_count_text.get()
+    specifications_modbus_read_response_register_data_hb_text = specifications_modbus_read_response_entry_register_data_hb_text.get()
+    specifications_modbus_read_response_register_data_lb_text = specifications_modbus_read_response_entry_register_data_lb_text.get()
+    if specifications_modbus_read_response_intro_text.strip() == '':
+        print('ERR: specifications_modbus_read_response_intro_text text NOT valid')
+        return
+    if specifications_modbus_read_response_slave_address_text.strip() == '':
+        print('ERR: specifications_modbus_read_response_slave_address_text text NOT valid')
+        return
+    if specifications_modbus_read_response_function_code_text.strip() == '':
+        print('ERR: specifications_modbus_read_response_function_code_text text NOT valid')
+        return
+    if specifications_modbus_read_response_byte_count_text.strip() == '':
+        print('ERR: specifications_modbus_read_response_byte_count_text text NOT valid')
+        return
+    if specifications_modbus_read_response_register_data_hb_text.strip() == '':
+        print('ERR: specifications_modbus_read_response_register_data_hb_text text NOT valid')
+        return
+    if specifications_modbus_read_response_register_data_lb_text.strip() == '':
+        print('ERR: specifications_modbus_read_response_register_data_lb_text text NOT valid')
+        return
+    if not specifications_tree.selection(): return
+    item = specifications_tree.selection()[0]
+    specification_id = specifications_tree.item(item)["values"][0]
+    ###
+    specification_fields = [
+        specifications_modbus_read_response_intro_text,
+        specifications_modbus_read_response_slave_address_text,
+        specifications_modbus_read_response_function_code_text,
+        specifications_modbus_read_response_byte_count_text,
+        specifications_modbus_read_response_register_data_hb_text,
+        specifications_modbus_read_response_register_data_lb_text,
+    ]
+    sql_utils.sql_specifications_modbus_read_response_set(
+        db_filepath,
+        specifications_modbus_read_response_table_name,
+        specification_id,
+        specification_fields,
+    )
+    res = sql_utils.sql_specifications_modbus_read_response_get_all(
+        db_filepath,
+        specifications_modbus_read_response_table_name,
+    )
+    print(res)
 
 def tk_specifications_modbus_read_delete():
     pass
@@ -3101,7 +3193,7 @@ def markdown_specifications_create():
                 specification_id,
             )
             specifications_modbus_write_intro_text = specification_modbus_write_item['specification_modbus_write_intro_text']
-            specifications_modbus_write_slave_id_text = specification_modbus_write_item['specification_modbus_write_slave_id_text']
+            specifications_modbus_write_slave_address_text = specification_modbus_write_item['specification_modbus_write_slave_address_text']
             specifications_modbus_write_function_code_text = specification_modbus_write_item['specification_modbus_write_function_code_text']
             specifications_modbus_write_coil_address_hb_text = specification_modbus_write_item['specification_modbus_write_coil_address_hb_text']
             specifications_modbus_write_coil_address_lb_text = specification_modbus_write_item['specification_modbus_write_coil_address_lb_text']
@@ -3113,7 +3205,7 @@ def markdown_specifications_create():
             ''')
 
             hex_list = [
-                specifications_modbus_write_slave_id_text,
+                specifications_modbus_write_slave_address_text,
                 specifications_modbus_write_function_code_text,
                 specifications_modbus_write_coil_address_hb_text,
                 specifications_modbus_write_coil_address_lb_text,
@@ -3139,7 +3231,7 @@ def markdown_specifications_create():
             output_text += dedent(f'''
                 | Setting                  | Value (HEX)                          |
                 | ------------------------ | ------------------------------------ |
-                | Slave ID                 | {specifications_modbus_write_slave_id_text} |
+                | Slave Address                 | {specifications_modbus_write_slave_address_text} |
                 | Function Code            | {specifications_modbus_write_function_code_text} |
                 | Coil Address - High Byte | {specifications_modbus_write_coil_address_hb_text} |
                 | Coil Address - Low Byte  | {specifications_modbus_write_coil_address_lb_text} |
@@ -3149,7 +3241,7 @@ def markdown_specifications_create():
                 | CRC-16 - Low Byte        | {low_byte:02X}  |
             ''')
             data_frame = ' '.join([
-                specifications_modbus_write_slave_id_text, 
+                specifications_modbus_write_slave_address_text, 
                 specifications_modbus_write_function_code_text, 
                 specifications_modbus_write_coil_address_hb_text, 
                 specifications_modbus_write_coil_address_lb_text, 
@@ -3159,7 +3251,7 @@ def markdown_specifications_create():
                 f'{high_byte:02X}',
             ])
             print(data_frame)
-            print(specifications_modbus_write_slave_id_text)
+            print(specifications_modbus_write_slave_address_text)
             print(specifications_modbus_write_function_code_text)
             print(specifications_modbus_write_coil_address_hb_text)
             print(specifications_modbus_write_coil_address_lb_text)
@@ -3171,9 +3263,9 @@ def markdown_specifications_create():
                 The complete request data frame is: {data_frame}
             ''')
 
-            output_text += dedent(f'''
-                ---
-            ''')
+            # output_text += dedent(f'''
+            #     ---
+            # ''')
 
             ################################################################################
             
@@ -3182,16 +3274,16 @@ def markdown_specifications_create():
                 The Relay Module (Slave) shall respond back to CORE (Master) with the following message when the request is accepted.
             ''')
 
-            output_text += dedent(f'''
-                Slave -> Master (Response)
-            ''')
+            # output_text += dedent(f'''
+            #     Slave -> Master (Response)
+            # ''')
 
             specification_modbus_write_response_item = sql_utils.sql_specifications_modbus_write_response_get_by_specification_id(
                 db_filepath,
                 specifications_modbus_write_response_table_name,
                 specification_id,
             )
-            specifications_modbus_write_response_slave_id_text = specification_modbus_write_response_item['specification_modbus_write_response_slave_id_text']
+            specifications_modbus_write_response_slave_address_text = specification_modbus_write_response_item['specification_modbus_write_response_slave_address_text']
             specifications_modbus_write_response_function_code_text = specification_modbus_write_response_item['specification_modbus_write_response_function_code_text']
             specifications_modbus_write_response_coil_address_hb_text = specification_modbus_write_response_item['specification_modbus_write_response_coil_address_hb_text']
             specifications_modbus_write_response_coil_address_lb_text = specification_modbus_write_response_item['specification_modbus_write_response_coil_address_lb_text']
@@ -3199,7 +3291,7 @@ def markdown_specifications_create():
             specifications_modbus_write_response_coil_value_lb_text = specification_modbus_write_response_item['specification_modbus_write_response_coil_value_lb_text']
             ###
             hex_list = [
-                specifications_modbus_write_response_slave_id_text,
+                specifications_modbus_write_response_slave_address_text,
                 specifications_modbus_write_response_function_code_text,
                 specifications_modbus_write_response_coil_address_hb_text,
                 specifications_modbus_write_response_coil_address_lb_text,
@@ -3214,7 +3306,7 @@ def markdown_specifications_create():
             output_text += dedent(f'''
                 | Setting                  | Value (HEX)                          |
                 | ------------------------ | ------------------------------------ |
-                | Slave ID                 | {specifications_modbus_write_response_slave_id_text} |
+                | Slave Address                 | {specifications_modbus_write_response_slave_address_text} |
                 | Function Code            | {specifications_modbus_write_response_function_code_text} |
                 | Coil Address - High Byte | {specifications_modbus_write_response_coil_address_hb_text} |
                 | Coil Address - Low Byte  | {specifications_modbus_write_response_coil_address_lb_text} |
@@ -3224,7 +3316,7 @@ def markdown_specifications_create():
                 | CRC-16 - Low Byte        | {low_byte:02X}  |
             ''')
             data_frame = ' '.join([
-                specifications_modbus_write_response_slave_id_text, 
+                specifications_modbus_write_response_slave_address_text, 
                 specifications_modbus_write_response_function_code_text, 
                 specifications_modbus_write_response_coil_address_hb_text, 
                 specifications_modbus_write_response_coil_address_lb_text, 
@@ -3234,7 +3326,7 @@ def markdown_specifications_create():
                 f'{high_byte:02X}',
             ])
             print(data_frame)
-            print(specifications_modbus_write_response_slave_id_text)
+            print(specifications_modbus_write_response_slave_address_text)
             print(specifications_modbus_write_response_function_code_text)
             print(specifications_modbus_write_response_coil_address_hb_text)
             print(specifications_modbus_write_response_coil_address_lb_text)
@@ -3246,49 +3338,148 @@ def markdown_specifications_create():
                 The complete response data frame is: {data_frame}
             ''')
 
-        """
         elif specification_template_text.strip().lower() == 'modbus_read':
-            specification_modbus_read_item = sql_utils.sql_specifications_modbus_read_get_by_specification_id(
+            def crc16(data):
+                crc = 0xFFFF
+                for b in data:
+                    crc ^= b
+                    for _ in range(8):
+                        crc = (crc >> 1) ^ 0xA001 if crc & 1 else crc >> 1
+                return crc
+
+            specification_modbus_read_request_item = sql_utils.sql_specifications_modbus_read_request_get_by_specification_id(
                 db_filepath,
-                specifications_modbus_read_table_name,
+                specifications_modbus_read_request_table_name,
                 specification_id,
             )
-            try: specification_modbus_read_intro_text = specification_modbus_read_item['specification_modbus_read_intro_text']
-            except: specification_modbus_read_intro_text = 'ERR'
-            try: specification_modbus_read_module_id_text = specification_modbus_read_item['specification_modbus_read_module_id_text']
-            except: specification_modbus_read_module_id_text = 'ERR'
-            try: specification_modbus_read_function_code_text = specification_modbus_read_item['specification_modbus_read_function_code_text']
-            except: specification_modbus_read_function_code_text = 'ERR'
-            try: specification_modbus_read_bytes_number_text = specification_modbus_read_item['specification_modbus_read_bytes_number_text']
-            except: specification_modbus_read_bytes_number_text = 'ERR'
-            try: specification_modbus_read_register_value_text = specification_modbus_read_item['specification_modbus_read_register_value_text']
-            except: specification_modbus_read_register_value_text = 'ERR'
-            try: specification_modbus_read_crc16_text = specification_modbus_read_item['specification_modbus_read_crc16_text']
-            except: specification_modbus_read_crc16_text = 'ERR'
+            specifications_modbus_read_request_intro_text = specification_modbus_read_request_item['specification_modbus_read_request_intro_text']
+            specifications_modbus_read_request_slave_address_text = specification_modbus_read_request_item['specification_modbus_read_request_slave_address_text']
+            specifications_modbus_read_request_function_code_text = specification_modbus_read_request_item['specification_modbus_read_request_function_code_text']
+            specifications_modbus_read_request_starting_address_hb_text = specification_modbus_read_request_item['specification_modbus_read_request_starting_address_hb_text']
+            specifications_modbus_read_request_starting_address_lb_text = specification_modbus_read_request_item['specification_modbus_read_request_starting_address_lb_text']
+            specifications_modbus_read_request_quantity_of_registers_hb_text = specification_modbus_read_request_item['specification_modbus_read_request_quantity_of_registers_hb_text']
+            specifications_modbus_read_request_quantity_of_registers_lb_text = specification_modbus_read_request_item['specification_modbus_read_request_quantity_of_registers_lb_text']
             ###
             output_text += dedent(f'''
-                {specification_modbus_read_intro_text}
+                {specifications_modbus_read_request_intro_text}
             ''')
+            hex_list = [
+                specifications_modbus_read_request_slave_address_text,
+                specifications_modbus_read_request_function_code_text,
+                specifications_modbus_read_request_starting_address_hb_text,
+                specifications_modbus_read_request_starting_address_lb_text,
+                specifications_modbus_read_request_quantity_of_registers_hb_text,
+                specifications_modbus_read_request_quantity_of_registers_lb_text,
+            ]
+            data = bytes(int(x, 16) for x in hex_list)
+            crc = crc16(data)
+            high_byte = (crc >> 8) & 0xFF
+            low_byte  = crc & 0xFF
             output_text += dedent(f'''
-                | Setting              | Value                                |
-                | ------------------   | ------------------------------------ |
-                | Module ID            | {specification_modbus_read_module_id_text} |
-                | Function Code        | {specification_modbus_read_function_code_text} |
-                | Number of data bytes | {specification_modbus_read_bytes_number_text} |
-                | Register value       | {specification_modbus_read_register_value_text} |
-                | CRC16                | {specification_modbus_read_crc16_text} |
+                | Setting                           | Value (HEX)                          |
+                | --------------------------------- | ------------------------------------ |
+                | Slave Address                     | {specifications_modbus_read_request_slave_address_text} |
+                | Function Code                     | {specifications_modbus_read_request_function_code_text} |
+                | Starting Address - High Byte      | {specifications_modbus_read_request_starting_address_hb_text} |
+                | Starting Address - Low Byte       | {specifications_modbus_read_request_starting_address_lb_text} |
+                | Quantity of Registers - High Byte | {specifications_modbus_read_request_quantity_of_registers_hb_text} |
+                | Quantity of Registers - Low Byte  | {specifications_modbus_read_request_quantity_of_registers_lb_text} |
+                | CRC-16 - High Byte                | {high_byte:02X} |
+                | CRC-16 - Low Byte                 | {low_byte:02X}  |
             ''')
             data_frame = ' '.join([
-                specification_modbus_write_module_id_text,
-                specification_modbus_write_function_code_text,
-                specification_modbus_read_bytes_number_text,
-                specification_modbus_read_register_value_text,
-                specification_modbus_write_crc16_text,
+                specifications_modbus_read_request_slave_address_text, 
+                specifications_modbus_read_request_function_code_text, 
+                specifications_modbus_read_request_starting_address_hb_text, 
+                specifications_modbus_read_request_starting_address_lb_text, 
+                specifications_modbus_read_request_quantity_of_registers_hb_text, 
+                specifications_modbus_read_request_quantity_of_registers_lb_text, 
+                f'{low_byte:02X}',
+                f'{high_byte:02X}',
             ])
+            print(data_frame)
+            print(specifications_modbus_read_request_slave_address_text)
+            print(specifications_modbus_read_request_function_code_text)
+            print(specifications_modbus_read_request_starting_address_hb_text)
+            print(specifications_modbus_read_request_starting_address_lb_text)
+            print(specifications_modbus_read_request_quantity_of_registers_hb_text)
+            print(specifications_modbus_read_request_quantity_of_registers_lb_text)
+            # quit()
+
+            ###
+            ###
+            ###
+
             output_text += dedent(f'''
-                The complete data frame is: {data_frame}
+                The complete request data frame is: {data_frame}
             ''')
-        """
+
+            specification_modbus_read_request_item = sql_utils.sql_specifications_modbus_read_request_get_by_specification_id(
+                db_filepath,
+                specifications_modbus_read_request_table_name,
+                specification_id,
+            )
+            specifications_modbus_read_request_intro_text = specification_modbus_read_request_item['specification_modbus_read_request_intro_text']
+            specifications_modbus_read_request_slave_address_text = specification_modbus_read_request_item['specification_modbus_read_request_slave_address_text']
+            specifications_modbus_read_request_function_code_text = specification_modbus_read_request_item['specification_modbus_read_request_function_code_text']
+            specifications_modbus_read_request_starting_address_hb_text = specification_modbus_read_request_item['specification_modbus_read_request_starting_address_hb_text']
+            specifications_modbus_read_request_starting_address_lb_text = specification_modbus_read_request_item['specification_modbus_read_request_starting_address_lb_text']
+            specifications_modbus_read_request_quantity_of_registers_hb_text = specification_modbus_read_request_item['specification_modbus_read_request_quantity_of_registers_hb_text']
+            specifications_modbus_read_request_quantity_of_registers_lb_text = specification_modbus_read_request_item['specification_modbus_read_request_quantity_of_registers_lb_text']
+            ###
+            output_text += dedent(f'''
+                {specifications_modbus_read_request_intro_text}
+            ''')
+            hex_list = [
+                specifications_modbus_read_request_slave_address_text,
+                specifications_modbus_read_request_function_code_text,
+                specifications_modbus_read_request_starting_address_hb_text,
+                specifications_modbus_read_request_starting_address_lb_text,
+                specifications_modbus_read_request_quantity_of_registers_hb_text,
+                specifications_modbus_read_request_quantity_of_registers_lb_text,
+            ]
+            data = bytes(int(x, 16) for x in hex_list)
+            crc = crc16(data)
+            high_byte = (crc >> 8) & 0xFF
+            low_byte  = crc & 0xFF
+            output_text += dedent(f'''
+                | Setting                           | Value (HEX)                          |
+                | --------------------------------- | ------------------------------------ |
+                | Slave Address                     | {specifications_modbus_read_request_slave_address_text} |
+                | Function Code                     | {specifications_modbus_read_request_function_code_text} |
+                | Starting Address - High Byte      | {specifications_modbus_read_request_starting_address_hb_text} |
+                | Starting Address - Low Byte       | {specifications_modbus_read_request_starting_address_lb_text} |
+                | Quantity of Registers - High Byte | {specifications_modbus_read_request_quantity_of_registers_hb_text} |
+                | Quantity of Registers - Low Byte  | {specifications_modbus_read_request_quantity_of_registers_lb_text} |
+                | CRC-16 - High Byte                | {high_byte:02X} |
+                | CRC-16 - Low Byte                 | {low_byte:02X}  |
+            ''')
+            data_frame = ' '.join([
+                specifications_modbus_read_request_slave_address_text, 
+                specifications_modbus_read_request_function_code_text, 
+                specifications_modbus_read_request_starting_address_hb_text, 
+                specifications_modbus_read_request_starting_address_lb_text, 
+                specifications_modbus_read_request_quantity_of_registers_hb_text, 
+                specifications_modbus_read_request_quantity_of_registers_lb_text, 
+                f'{low_byte:02X}',
+                f'{high_byte:02X}',
+            ])
+            print(data_frame)
+            print(specifications_modbus_read_request_slave_address_text)
+            print(specifications_modbus_read_request_function_code_text)
+            print(specifications_modbus_read_request_starting_address_hb_text)
+            print(specifications_modbus_read_request_starting_address_lb_text)
+            print(specifications_modbus_read_request_quantity_of_registers_hb_text)
+            print(specifications_modbus_read_request_quantity_of_registers_lb_text)
+            # quit()
+
+            output_text += dedent(f'''
+                The complete request data frame is: {data_frame}
+            ''')
+
+            # output_text += dedent(f'''
+            #     ---
+            # ''')
 
         output_text += dedent(f'''
             ---
@@ -4246,12 +4437,12 @@ specifications_modbus_write_request_text_intro_text.pack(fill="x", padx=(padx, p
 
 label_w = 20
 
-specifications_modbus_write_request_frame_slave_id = tk.Frame(specifications_frame_modbus_write_1)
-specifications_modbus_write_request_frame_slave_id.pack(side="top", anchor="nw", fill="x")
-tk.Label(specifications_modbus_write_request_frame_slave_id, text="Slave ID", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
-specifications_modbus_write_request_entry_slave_id_text = tk.Entry(specifications_modbus_write_request_frame_slave_id)
-specifications_modbus_write_request_entry_slave_id_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
-specifications_modbus_write_request_entry_slave_id_text.insert(0, "01")
+specifications_modbus_write_request_frame_slave_address = tk.Frame(specifications_frame_modbus_write_1)
+specifications_modbus_write_request_frame_slave_address.pack(side="top", anchor="nw", fill="x")
+tk.Label(specifications_modbus_write_request_frame_slave_address, text="Slave Address", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_write_request_entry_slave_address_text = tk.Entry(specifications_modbus_write_request_frame_slave_address)
+specifications_modbus_write_request_entry_slave_address_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_write_request_entry_slave_address_text.insert(0, "01")
 
 specifications_modbus_write_request_frame_function_code = tk.Frame(specifications_frame_modbus_write_1)
 specifications_modbus_write_request_frame_function_code.pack(side="top", anchor="nw", fill="x")
@@ -4301,12 +4492,12 @@ specifications_modbus_write_response_text_intro_text.pack(fill="x", padx=(padx, 
 
 label_w = 20
 
-specifications_modbus_write_response_frame_slave_id = tk.Frame(specifications_frame_modbus_write_2)
-specifications_modbus_write_response_frame_slave_id.pack(side="top", anchor="nw", fill="x")
-tk.Label(specifications_modbus_write_response_frame_slave_id, text="Slave ID", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
-specifications_modbus_write_response_entry_slave_id_text = tk.Entry(specifications_modbus_write_response_frame_slave_id)
-specifications_modbus_write_response_entry_slave_id_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
-specifications_modbus_write_response_entry_slave_id_text.insert(0, "01")
+specifications_modbus_write_response_frame_slave_address = tk.Frame(specifications_frame_modbus_write_2)
+specifications_modbus_write_response_frame_slave_address.pack(side="top", anchor="nw", fill="x")
+tk.Label(specifications_modbus_write_response_frame_slave_address, text="Slave Address", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_write_response_entry_slave_address_text = tk.Entry(specifications_modbus_write_response_frame_slave_address)
+specifications_modbus_write_response_entry_slave_address_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_write_response_entry_slave_address_text.insert(0, "01")
 
 specifications_modbus_write_response_frame_function_code = tk.Frame(specifications_frame_modbus_write_2)
 specifications_modbus_write_response_frame_function_code.pack(side="top", anchor="nw", fill="x")
@@ -4385,12 +4576,12 @@ specifications_modbus_write_response_entry_coil_value_lb_text.insert(0, "00")
 
 # label_w = 20
 
-# specifications_modbus_write_response_exception_frame_slave_id = tk.Frame(specifications_frame_modbus_write_2)
-# specifications_modbus_write_response_exception_frame_slave_id.pack(side="top", anchor="nw", fill="x")
-# tk.Label(specifications_modbus_write_response_exception_frame_slave_id, text="Slave ID", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
-# specifications_modbus_write_response_exception_entry_slave_id_text = tk.Entry(specifications_modbus_write_response_exception_frame_slave_id)
-# specifications_modbus_write_response_exception_entry_slave_id_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
-# specifications_modbus_write_response_exception_entry_slave_id_text.insert(0, "01")
+# specifications_modbus_write_response_exception_frame_slave_address = tk.Frame(specifications_frame_modbus_write_2)
+# specifications_modbus_write_response_exception_frame_slave_address.pack(side="top", anchor="nw", fill="x")
+# tk.Label(specifications_modbus_write_response_exception_frame_slave_address, text="Slave Address", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
+# specifications_modbus_write_response_exception_entry_slave_address_text = tk.Entry(specifications_modbus_write_response_exception_frame_slave_address)
+# specifications_modbus_write_response_exception_entry_slave_address_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+# specifications_modbus_write_response_exception_entry_slave_address_text.insert(0, "01")
 
 # specifications_modbus_write_response_exception_frame_function_code = tk.Frame(specifications_frame_modbus_write_2)
 # specifications_modbus_write_response_exception_frame_function_code.pack(side="top", anchor="nw", fill="x")
@@ -4433,65 +4624,118 @@ specifications_frame_modbus_tabs.add(specifications_frame_center_bottom_modbus_r
 specifications_frame_modbus_read = tk.Frame(specifications_frame_center_bottom_modbus_read_tab)
 specifications_frame_modbus_read.pack(side="left", fill="both", expand=True)
 
-specifications_frame_modbus_read_1 = tk.Frame(specifications_frame_modbus_read, width=200)
-specifications_frame_modbus_read_1.pack(side="left", fill="y")
-specifications_frame_modbus_read_1.pack_propagate(False)
+# specifications_frame_modbus_read_1 = tk.Frame(specifications_frame_modbus_read, width=200)
+# specifications_frame_modbus_read_1.pack(side="left", fill="y")
+# specifications_frame_modbus_read_1.pack_propagate(False)
 
-tk.Label(specifications_frame_modbus_read_1, text="Intro").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
-specifications_modbus_read_text_intro_text = tk.Text(specifications_frame_modbus_read_1, wrap="word", height=5)
-specifications_modbus_read_text_intro_text.pack(fill="x", padx=(padx, padx))
-# specifications_text_specification_text.config(state="disabled", bg=bg, fg=fg)
+# tk.Label(specifications_frame_modbus_read_1, text="Intro").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+# specifications_modbus_read_text_intro_text = tk.Text(specifications_frame_modbus_read_1, wrap="word", height=5)
+# specifications_modbus_read_text_intro_text.pack(fill="x", padx=(padx, padx))
+# # specifications_text_specification_text.config(state="disabled", bg=bg, fg=fg)
 
 # MODBUS READ REQUEST
 # ..........................................................
 
-specifications_frame_modbus_read_2 = tk.LabelFrame(specifications_frame_modbus_read, text="Request", width=400)
-specifications_frame_modbus_read_2.pack(side="left", fill="y")
-specifications_frame_modbus_read_2.pack_propagate(False)
+specifications_frame_modbus_read_1 = tk.LabelFrame(specifications_frame_modbus_read, text="Request", width=280)
+specifications_frame_modbus_read_1.pack(side="left", fill="y")
+specifications_frame_modbus_read_1.pack_propagate(False)
 
-label_w = 20
+tk.Label(specifications_frame_modbus_read_1, text="Intro").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+specifications_modbus_read_request_text_intro_text = tk.Text(specifications_frame_modbus_read_1, wrap="word", height=5)
+specifications_modbus_read_request_text_intro_text.pack(fill="x", padx=(padx, padx))
 
-specifications_modbus_read_request_frame_slave_id = tk.Frame(specifications_frame_modbus_read_2)
-specifications_modbus_read_request_frame_slave_id.pack(side="top", anchor="nw", fill="x")
-tk.Label(specifications_modbus_read_request_frame_slave_id, text="Slave Address", width=label_w,).pack(side="left", padx=(padx, padx), pady=(10, 0))
-specifications_modbus_read_request_entry_slave_id_text = tk.Entry(specifications_modbus_read_request_frame_slave_id)
-specifications_modbus_read_request_entry_slave_id_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
-specifications_modbus_read_request_entry_slave_id_text.insert(0, "01")
+label_w = 25
 
-specifications_modbus_read_request_frame_function_code = tk.Frame(specifications_frame_modbus_read_2)
+specifications_modbus_read_request_frame_slave_address = tk.Frame(specifications_frame_modbus_read_1)
+specifications_modbus_read_request_frame_slave_address.pack(side="top", anchor="nw", fill="x")
+tk.Label(specifications_modbus_read_request_frame_slave_address, text="Slave Address", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_read_request_entry_slave_address_text = tk.Entry(specifications_modbus_read_request_frame_slave_address)
+specifications_modbus_read_request_entry_slave_address_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_read_request_entry_slave_address_text.insert(0, "01")
+
+specifications_modbus_read_request_frame_function_code = tk.Frame(specifications_frame_modbus_read_1)
 specifications_modbus_read_request_frame_function_code.pack(side="top", anchor="nw", fill="x")
-tk.Label(specifications_modbus_read_request_frame_function_code, text="Function Code", width=label_w,).pack(side="left", padx=(padx, padx), pady=(10, 0))
+tk.Label(specifications_modbus_read_request_frame_function_code, text="Function Code", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
 specifications_modbus_read_request_entry_function_code_text = tk.Entry(specifications_modbus_read_request_frame_function_code)
 specifications_modbus_read_request_entry_function_code_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
-specifications_modbus_read_request_entry_function_code_text.insert(0, "05")
+specifications_modbus_read_request_entry_function_code_text.insert(0, "04")
 
-specifications_modbus_read_request_frame_coil_address_hb = tk.Frame(specifications_frame_modbus_read_2)
-specifications_modbus_read_request_frame_coil_address_hb.pack(side="top", anchor="nw", fill="x")
-tk.Label(specifications_modbus_read_request_frame_coil_address_hb, text="Coil Address - High Byte", width=label_w,).pack(side="left", padx=(padx, padx), pady=(10, 0))
-specifications_modbus_read_request_entry_coil_address_hb_text = tk.Entry(specifications_modbus_read_request_frame_coil_address_hb)
-specifications_modbus_read_request_entry_coil_address_hb_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
-specifications_modbus_read_request_entry_coil_address_hb_text.insert(0, "00")
+specifications_modbus_read_request_frame_starting_address_hb = tk.Frame(specifications_frame_modbus_read_1)
+specifications_modbus_read_request_frame_starting_address_hb.pack(side="top", anchor="nw", fill="x")
+tk.Label(specifications_modbus_read_request_frame_starting_address_hb, text="Starting Address - High Byte", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_read_request_entry_starting_address_hb_text = tk.Entry(specifications_modbus_read_request_frame_starting_address_hb)
+specifications_modbus_read_request_entry_starting_address_hb_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_read_request_entry_starting_address_hb_text.insert(0, "00")
 
-specifications_modbus_read_request_frame_coil_address_lb = tk.Frame(specifications_frame_modbus_read_2)
-specifications_modbus_read_request_frame_coil_address_lb.pack(side="top", anchor="nw", fill="x")
-tk.Label(specifications_modbus_read_request_frame_coil_address_lb, text="Coil Address - Low Byte", width=label_w,).pack(side="left", padx=(padx, padx), pady=(10, 0))
-specifications_modbus_read_request_entry_coil_address_lb_text = tk.Entry(specifications_modbus_read_request_frame_coil_address_lb)
-specifications_modbus_read_request_entry_coil_address_lb_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
-specifications_modbus_read_request_entry_coil_address_lb_text.insert(0, "00")
+specifications_modbus_read_request_frame_starting_address_lb = tk.Frame(specifications_frame_modbus_read_1)
+specifications_modbus_read_request_frame_starting_address_lb.pack(side="top", anchor="nw", fill="x")
+tk.Label(specifications_modbus_read_request_frame_starting_address_lb, text="Starting Address - High Byte", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_read_request_entry_starting_address_lb_text = tk.Entry(specifications_modbus_read_request_frame_starting_address_lb)
+specifications_modbus_read_request_entry_starting_address_lb_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_read_request_entry_starting_address_lb_text.insert(0, "00")
 
-specifications_modbus_read_request_frame_coil_value_hb = tk.Frame(specifications_frame_modbus_read_2)
-specifications_modbus_read_request_frame_coil_value_hb.pack(side="top", anchor="nw", fill="x")
-tk.Label(specifications_modbus_read_request_frame_coil_value_hb, text="Coil Value - High Byte", width=label_w,).pack(side="left", padx=(padx, padx), pady=(10, 0))
-specifications_modbus_read_request_entry_coil_value_hb_text = tk.Entry(specifications_modbus_read_request_frame_coil_value_hb)
-specifications_modbus_read_request_entry_coil_value_hb_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
-specifications_modbus_read_request_entry_coil_value_hb_text.insert(0, "FF")
+specifications_modbus_read_request_frame_quantity_of_registers_hb = tk.Frame(specifications_frame_modbus_read_1)
+specifications_modbus_read_request_frame_quantity_of_registers_hb.pack(side="top", anchor="nw", fill="x")
+tk.Label(specifications_modbus_read_request_frame_quantity_of_registers_hb, text="Quantity of Registers - High Byte", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_read_request_entry_quantity_of_registers_hb_text = tk.Entry(specifications_modbus_read_request_frame_quantity_of_registers_hb)
+specifications_modbus_read_request_entry_quantity_of_registers_hb_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_read_request_entry_quantity_of_registers_hb_text.insert(0, "00")
 
-specifications_modbus_read_request_frame_coil_value_lb = tk.Frame(specifications_frame_modbus_read_2)
-specifications_modbus_read_request_frame_coil_value_lb.pack(side="top", anchor="nw", fill="x")
-tk.Label(specifications_modbus_read_request_frame_coil_value_lb, text="Coil Value - Low Byte", width=label_w,).pack(side="left", padx=(padx, padx), pady=(10, 0))
-specifications_modbus_read_request_entry_coil_value_lb_text = tk.Entry(specifications_modbus_read_request_frame_coil_value_lb)
-specifications_modbus_read_request_entry_coil_value_lb_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
-specifications_modbus_read_request_entry_coil_value_lb_text.insert(0, "00")
+specifications_modbus_read_request_frame_quantity_of_registers_lb = tk.Frame(specifications_frame_modbus_read_1)
+specifications_modbus_read_request_frame_quantity_of_registers_lb.pack(side="top", anchor="nw", fill="x")
+tk.Label(specifications_modbus_read_request_frame_quantity_of_registers_lb, text="Quantity of Registers - Low Byte", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_read_request_entry_quantity_of_registers_lb_text = tk.Entry(specifications_modbus_read_request_frame_quantity_of_registers_lb)
+specifications_modbus_read_request_entry_quantity_of_registers_lb_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_read_request_entry_quantity_of_registers_lb_text.insert(0, "01")
+
+
+# specifications_frame_modbus_read_2 = tk.LabelFrame(specifications_frame_modbus_read, text="Request", width=400)
+# specifications_frame_modbus_read_2.pack(side="left", fill="y")
+# specifications_frame_modbus_read_2.pack_propagate(False)
+
+# label_w = 20
+
+# specifications_modbus_read_request_frame_slave_address = tk.Frame(specifications_frame_modbus_read_2)
+# specifications_modbus_read_request_frame_slave_address.pack(side="top", anchor="nw", fill="x")
+# tk.Label(specifications_modbus_read_request_frame_slave_address, text="Slave Address", width=label_w,).pack(side="left", padx=(padx, padx), pady=(10, 0))
+# specifications_modbus_read_request_entry_slave_address_text = tk.Entry(specifications_modbus_read_request_frame_slave_address)
+# specifications_modbus_read_request_entry_slave_address_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+# specifications_modbus_read_request_entry_slave_address_text.insert(0, "01")
+
+# specifications_modbus_read_request_frame_function_code = tk.Frame(specifications_frame_modbus_read_2)
+# specifications_modbus_read_request_frame_function_code.pack(side="top", anchor="nw", fill="x")
+# tk.Label(specifications_modbus_read_request_frame_function_code, text="Function Code", width=label_w,).pack(side="left", padx=(padx, padx), pady=(10, 0))
+# specifications_modbus_read_request_entry_function_code_text = tk.Entry(specifications_modbus_read_request_frame_function_code)
+# specifications_modbus_read_request_entry_function_code_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+# specifications_modbus_read_request_entry_function_code_text.insert(0, "05")
+
+# specifications_modbus_read_request_frame_coil_address_hb = tk.Frame(specifications_frame_modbus_read_2)
+# specifications_modbus_read_request_frame_coil_address_hb.pack(side="top", anchor="nw", fill="x")
+# tk.Label(specifications_modbus_read_request_frame_coil_address_hb, text="Coil Address - High Byte", width=label_w,).pack(side="left", padx=(padx, padx), pady=(10, 0))
+# specifications_modbus_read_request_entry_coil_address_hb_text = tk.Entry(specifications_modbus_read_request_frame_coil_address_hb)
+# specifications_modbus_read_request_entry_coil_address_hb_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+# specifications_modbus_read_request_entry_coil_address_hb_text.insert(0, "00")
+
+# specifications_modbus_read_request_frame_coil_address_lb = tk.Frame(specifications_frame_modbus_read_2)
+# specifications_modbus_read_request_frame_coil_address_lb.pack(side="top", anchor="nw", fill="x")
+# tk.Label(specifications_modbus_read_request_frame_coil_address_lb, text="Coil Address - Low Byte", width=label_w,).pack(side="left", padx=(padx, padx), pady=(10, 0))
+# specifications_modbus_read_request_entry_coil_address_lb_text = tk.Entry(specifications_modbus_read_request_frame_coil_address_lb)
+# specifications_modbus_read_request_entry_coil_address_lb_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+# specifications_modbus_read_request_entry_coil_address_lb_text.insert(0, "00")
+
+# specifications_modbus_read_request_frame_coil_value_hb = tk.Frame(specifications_frame_modbus_read_2)
+# specifications_modbus_read_request_frame_coil_value_hb.pack(side="top", anchor="nw", fill="x")
+# tk.Label(specifications_modbus_read_request_frame_coil_value_hb, text="Coil Value - High Byte", width=label_w,).pack(side="left", padx=(padx, padx), pady=(10, 0))
+# specifications_modbus_read_request_entry_coil_value_hb_text = tk.Entry(specifications_modbus_read_request_frame_coil_value_hb)
+# specifications_modbus_read_request_entry_coil_value_hb_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+# specifications_modbus_read_request_entry_coil_value_hb_text.insert(0, "FF")
+
+# specifications_modbus_read_request_frame_coil_value_lb = tk.Frame(specifications_frame_modbus_read_2)
+# specifications_modbus_read_request_frame_coil_value_lb.pack(side="top", anchor="nw", fill="x")
+# tk.Label(specifications_modbus_read_request_frame_coil_value_lb, text="Coil Value - Low Byte", width=label_w,).pack(side="left", padx=(padx, padx), pady=(10, 0))
+# specifications_modbus_read_request_entry_coil_value_lb_text = tk.Entry(specifications_modbus_read_request_frame_coil_value_lb)
+# specifications_modbus_read_request_entry_coil_value_lb_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+# specifications_modbus_read_request_entry_coil_value_lb_text.insert(0, "00")
 
 # specifications_modbus_read_request_frame_crc16_hb = tk.Frame(specifications_frame_modbus_read_2)
 # specifications_modbus_read_request_frame_crc16_hb.pack(side="top", anchor="nw", fill="x")
@@ -4511,40 +4755,86 @@ specifications_modbus_read_request_entry_coil_value_lb_text.insert(0, "00")
 # MODBUS READ RESPONSE (OK)
 # ..........................................................
 
+specifications_frame_modbus_read_2 = tk.LabelFrame(specifications_frame_modbus_read, text="Response (OK)", width=280)
+specifications_frame_modbus_read_2.pack(side="left", fill="y")
+specifications_frame_modbus_read_2.pack_propagate(False)
 
-specifications_frame_modbus_read_3 = tk.Frame(specifications_frame_modbus_read, width=200)
-specifications_frame_modbus_read_3.pack(side="left", fill="y")
-specifications_frame_modbus_read_3.pack_propagate(False)
+tk.Label(specifications_frame_modbus_read_2, text="Intro").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+specifications_modbus_read_response_text_intro_text = tk.Text(specifications_frame_modbus_read_2, wrap="word", height=5)
+specifications_modbus_read_response_text_intro_text.pack(fill="x", padx=(padx, padx))
 
-tk.Label(specifications_frame_modbus_read_3, text="Module ID").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
-specifications_modbus_read_entry_module_id_text = tk.Entry(specifications_frame_modbus_read_3)
-specifications_modbus_read_entry_module_id_text.pack(fill="x", padx=(padx, padx))
-specifications_modbus_read_entry_module_id_text.delete(0, tk.END)
-specifications_modbus_read_entry_module_id_text.insert(0, "0x01")
+label_w = 25
 
-tk.Label(specifications_frame_modbus_read_3, text="Function Code").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
-specifications_modbus_read_entry_function_code_text = tk.Entry(specifications_frame_modbus_read_3)
-specifications_modbus_read_entry_function_code_text.pack(fill="x", padx=(padx, padx))
-specifications_modbus_read_entry_function_code_text.delete(0, tk.END)
-specifications_modbus_read_entry_function_code_text.insert(0, "0x04")
+# jump
+specifications_modbus_read_response_frame_slave_address = tk.Frame(specifications_frame_modbus_read_2)
+specifications_modbus_read_response_frame_slave_address.pack(side="top", anchor="nw", fill="x")
+tk.Label(specifications_modbus_read_response_frame_slave_address, text="Slave Address", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_read_response_entry_slave_address_text = tk.Entry(specifications_modbus_read_response_frame_slave_address)
+specifications_modbus_read_response_entry_slave_address_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_read_response_entry_slave_address_text.insert(0, "01")
 
-tk.Label(specifications_frame_modbus_read_3, text="Number of data bytes").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
-specifications_modbus_read_entry_bytes_number_text = tk.Entry(specifications_frame_modbus_read_3)
-specifications_modbus_read_entry_bytes_number_text.pack(fill="x", padx=(padx, padx))
-specifications_modbus_read_entry_bytes_number_text.delete(0, tk.END)
-specifications_modbus_read_entry_bytes_number_text.insert(0, "0x00 0x02")
+specifications_modbus_read_response_frame_function_code = tk.Frame(specifications_frame_modbus_read_2)
+specifications_modbus_read_response_frame_function_code.pack(side="top", anchor="nw", fill="x")
+tk.Label(specifications_modbus_read_response_frame_function_code, text="Function Code", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_read_response_entry_function_code_text = tk.Entry(specifications_modbus_read_response_frame_function_code)
+specifications_modbus_read_response_entry_function_code_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_read_response_entry_function_code_text.insert(0, "04")
 
-tk.Label(specifications_frame_modbus_read_3, text="Register value").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
-specifications_modbus_read_entry_register_value_text = tk.Entry(specifications_frame_modbus_read_3)
-specifications_modbus_read_entry_register_value_text.pack(fill="x", padx=(padx, padx))
-specifications_modbus_read_entry_register_value_text.delete(0, tk.END)
-specifications_modbus_read_entry_register_value_text.insert(0, "0x00 0x00")
+specifications_modbus_read_response_frame_byte_count = tk.Frame(specifications_frame_modbus_read_2)
+specifications_modbus_read_response_frame_byte_count.pack(side="top", anchor="nw", fill="x")
+tk.Label(specifications_modbus_read_response_frame_byte_count, text="Byte Count", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_read_response_entry_byte_count_text = tk.Entry(specifications_modbus_read_response_frame_byte_count)
+specifications_modbus_read_response_entry_byte_count_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_read_response_entry_byte_count_text.insert(0, "02")
 
-tk.Label(specifications_frame_modbus_read_3, text="CRC16").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
-specifications_modbus_read_entry_crc16_text = tk.Entry(specifications_frame_modbus_read_3)
-specifications_modbus_read_entry_crc16_text.pack(fill="x", padx=(padx, padx))
-specifications_modbus_read_entry_crc16_text.delete(0, tk.END)
-specifications_modbus_read_entry_crc16_text.insert(0, "0xXX 0xXX")
+specifications_modbus_read_response_frame_register_data_hb = tk.Frame(specifications_frame_modbus_read_2)
+specifications_modbus_read_response_frame_register_data_hb.pack(side="top", anchor="nw", fill="x")
+tk.Label(specifications_modbus_read_response_frame_register_data_hb, text="Register Data - High Byte", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_read_response_entry_register_data_hb_text = tk.Entry(specifications_modbus_read_response_frame_register_data_hb)
+specifications_modbus_read_response_entry_register_data_hb_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_read_response_entry_register_data_hb_text.insert(0, "00")
+
+specifications_modbus_read_response_frame_register_data_lb = tk.Frame(specifications_frame_modbus_read_2)
+specifications_modbus_read_response_frame_register_data_lb.pack(side="top", anchor="nw", fill="x")
+tk.Label(specifications_modbus_read_response_frame_register_data_lb, text="Register Data - Low Byte", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_read_response_entry_register_data_lb_text = tk.Entry(specifications_modbus_read_response_frame_register_data_lb)
+specifications_modbus_read_response_entry_register_data_lb_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_read_response_entry_register_data_lb_text.insert(0, "00")
+
+
+# specifications_frame_modbus_read_3 = tk.Frame(specifications_frame_modbus_read, width=200)
+# specifications_frame_modbus_read_3.pack(side="left", fill="y")
+# specifications_frame_modbus_read_3.pack_propagate(False)
+
+# tk.Label(specifications_frame_modbus_read_3, text="Module ID").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+# specifications_modbus_read_entry_slave_address_text = tk.Entry(specifications_frame_modbus_read_3)
+# specifications_modbus_read_entry_slave_address_text.pack(fill="x", padx=(padx, padx))
+# specifications_modbus_read_entry_slave_address_text.delete(0, tk.END)
+# specifications_modbus_read_entry_slave_address_text.insert(0, "0x01")
+
+# tk.Label(specifications_frame_modbus_read_3, text="Function Code").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+# specifications_modbus_read_entry_function_code_text = tk.Entry(specifications_frame_modbus_read_3)
+# specifications_modbus_read_entry_function_code_text.pack(fill="x", padx=(padx, padx))
+# specifications_modbus_read_entry_function_code_text.delete(0, tk.END)
+# specifications_modbus_read_entry_function_code_text.insert(0, "0x04")
+
+# tk.Label(specifications_frame_modbus_read_3, text="Number of data bytes").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+# specifications_modbus_read_entry_bytes_number_text = tk.Entry(specifications_frame_modbus_read_3)
+# specifications_modbus_read_entry_bytes_number_text.pack(fill="x", padx=(padx, padx))
+# specifications_modbus_read_entry_bytes_number_text.delete(0, tk.END)
+# specifications_modbus_read_entry_bytes_number_text.insert(0, "0x00 0x02")
+
+# tk.Label(specifications_frame_modbus_read_3, text="Register value").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+# specifications_modbus_read_entry_register_value_text = tk.Entry(specifications_frame_modbus_read_3)
+# specifications_modbus_read_entry_register_value_text.pack(fill="x", padx=(padx, padx))
+# specifications_modbus_read_entry_register_value_text.delete(0, tk.END)
+# specifications_modbus_read_entry_register_value_text.insert(0, "0x00 0x00")
+
+# tk.Label(specifications_frame_modbus_read_3, text="CRC16").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+# specifications_modbus_read_entry_crc16_text = tk.Entry(specifications_frame_modbus_read_3)
+# specifications_modbus_read_entry_crc16_text.pack(fill="x", padx=(padx, padx))
+# specifications_modbus_read_entry_crc16_text.delete(0, tk.END)
+# specifications_modbus_read_entry_crc16_text.insert(0, "0xXX 0xXX")
 
 specifications_frame_modbus_read_3 = tk.Frame(specifications_frame_modbus_read, width=200)
 specifications_frame_modbus_read_3.pack(side="left", fill="y")

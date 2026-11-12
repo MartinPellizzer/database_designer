@@ -152,7 +152,7 @@ def sql_specifications_rs485_get_by_specification_id(
 
 specifications_modbus_write_fields = [
     'specification_modbus_write_intro_text',
-    'specification_modbus_write_slave_id_text',
+    'specification_modbus_write_slave_address_text',
     'specification_modbus_write_function_code_text',
     'specification_modbus_write_coil_address_hb_text',
     'specification_modbus_write_coil_address_lb_text',
@@ -285,7 +285,7 @@ def sql_specifications_modbus_write_get_by_specification_id(
 
 specifications_modbus_write_response_fields = [
     'specification_modbus_write_response_intro_text',
-    'specification_modbus_write_response_slave_id_text',
+    'specification_modbus_write_response_slave_address_text',
     'specification_modbus_write_response_function_code_text',
     'specification_modbus_write_response_coil_address_hb_text',
     'specification_modbus_write_response_coil_address_lb_text',
@@ -449,7 +449,7 @@ def sql_specifications_modbus_read_create(
             specification_modbus_id INTEGER PRIMARY KEY, 
             specification_id TEXT UNIQUE,
             specification_modbus_read_intro_text TEXT,
-            specification_modbus_read_module_id_text TEXT,
+            specification_modbus_read_slave_address_text TEXT,
             specification_modbus_read_function_code_text TEXT,
             specification_modbus_read_bytes_number_text TEXT,
             specification_modbus_read_register_value_text TEXT,
@@ -467,7 +467,7 @@ def sql_specifications_modbus_read_update(
     cur = db.cursor()
     columns = {
         "specification_modbus_read_intro_text": "TEXT",
-        "specification_modbus_read_module_id_text": "TEXT",
+        "specification_modbus_read_slave_address_text": "TEXT",
         "specification_modbus_read_function_code_text": "TEXT",
         "specification_modbus_read_bytes_number_text": "TEXT",
         "specification_modbus_read_register_value_text": "TEXT",
@@ -485,7 +485,7 @@ def sql_specifications_modbus_read_set(
     table_name,
     specification_id,
     specification_modbus_read_intro_text,
-    specification_modbus_read_module_id_text,
+    specification_modbus_read_slave_address_text,
     specification_modbus_read_function_code_text,
     specification_modbus_read_bytes_number_text,
     specification_modbus_read_register_value_text,
@@ -499,7 +499,7 @@ def sql_specifications_modbus_read_set(
         INSERT INTO {table_name} (
             specification_id,
             specification_modbus_read_intro_text,
-            specification_modbus_read_module_id_text,
+            specification_modbus_read_slave_address_text,
             specification_modbus_read_function_code_text,
             specification_modbus_read_bytes_number_text,
             specification_modbus_read_register_value_text,
@@ -508,7 +508,7 @@ def sql_specifications_modbus_read_set(
         VALUES (?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(specification_id) DO UPDATE SET
             specification_modbus_read_intro_text = excluded.specification_modbus_read_intro_text,
-            specification_modbus_read_module_id_text = excluded.specification_modbus_read_module_id_text,
+            specification_modbus_read_slave_address_text = excluded.specification_modbus_read_slave_address_text,
             specification_modbus_read_function_code_text = excluded.specification_modbus_read_function_code_text,
             specification_modbus_read_bytes_number_text = excluded.specification_modbus_read_bytes_number_text,
             specification_modbus_read_register_value_text = excluded.specification_modbus_read_register_value_text,
@@ -516,7 +516,7 @@ def sql_specifications_modbus_read_set(
     ''', (
         specification_id,
         specification_modbus_read_intro_text,
-        specification_modbus_read_module_id_text,
+        specification_modbus_read_slave_address_text,
         specification_modbus_read_function_code_text,
         specification_modbus_read_bytes_number_text,
         specification_modbus_read_register_value_text,
@@ -526,6 +526,276 @@ def sql_specifications_modbus_read_set(
     db.close()
 
 def sql_specifications_modbus_read_get_by_specification_id(
+    db_filepath,
+    table_name,
+    specification_id,
+):
+    db = sqlite3.connect(db_filepath)
+    db.row_factory = sqlite3.Row
+    cur = db.cursor()
+    records = db.execute(f'''
+        SELECT * 
+        FROM {table_name}
+        WHERE specification_id = ?
+    ''', (specification_id,))
+    rows = records.fetchall()
+    items = [dict(row) for row in rows]
+    if items != []: item = items[0]
+    else: item = None
+    db.close()
+    return item
+
+
+
+
+
+
+# ----------------------------------------------------------
+# SQLITE SPECIFICATIONS MODBUS READ REQUEST
+# ----------------------------------------------------------
+
+specifications_modbus_read_request_fields = [
+    'specification_modbus_read_request_intro_text',
+    'specification_modbus_read_request_slave_address_text',
+    'specification_modbus_read_request_function_code_text',
+    'specification_modbus_read_request_starting_address_hb_text',
+    'specification_modbus_read_request_starting_address_lb_text',
+    'specification_modbus_read_request_quantity_of_registers_hb_text',
+    'specification_modbus_read_request_quantity_of_registers_lb_text',
+]
+
+def sql_specifications_modbus_read_request_drop(
+    db_filepath,
+    table_name,
+):
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        DROP TABLE IF EXISTS {table_name}
+    ''')
+    db.commit()
+    db.close()
+
+def sql_specifications_modbus_read_request_create(
+    db_filepath,
+    table_name,
+):
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    fields = []
+    for field in specifications_modbus_read_request_fields:
+        fields.append(f'{field} TEXT')
+    fields = ',\n'.join(fields)
+    query = f'''
+        CREATE TABLE IF NOT EXISTS {table_name} (
+            specification_modbus_id INTEGER PRIMARY KEY, 
+            specification_id TEXT UNIQUE,
+            {fields}
+        )
+    '''
+    cur.execute(query)
+    db.commit()
+    db.close()
+
+def sql_specifications_modbus_read_request_get_all(
+    db_filepath,
+    table_name,
+):
+    db = sqlite3.connect(db_filepath)
+    db.row_factory = sqlite3.Row
+    cur = db.cursor()
+    rows = db.execute(f"SELECT * FROM {table_name}").fetchall()
+    items = [dict(row) for row in rows]
+    db.close()
+    return items
+
+def sql_specifications_modbus_read_request_update(
+    db_filepath,
+    table_name,
+):
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    columns = {}
+    for field in specifications_modbus_read_request_fields:
+        columns[field] = 'TEXT'
+    existing = {row[1] for row in cur.execute(f"PRAGMA table_info({table_name})")}
+    for name, definition in columns.items():
+        if name not in existing:
+            cur.execute(f"ALTER TABLE {table_name} ADD COLUMN {name} {definition}")
+    db.commit()
+    db.close()
+
+def sql_specifications_modbus_read_request_set(
+    db_filepath,
+    table_name,
+    specification_id,
+    specification_fields,
+):
+    sql_specifications_modbus_read_request_create(db_filepath, table_name,)
+    sql_specifications_modbus_read_request_update(db_filepath, table_name,)
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    
+    fields_insert = []
+    for field in specifications_modbus_read_request_fields:
+        fields_insert.append(f'{field}')
+    fields_insert = ',\n'.join(fields_insert)
+    
+    fields_update = []
+    for field in specifications_modbus_read_request_fields:
+        fields_update.append(f'{field} = excluded.{field}')
+    fields_update = ',\n'.join(fields_update)
+    
+    fields_items = specification_fields
+
+    cur.execute(f'''
+        INSERT INTO {table_name} (
+            specification_id,
+            {fields_insert}
+        ) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(specification_id) DO UPDATE SET
+            {fields_update}
+    ''', (
+        specification_id,
+        *fields_items,
+    ))
+    db.commit()
+    db.close()
+
+def sql_specifications_modbus_read_request_get_by_specification_id(
+    db_filepath,
+    table_name,
+    specification_id,
+):
+    db = sqlite3.connect(db_filepath)
+    db.row_factory = sqlite3.Row
+    cur = db.cursor()
+    records = db.execute(f'''
+        SELECT * 
+        FROM {table_name}
+        WHERE specification_id = ?
+    ''', (specification_id,))
+    rows = records.fetchall()
+    items = [dict(row) for row in rows]
+    if items != []: item = items[0]
+    else: item = None
+    db.close()
+    return item
+
+# ----------------------------------------------------------
+# SQLITE SPECIFICATIONS MODBUS READ RESPONSE
+# ----------------------------------------------------------
+
+specifications_modbus_read_response_fields = [
+    'specification_modbus_read_response_intro_text',
+    'specification_modbus_read_response_slave_address_text',
+    'specification_modbus_read_response_function_code_text',
+    'specification_modbus_read_response_byte_count_text',
+    'specification_modbus_read_response_register_data_hb_text',
+    'specification_modbus_read_response_register_data_lb_text',
+]
+
+def sql_specifications_modbus_read_response_drop(
+    db_filepath,
+    table_name,
+):
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        DROP TABLE IF EXISTS {table_name}
+    ''')
+    db.commit()
+    db.close()
+
+def sql_specifications_modbus_read_response_create(
+    db_filepath,
+    table_name,
+):
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    fields = []
+    for field in specifications_modbus_read_response_fields:
+        fields.append(f'{field} TEXT')
+    fields = ',\n'.join(fields)
+    query = f'''
+        CREATE TABLE IF NOT EXISTS {table_name} (
+            specification_modbus_id INTEGER PRIMARY KEY, 
+            specification_id TEXT UNIQUE,
+            {fields}
+        )
+    '''
+    cur.execute(query)
+    db.commit()
+    db.close()
+
+def sql_specifications_modbus_read_response_get_all(
+    db_filepath,
+    table_name,
+):
+    db = sqlite3.connect(db_filepath)
+    db.row_factory = sqlite3.Row
+    cur = db.cursor()
+    rows = db.execute(f"SELECT * FROM {table_name}").fetchall()
+    items = [dict(row) for row in rows]
+    db.close()
+    return items
+
+def sql_specifications_modbus_read_response_update(
+    db_filepath,
+    table_name,
+):
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    columns = {}
+    for field in specifications_modbus_read_response_fields:
+        columns[field] = 'TEXT'
+    existing = {row[1] for row in cur.execute(f"PRAGMA table_info({table_name})")}
+    for name, definition in columns.items():
+        if name not in existing:
+            cur.execute(f"ALTER TABLE {table_name} ADD COLUMN {name} {definition}")
+    db.commit()
+    db.close()
+
+def sql_specifications_modbus_read_response_set(
+    db_filepath,
+    table_name,
+    specification_id,
+    specification_fields,
+):
+    sql_specifications_modbus_read_response_create(db_filepath, table_name,)
+    sql_specifications_modbus_read_response_update(db_filepath, table_name,)
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    
+    fields_insert = []
+    for field in specifications_modbus_read_response_fields:
+        fields_insert.append(f'{field}')
+    fields_insert = ',\n'.join(fields_insert)
+    
+    fields_update = []
+    for field in specifications_modbus_read_response_fields:
+        fields_update.append(f'{field} = excluded.{field}')
+    fields_update = ',\n'.join(fields_update)
+    
+    fields_items = specification_fields
+
+    cur.execute(f'''
+        INSERT INTO {table_name} (
+            specification_id,
+            {fields_insert}
+        ) 
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(specification_id) DO UPDATE SET
+            {fields_update}
+    ''', (
+        specification_id,
+        *fields_items,
+    ))
+    db.commit()
+    db.close()
+
+def sql_specifications_modbus_read_response_get_by_specification_id(
     db_filepath,
     table_name,
     specification_id,
