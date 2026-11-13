@@ -35,6 +35,13 @@ requirements_statements_list_cur = []
 db = None
 project_file = None
 
+def crc16(data):
+    crc = 0xFFFF
+    for b in data:
+        crc ^= b
+        for _ in range(8):
+            crc = (crc >> 1) ^ 0xA001 if crc & 1 else crc >> 1
+    return crc
 
 stakeholder_roles = [
     'System Architect', 
@@ -2401,7 +2408,6 @@ def tk_specifications_rs485_delete():
     )
     # specifications_tree.delete(item)
 
-# ;jump
 def tk_specifications_modbus_write_set():
     specifications_modbus_write_request_intro_text = specifications_modbus_write_request_text_intro_text.get("1.0", tk.END)
     specifications_modbus_write_request_slave_address_text = specifications_modbus_write_request_entry_slave_address_text.get()
@@ -2514,7 +2520,6 @@ def tk_specifications_modbus_write_set():
 def tk_specifications_modbus_write_delete():
     pass
 
-# jump
 def tk_specifications_modbus_read_set():
     specifications_modbus_read_request_intro_text = specifications_modbus_read_request_text_intro_text.get("1.0", tk.END)
     specifications_modbus_read_request_slave_address_text = specifications_modbus_read_request_entry_slave_address_text.get()
@@ -2620,6 +2625,20 @@ def tk_specifications_modbus_read_set():
     print(res)
 
 def tk_specifications_modbus_read_delete():
+    pass
+
+
+# ----------------------------------------------------------
+# TKINTER SPECIFICATIONS MODBUS REGISTER MAP
+# ----------------------------------------------------------
+
+def tk_specifications_modbus_register_map_view():
+    pass
+
+def tk_specifications_modbus_register_map_insert():
+    pass
+
+def tk_specifications_modbus_register_map_update():
     pass
 
 
@@ -3339,13 +3358,6 @@ def markdown_specifications_create():
             ''')
 
         elif specification_template_text.strip().lower() == 'modbus_read':
-            def crc16(data):
-                crc = 0xFFFF
-                for b in data:
-                    crc ^= b
-                    for _ in range(8):
-                        crc = (crc >> 1) ^ 0xA001 if crc & 1 else crc >> 1
-                return crc
 
             specification_modbus_read_request_item = sql_utils.sql_specifications_modbus_read_request_get_by_specification_id(
                 db_filepath,
@@ -3371,10 +3383,15 @@ def markdown_specifications_create():
                 specifications_modbus_read_request_quantity_of_registers_hb_text,
                 specifications_modbus_read_request_quantity_of_registers_lb_text,
             ]
-            data = bytes(int(x, 16) for x in hex_list)
-            crc = crc16(data)
-            high_byte = (crc >> 8) & 0xFF
-            low_byte  = crc & 0xFF
+            try: 
+                data = bytes(int(x, 16) for x in hex_list)
+                crc = crc16(data)
+                high_byte = (crc >> 8) & 0xFF
+                low_byte  = crc & 0xFF
+            except:
+                high_byte = 'XX'
+                low_byte  = 'XX'
+
             output_text += dedent(f'''
                 | Setting                           | Value (HEX)                          |
                 | --------------------------------- | ------------------------------------ |
@@ -3437,10 +3454,16 @@ def markdown_specifications_create():
                 specification_modbus_read_response_register_data_hb_text,
                 specification_modbus_read_response_register_data_lb_text,
             ]
-            data = bytes(int(x, 16) for x in hex_list)
-            crc = crc16(data)
-            high_byte = (crc >> 8) & 0xFF
-            low_byte  = crc & 0xFF
+            try: 
+                data = bytes(int(x, 16) for x in hex_list)
+                crc = crc16(data)
+                high_byte = (crc >> 8) & 0xFF
+                low_byte  = crc & 0xFF
+                high_byte = f'{high_byte:02X}'
+                low_byte = f'{low_byte:02X}'
+            except:
+                high_byte = 'XX'
+                low_byte  = 'XX'
             output_text += dedent(f'''
                 | Setting                           | Value (HEX)                          |
                 | --------------------------------- | ------------------------------------ |
@@ -3449,8 +3472,8 @@ def markdown_specifications_create():
                 | Byte Count                        | {specification_modbus_read_response_byte_count_text} |
                 | Register Data - High Byte         | {specification_modbus_read_response_register_data_hb_text} |
                 | Register Data - Low Byte          | {specification_modbus_read_response_register_data_lb_text} |
-                | CRC-16 - High Byte                | {high_byte:02X} |
-                | CRC-16 - Low Byte                 | {low_byte:02X}  |
+                | CRC-16 - High Byte                | {high_byte} |
+                | CRC-16 - Low Byte                 | {low_byte}  |
             ''')
             data_frame = ' '.join([
                 specification_modbus_read_response_slave_address_text, 
@@ -3458,8 +3481,8 @@ def markdown_specifications_create():
                 specification_modbus_read_response_byte_count_text, 
                 specification_modbus_read_response_register_data_hb_text, 
                 specification_modbus_read_response_register_data_lb_text, 
-                f'{low_byte:02X}',
-                f'{high_byte:02X}',
+                f'{low_byte}',
+                f'{high_byte}',
             ])
             print(data_frame)
             print(specification_modbus_read_response_slave_address_text)
@@ -4411,6 +4434,96 @@ tk.Button(
     command=tk_specifications_modbus_delete
 ).pack(fill="x", padx=(padx, padx), pady=(10, 0))
 
+# MODBUS REGISTER MAP
+# ..........................................................
+
+specifications_frame_center_bottom_modbus_register_map_tab = tk.Frame(specifications_frame_modbus_tabs)
+specifications_frame_modbus_tabs.add(specifications_frame_center_bottom_modbus_register_map_tab, text="Modbus Register Map")
+
+specifications_frame_modbus_register_map = tk.Frame(specifications_frame_center_bottom_modbus_register_map_tab)
+specifications_frame_modbus_register_map.pack(side="left", fill="both", expand=True)
+
+# MODBUS REGISTER MAP MODIFY
+# ..........................................................
+
+specifications_frame_modbus_register_map_1 = tk.LabelFrame(specifications_frame_modbus_register_map, text="Modify", width=240)
+specifications_frame_modbus_register_map_1.pack(side="left", fill="y")
+specifications_frame_modbus_register_map_1.pack_propagate(False)
+
+label_w = 10
+
+specifications_modbus_register_map_modify_frame_address = tk.Frame(specifications_frame_modbus_register_map_1)
+specifications_modbus_register_map_modify_frame_address.pack(side="top", anchor="nw", fill="x")
+tk.Label(specifications_modbus_register_map_modify_frame_address, text="Address", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_write_register_map_modify_entry_address_text = tk.Entry(specifications_modbus_register_map_modify_frame_address)
+specifications_modbus_write_register_map_modify_entry_address_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_write_register_map_modify_entry_address_text.insert(0, "40001")
+
+specifications_modbus_register_map_modify_frame_parameter = tk.Frame(specifications_frame_modbus_register_map_1)
+specifications_modbus_register_map_modify_frame_parameter.pack(side="top", anchor="nw", fill="x")
+tk.Label(specifications_modbus_register_map_modify_frame_parameter, text="Parameter", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_write_register_map_modify_entry_parameter_text = tk.Entry(specifications_modbus_register_map_modify_frame_parameter)
+specifications_modbus_write_register_map_modify_entry_parameter_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_write_register_map_modify_entry_parameter_text.insert(0, "Device Status")
+
+
+# TODO
+
+tk.Button(
+    specifications_frame_modbus_register_map_1,
+    text="Insert Record",
+    command=tk_specifications_modbus_register_map_insert
+).pack(fill="x", padx=(padx, padx), pady=(10, 0))
+
+tk.Button(
+    specifications_frame_modbus_register_map_1,
+    text="Update Record",
+    command=tk_specifications_modbus_register_map_update
+).pack(fill="x", padx=(padx, padx), pady=(10, 0))
+
+
+specifications_frame_modbus_register_map_2 = tk.LabelFrame(specifications_frame_modbus_register_map, text="Tree", width=240)
+specifications_frame_modbus_register_map_2.pack(side="left", fill="both", expand=True)
+specifications_frame_modbus_register_map_2.pack_propagate(False)
+
+specifications_modbus_register_map_fields = [
+    "_id",
+    "_address",
+    "_parameter",
+]
+
+specifications_modbus_register_map_tree = ttk.Treeview(
+    specifications_frame_modbus_register_map_2,
+    columns=specifications_modbus_register_map_fields,
+    show="headings"
+)
+specifications_modbus_register_map_tree.pack(fill="both", expand=True)
+
+for col in specifications_modbus_register_map_fields:
+    specifications_modbus_register_map_tree.heading(col, text=col)
+    specifications_modbus_register_map_tree.column(
+        col, 
+        stretch=False
+    )
+specifications_modbus_register_map_tree.column(
+    "_id",
+    width=120,
+    stretch=False,
+)
+specifications_modbus_register_map_tree.column(
+    "_address",
+    width=120,
+    stretch=False,
+)
+specifications_modbus_register_map_tree.column(
+    "_parameter",
+    width=120,
+    stretch=False,
+)
+
+# TODO
+tk_specifications_modbus_register_map_view()
+
 # MODBUS WRITE
 # ..........................................................
 
@@ -4665,7 +4778,7 @@ specifications_modbus_read_request_entry_starting_address_hb_text.insert(0, "00"
 
 specifications_modbus_read_request_frame_starting_address_lb = tk.Frame(specifications_frame_modbus_read_1)
 specifications_modbus_read_request_frame_starting_address_lb.pack(side="top", anchor="nw", fill="x")
-tk.Label(specifications_modbus_read_request_frame_starting_address_lb, text="Starting Address - High Byte", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
+tk.Label(specifications_modbus_read_request_frame_starting_address_lb, text="Starting Address - Low Byte", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
 specifications_modbus_read_request_entry_starting_address_lb_text = tk.Entry(specifications_modbus_read_request_frame_starting_address_lb)
 specifications_modbus_read_request_entry_starting_address_lb_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
 specifications_modbus_read_request_entry_starting_address_lb_text.insert(0, "00")
@@ -4901,6 +5014,3 @@ tk.Button(
 ).pack(fill="x", padx=(padx, padx), pady=(10, 0))
 
 root.mainloop()
-
-
-# TODO: write correct data for the realy drivers using the ui
