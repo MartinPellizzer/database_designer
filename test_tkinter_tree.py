@@ -3411,32 +3411,31 @@ def markdown_specifications_create():
             ###
 
             output_text += dedent(f'''
-                The complete request data frame is: {data_frame}
+                The complete response data frame is: {data_frame}
             ''')
 
-            specification_modbus_read_request_item = sql_utils.sql_specifications_modbus_read_request_get_by_specification_id(
+            specification_modbus_read_response_item = sql_utils.sql_specifications_modbus_read_response_get_by_specification_id(
                 db_filepath,
-                specifications_modbus_read_request_table_name,
+                specifications_modbus_read_response_table_name,
                 specification_id,
             )
-            specifications_modbus_read_request_intro_text = specification_modbus_read_request_item['specification_modbus_read_request_intro_text']
-            specifications_modbus_read_request_slave_address_text = specification_modbus_read_request_item['specification_modbus_read_request_slave_address_text']
-            specifications_modbus_read_request_function_code_text = specification_modbus_read_request_item['specification_modbus_read_request_function_code_text']
-            specifications_modbus_read_request_starting_address_hb_text = specification_modbus_read_request_item['specification_modbus_read_request_starting_address_hb_text']
-            specifications_modbus_read_request_starting_address_lb_text = specification_modbus_read_request_item['specification_modbus_read_request_starting_address_lb_text']
-            specifications_modbus_read_request_quantity_of_registers_hb_text = specification_modbus_read_request_item['specification_modbus_read_request_quantity_of_registers_hb_text']
-            specifications_modbus_read_request_quantity_of_registers_lb_text = specification_modbus_read_request_item['specification_modbus_read_request_quantity_of_registers_lb_text']
+            specification_modbus_read_response_intro_text = specification_modbus_read_response_item['specification_modbus_read_response_intro_text']
+            specification_modbus_read_response_slave_address_text = specification_modbus_read_response_item['specification_modbus_read_response_slave_address_text']
+            specification_modbus_read_response_function_code_text = specification_modbus_read_response_item['specification_modbus_read_response_function_code_text']
+            specification_modbus_read_response_byte_count_text = specification_modbus_read_response_item['specification_modbus_read_response_byte_count_text']
+            specification_modbus_read_response_register_data_hb_text = specification_modbus_read_response_item['specification_modbus_read_response_register_data_hb_text']
+            specification_modbus_read_response_register_data_lb_text = specification_modbus_read_response_item['specification_modbus_read_response_register_data_lb_text']
+            
             ###
             output_text += dedent(f'''
-                {specifications_modbus_read_request_intro_text}
+                {specification_modbus_read_response_intro_text}
             ''')
             hex_list = [
-                specifications_modbus_read_request_slave_address_text,
-                specifications_modbus_read_request_function_code_text,
-                specifications_modbus_read_request_starting_address_hb_text,
-                specifications_modbus_read_request_starting_address_lb_text,
-                specifications_modbus_read_request_quantity_of_registers_hb_text,
-                specifications_modbus_read_request_quantity_of_registers_lb_text,
+                specification_modbus_read_response_slave_address_text,
+                specification_modbus_read_response_function_code_text,
+                specification_modbus_read_response_byte_count_text,
+                specification_modbus_read_response_register_data_hb_text,
+                specification_modbus_read_response_register_data_lb_text,
             ]
             data = bytes(int(x, 16) for x in hex_list)
             crc = crc16(data)
@@ -3445,36 +3444,33 @@ def markdown_specifications_create():
             output_text += dedent(f'''
                 | Setting                           | Value (HEX)                          |
                 | --------------------------------- | ------------------------------------ |
-                | Slave Address                     | {specifications_modbus_read_request_slave_address_text} |
-                | Function Code                     | {specifications_modbus_read_request_function_code_text} |
-                | Starting Address - High Byte      | {specifications_modbus_read_request_starting_address_hb_text} |
-                | Starting Address - Low Byte       | {specifications_modbus_read_request_starting_address_lb_text} |
-                | Quantity of Registers - High Byte | {specifications_modbus_read_request_quantity_of_registers_hb_text} |
-                | Quantity of Registers - Low Byte  | {specifications_modbus_read_request_quantity_of_registers_lb_text} |
+                | Slave Address                     | {specification_modbus_read_response_slave_address_text} |
+                | Function Code                     | {specification_modbus_read_response_function_code_text} |
+                | Byte Count                        | {specification_modbus_read_response_byte_count_text} |
+                | Register Data - High Byte         | {specification_modbus_read_response_register_data_hb_text} |
+                | Register Data - Low Byte          | {specification_modbus_read_response_register_data_lb_text} |
                 | CRC-16 - High Byte                | {high_byte:02X} |
                 | CRC-16 - Low Byte                 | {low_byte:02X}  |
             ''')
             data_frame = ' '.join([
-                specifications_modbus_read_request_slave_address_text, 
-                specifications_modbus_read_request_function_code_text, 
-                specifications_modbus_read_request_starting_address_hb_text, 
-                specifications_modbus_read_request_starting_address_lb_text, 
-                specifications_modbus_read_request_quantity_of_registers_hb_text, 
-                specifications_modbus_read_request_quantity_of_registers_lb_text, 
+                specification_modbus_read_response_slave_address_text, 
+                specification_modbus_read_response_function_code_text, 
+                specification_modbus_read_response_byte_count_text, 
+                specification_modbus_read_response_register_data_hb_text, 
+                specification_modbus_read_response_register_data_lb_text, 
                 f'{low_byte:02X}',
                 f'{high_byte:02X}',
             ])
             print(data_frame)
-            print(specifications_modbus_read_request_slave_address_text)
-            print(specifications_modbus_read_request_function_code_text)
-            print(specifications_modbus_read_request_starting_address_hb_text)
-            print(specifications_modbus_read_request_starting_address_lb_text)
-            print(specifications_modbus_read_request_quantity_of_registers_hb_text)
-            print(specifications_modbus_read_request_quantity_of_registers_lb_text)
+            print(specification_modbus_read_response_slave_address_text)
+            print(specification_modbus_read_response_function_code_text)
+            print(specification_modbus_read_response_byte_count_text)
+            print(specification_modbus_read_response_register_data_hb_text)
+            print(specification_modbus_read_response_register_data_lb_text)
             # quit()
 
             output_text += dedent(f'''
-                The complete request data frame is: {data_frame}
+                The complete respnse data frame is: {data_frame}
             ''')
 
             # output_text += dedent(f'''
