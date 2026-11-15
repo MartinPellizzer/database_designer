@@ -1,58 +1,6 @@
 {
     "nodes": [
         {
-            "world_x": -16.0,
-            "world_y": 0.0,
-            "world_w": 20,
-            "world_h": 100,
-            "title": "activities",
-            "kind": "data",
-            "description": "",
-            "fields": [
-                {
-                    "name": "activity_id",
-                    "key": "primary_key"
-                },
-                {
-                    "name": "activity_name_reference",
-                    "key": "none"
-                },
-                {
-                    "name": "activity_name_reference_normalize",
-                    "key": ""
-                }
-            ],
-            "id": 3
-        },
-        {
-            "world_x": 28.0,
-            "world_y": -4.0,
-            "world_w": 20,
-            "world_h": 100,
-            "title": "plants_activities",
-            "kind": "data",
-            "description": "",
-            "fields": [
-                {
-                    "name": "plant_activity_id",
-                    "key": "primary_key"
-                },
-                {
-                    "name": "plant_id",
-                    "key": "foreign_key"
-                },
-                {
-                    "name": "activity_id",
-                    "key": "foreign_key"
-                },
-                {
-                    "name": "study_id",
-                    "key": "foreign_key"
-                }
-            ],
-            "id": 2
-        },
-        {
             "id": 10,
             "world_x": -16.0,
             "world_y": -56.0,
@@ -189,138 +137,6 @@
             ]
         },
         {
-            "id": 13,
-            "world_x": 28.0,
-            "world_y": 36.0,
-            "world_w": 20,
-            "world_h": 0,
-            "title": "plants__compounds",
-            "kind": "data",
-            "description": "",
-            "fields": [
-                {
-                    "name": "plant_compound_id",
-                    "key": "primary_key"
-                },
-                {
-                    "name": "plant_id",
-                    "key": "foreign_key"
-                },
-                {
-                    "name": "compound_id",
-                    "key": "foreign_key"
-                },
-                {
-                    "name": "study_id",
-                    "key": "foreign_key"
-                }
-            ]
-        },
-        {
-            "world_x": 28.0,
-            "world_y": 72.0,
-            "world_w": 20,
-            "world_h": 100,
-            "title": "plants__conditions",
-            "kind": "data",
-            "description": "",
-            "fields": [
-                {
-                    "name": "plant_condition_id",
-                    "key": "primary_key"
-                },
-                {
-                    "name": "plant_id",
-                    "key": "foreign_key"
-                },
-                {
-                    "name": "condition_id",
-                    "key": "foreign_key"
-                },
-                {
-                    "name": "study_id",
-                    "key": "foreign_key"
-                }
-            ],
-            "id": 6
-        },
-        {
-            "id": 14,
-            "world_x": 28.0,
-            "world_y": 108.0,
-            "world_w": 20,
-            "world_h": 0,
-            "title": "plants__preparations",
-            "kind": "data",
-            "description": "",
-            "fields": [
-                {
-                    "name": "plant_preparation_id",
-                    "key": "primary_key"
-                },
-                {
-                    "name": "plant_id",
-                    "key": "foreign_key"
-                },
-                {
-                    "name": "preparation_id",
-                    "key": "foreign_key"
-                },
-                {
-                    "name": "study_id",
-                    "key": "foreign_key"
-                }
-            ]
-        },
-        {
-            "world_x": -16.0,
-            "world_y": -80.0,
-            "world_w": 20,
-            "world_h": 100,
-            "title": "plants",
-            "kind": "data",
-            "description": "",
-            "fields": [
-                {
-                    "name": "plant_id",
-                    "key": "primary_key"
-                },
-                {
-                    "name": "plant_name_scientific_reference",
-                    "key": "none"
-                },
-                {
-                    "name": "plant_name_scientific_reference_normalize",
-                    "key": ""
-                }
-            ],
-            "id": 1
-        },
-        {
-            "world_x": 72.0,
-            "world_y": -4.0,
-            "world_w": 20,
-            "world_h": 100,
-            "title": "studies",
-            "kind": "data",
-            "description": "",
-            "fields": [
-                {
-                    "name": "study_id",
-                    "key": "primary_key"
-                },
-                {
-                    "name": "study_pmid",
-                    "key": ""
-                },
-                {
-                    "name": "study_title",
-                    "key": "none"
-                }
-            ],
-            "id": 4
-        },
-        {
             "id": 17,
             "world_x": -16.0,
             "world_y": 148.0,
@@ -341,34 +157,6 @@
                 {
                     "name": "part_name_reference_normalize",
                     "key": ""
-                }
-            ]
-        },
-        {
-            "id": 16,
-            "world_x": 28.0,
-            "world_y": 144.0,
-            "world_w": 20,
-            "world_h": 0,
-            "title": "plants__parts",
-            "kind": "data",
-            "description": "",
-            "fields": [
-                {
-                    "name": "plant_part_id",
-                    "key": "primary_key"
-                },
-                {
-                    "name": "plant_id",
-                    "key": "foreign_key"
-                },
-                {
-                    "name": "part_id",
-                    "key": "foreign_key"
-                },
-                {
-                    "name": "study_id",
-                    "key": "foreign_key"
                 }
             ]
         },
@@ -527,6 +315,550 @@
                     "key": ""
                 }
             ]
+        },
+        {
+            "world_x": 28.0,
+            "world_y": -4.0,
+            "world_w": 20,
+            "world_h": 100,
+            "title": "plants_activities",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "plant_activity_id",
+                    "key": "primary_key"
+                },
+                {
+                    "name": "plant_id",
+                    "key": "foreign_key"
+                },
+                {
+                    "name": "activity_id",
+                    "key": "foreign_key"
+                },
+                {
+                    "name": "study_id",
+                    "key": "foreign_key"
+                }
+            ],
+            "id": 2
+        },
+        {
+            "id": 13,
+            "world_x": 28.0,
+            "world_y": 36.0,
+            "world_w": 20,
+            "world_h": 0,
+            "title": "plants__compounds",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "plant_compound_id",
+                    "key": "primary_key"
+                },
+                {
+                    "name": "plant_id",
+                    "key": "foreign_key"
+                },
+                {
+                    "name": "compound_id",
+                    "key": "foreign_key"
+                },
+                {
+                    "name": "study_id",
+                    "key": "foreign_key"
+                }
+            ]
+        },
+        {
+            "world_x": 28.0,
+            "world_y": 72.0,
+            "world_w": 20,
+            "world_h": 100,
+            "title": "plants__conditions",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "plant_condition_id",
+                    "key": "primary_key"
+                },
+                {
+                    "name": "plant_id",
+                    "key": "foreign_key"
+                },
+                {
+                    "name": "condition_id",
+                    "key": "foreign_key"
+                },
+                {
+                    "name": "study_id",
+                    "key": "foreign_key"
+                }
+            ],
+            "id": 6
+        },
+        {
+            "id": 14,
+            "world_x": 28.0,
+            "world_y": 108.0,
+            "world_w": 20,
+            "world_h": 0,
+            "title": "plants__preparations",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "plant_preparation_id",
+                    "key": "primary_key"
+                },
+                {
+                    "name": "plant_id",
+                    "key": "foreign_key"
+                },
+                {
+                    "name": "preparation_id",
+                    "key": "foreign_key"
+                },
+                {
+                    "name": "study_id",
+                    "key": "foreign_key"
+                }
+            ]
+        },
+        {
+            "world_x": -16.0,
+            "world_y": -80.0,
+            "world_w": 20,
+            "world_h": 100,
+            "title": "plants",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "plant_id",
+                    "key": "primary_key"
+                },
+                {
+                    "name": "plant_name_scientific_reference",
+                    "key": "none"
+                },
+                {
+                    "name": "plant_name_scientific_reference_normalize",
+                    "key": ""
+                }
+            ],
+            "id": 1
+        },
+        {
+            "world_x": -16.0,
+            "world_y": 0.0,
+            "world_w": 20,
+            "world_h": 100,
+            "title": "activities",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "activity_id",
+                    "key": "primary_key"
+                },
+                {
+                    "name": "activity_name_reference",
+                    "key": "none"
+                },
+                {
+                    "name": "activity_name_reference_normalize",
+                    "key": ""
+                }
+            ],
+            "id": 3
+        },
+        {
+            "id": 20,
+            "world_x": 96.0,
+            "world_y": -20.0,
+            "world_w": 20,
+            "world_h": 0,
+            "title": "phrases",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "phrase_id",
+                    "key": "primary_key"
+                },
+                {
+                    "name": "study_id",
+                    "key": ""
+                },
+                {
+                    "name": "phrase_text",
+                    "key": ""
+                }
+            ]
+        },
+        {
+            "id": 19,
+            "world_x": 28.0,
+            "world_y": 8.0,
+            "world_w": 20,
+            "world_h": 0,
+            "title": "phrases__plants__activities",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "plant_activity_id",
+                    "key": "primary_key"
+                },
+                {
+                    "name": "plant_id",
+                    "key": "foreign_key"
+                },
+                {
+                    "name": "activity_id",
+                    "key": "foreign_key"
+                },
+                {
+                    "name": "phrase_id",
+                    "key": "foreign_key"
+                }
+            ]
+        },
+        {
+            "id": 16,
+            "world_x": 28.0,
+            "world_y": 144.0,
+            "world_w": 20,
+            "world_h": 0,
+            "title": "plants__parts",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "plant_part_id",
+                    "key": "primary_key"
+                },
+                {
+                    "name": "plant_id",
+                    "key": "foreign_key"
+                },
+                {
+                    "name": "part_id",
+                    "key": "foreign_key"
+                },
+                {
+                    "name": "study_id",
+                    "key": "foreign_key"
+                }
+            ]
+        },
+        {
+            "world_x": 64.0,
+            "world_y": -28.0,
+            "world_w": 20,
+            "world_h": 100,
+            "title": "studies",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "study_id",
+                    "key": "primary_key"
+                },
+                {
+                    "name": "study_pmid",
+                    "key": ""
+                },
+                {
+                    "name": "study_title",
+                    "key": "none"
+                }
+            ],
+            "id": 4
+        },
+        {
+            "id": 21,
+            "world_x": -364.0,
+            "world_y": 32.0,
+            "world_w": 20,
+            "world_h": 0,
+            "title": "wfo__classification",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "taxonID",
+                    "key": "none"
+                },
+                {
+                    "name": "scientificNameID",
+                    "key": "none"
+                },
+                {
+                    "name": "localID",
+                    "key": ""
+                },
+                {
+                    "name": "scientificName",
+                    "key": ""
+                },
+                {
+                    "name": "taxonRank",
+                    "key": ""
+                },
+                {
+                    "name": "parentNameUsageID",
+                    "key": ""
+                },
+                {
+                    "name": "scientificNameAuthorship",
+                    "key": ""
+                },
+                {
+                    "name": "family",
+                    "key": ""
+                },
+                {
+                    "name": "subfamily",
+                    "key": ""
+                },
+                {
+                    "name": "tribe",
+                    "key": ""
+                },
+                {
+                    "name": "subtribe",
+                    "key": ""
+                },
+                {
+                    "name": "genus",
+                    "key": ""
+                },
+                {
+                    "name": "subgenus",
+                    "key": ""
+                },
+                {
+                    "name": "specificEpithet",
+                    "key": ""
+                },
+                {
+                    "name": "infraspecificEpithet",
+                    "key": ""
+                },
+                {
+                    "name": "verbatimTaxonRank",
+                    "key": ""
+                },
+                {
+                    "name": "nomenclaturalStatus",
+                    "key": ""
+                },
+                {
+                    "name": "namePublishedIn",
+                    "key": ""
+                },
+                {
+                    "name": "taxonomicStatus",
+                    "key": ""
+                },
+                {
+                    "name": "acceptedNameUsageID",
+                    "key": ""
+                },
+                {
+                    "name": "originalNameUsageID",
+                    "key": ""
+                },
+                {
+                    "name": "nameAccordingToID",
+                    "key": ""
+                },
+                {
+                    "name": "taxonRemarks",
+                    "key": ""
+                },
+                {
+                    "name": "created",
+                    "key": ""
+                },
+                {
+                    "name": "modified",
+                    "key": ""
+                },
+                {
+                    "name": "references",
+                    "key": ""
+                },
+                {
+                    "name": "source",
+                    "key": ""
+                },
+                {
+                    "name": "majorGroup",
+                    "key": ""
+                },
+                {
+                    "name": "tplID",
+                    "key": ""
+                }
+            ]
+        },
+        {
+            "id": 23,
+            "world_x": -16.0,
+            "world_y": 188.0,
+            "world_w": 20,
+            "world_h": 0,
+            "title": "traditional_medicinal_systems",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "traditional_medicinal_system_id",
+                    "key": "none"
+                },
+                {
+                    "name": "traditional_medicinal_system_name_reference",
+                    "key": "none"
+                },
+                {
+                    "name": "traditional_medicinal_system_name_reference_normalize",
+                    "key": ""
+                }
+            ]
+        },
+        {
+            "id": 22,
+            "world_x": -240.0,
+            "world_y": 32.0,
+            "world_w": 20,
+            "world_h": 0,
+            "title": "ref__wfo__classification",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "taxon_id",
+                    "key": "primary_key"
+                },
+                {
+                    "name": "scientific_name_id",
+                    "key": "none"
+                },
+                {
+                    "name": "local_id",
+                    "key": ""
+                },
+                {
+                    "name": "scientific_name",
+                    "key": ""
+                },
+                {
+                    "name": "taxon_rank",
+                    "key": ""
+                },
+                {
+                    "name": "parent_name_usage_id",
+                    "key": ""
+                },
+                {
+                    "name": "scientific_name_authorship",
+                    "key": ""
+                },
+                {
+                    "name": "family",
+                    "key": ""
+                },
+                {
+                    "name": "subfamily",
+                    "key": ""
+                },
+                {
+                    "name": "tribe",
+                    "key": ""
+                },
+                {
+                    "name": "subtribe",
+                    "key": ""
+                },
+                {
+                    "name": "genus",
+                    "key": ""
+                },
+                {
+                    "name": "subgenus",
+                    "key": ""
+                },
+                {
+                    "name": "specific_epithet",
+                    "key": ""
+                },
+                {
+                    "name": "infraspecific_epithet",
+                    "key": ""
+                },
+                {
+                    "name": "verbatim_taxon_rank",
+                    "key": ""
+                },
+                {
+                    "name": "nomenclatural_status",
+                    "key": ""
+                },
+                {
+                    "name": "name_published_in",
+                    "key": ""
+                },
+                {
+                    "name": "taxonomic_status",
+                    "key": ""
+                },
+                {
+                    "name": "accepted_name_usage_id",
+                    "key": ""
+                },
+                {
+                    "name": "original_name_usage_id",
+                    "key": ""
+                },
+                {
+                    "name": "name_according_to_id",
+                    "key": ""
+                },
+                {
+                    "name": "taxon_remarks",
+                    "key": ""
+                },
+                {
+                    "name": "created",
+                    "key": ""
+                },
+                {
+                    "name": "modified",
+                    "key": ""
+                },
+                {
+                    "name": "references",
+                    "key": ""
+                },
+                {
+                    "name": "source",
+                    "key": ""
+                },
+                {
+                    "name": "major_group",
+                    "key": ""
+                },
+                {
+                    "name": "tpl_id",
+                    "key": ""
+                }
+            ]
         }
     ],
     "edges": [
@@ -655,67 +987,6 @@
         {
             "edge_start": {
                 "node": {
-                    "world_x": 72.0,
-                    "world_y": -4.0,
-                    "world_w": 20,
-                    "world_h": 100,
-                    "title": "studies",
-                    "kind": "data",
-                    "description": "",
-                    "fields": [
-                        {
-                            "name": "study_id",
-                            "key": "primary_key"
-                        },
-                        {
-                            "name": "study_pmid",
-                            "key": ""
-                        },
-                        {
-                            "name": "study_title",
-                            "key": "none"
-                        }
-                    ],
-                    "id": 4
-                },
-                "field_i": 1
-            },
-            "edge_end": {
-                "node": {
-                    "world_x": 28.0,
-                    "world_y": -4.0,
-                    "world_w": 20,
-                    "world_h": 100,
-                    "title": "plants_activities",
-                    "kind": "data",
-                    "description": "",
-                    "fields": [
-                        {
-                            "name": "plant_activity_id",
-                            "key": "primary_key"
-                        },
-                        {
-                            "name": "plant_id",
-                            "key": "foreign_key"
-                        },
-                        {
-                            "name": "activity_id",
-                            "key": "foreign_key"
-                        },
-                        {
-                            "name": "study_id",
-                            "key": "foreign_key"
-                        }
-                    ],
-                    "id": 2
-                },
-                "field_i": 4
-            },
-            "edge_type": "1:N"
-        },
-        {
-            "edge_start": {
-                "node": {
                     "world_x": -16.0,
                     "world_y": -80.0,
                     "world_w": 20,
@@ -832,67 +1103,6 @@
                     "id": 6
                 },
                 "field_i": 3
-            },
-            "edge_type": "1:N"
-        },
-        {
-            "edge_start": {
-                "node": {
-                    "world_x": 72.0,
-                    "world_y": -4.0,
-                    "world_w": 20,
-                    "world_h": 100,
-                    "title": "studies",
-                    "kind": "data",
-                    "description": "",
-                    "fields": [
-                        {
-                            "name": "study_id",
-                            "key": "primary_key"
-                        },
-                        {
-                            "name": "study_pmid",
-                            "key": ""
-                        },
-                        {
-                            "name": "study_title",
-                            "key": "none"
-                        }
-                    ],
-                    "id": 4
-                },
-                "field_i": 1
-            },
-            "edge_end": {
-                "node": {
-                    "world_x": 28.0,
-                    "world_y": 72.0,
-                    "world_w": 20,
-                    "world_h": 100,
-                    "title": "plants__conditions",
-                    "kind": "data",
-                    "description": "",
-                    "fields": [
-                        {
-                            "name": "plant_condition_id",
-                            "key": "primary_key"
-                        },
-                        {
-                            "name": "plant_id",
-                            "key": "foreign_key"
-                        },
-                        {
-                            "name": "condition_id",
-                            "key": "foreign_key"
-                        },
-                        {
-                            "name": "study_id",
-                            "key": "foreign_key"
-                        }
-                    ],
-                    "id": 6
-                },
-                "field_i": 4
             },
             "edge_type": "1:N"
         },
@@ -1179,67 +1389,6 @@
         {
             "edge_start": {
                 "node": {
-                    "world_x": 72.0,
-                    "world_y": -4.0,
-                    "world_w": 20,
-                    "world_h": 100,
-                    "title": "studies",
-                    "kind": "data",
-                    "description": "",
-                    "fields": [
-                        {
-                            "name": "study_id",
-                            "key": "primary_key"
-                        },
-                        {
-                            "name": "study_pmid",
-                            "key": ""
-                        },
-                        {
-                            "name": "study_title",
-                            "key": "none"
-                        }
-                    ],
-                    "id": 4
-                },
-                "field_i": 1
-            },
-            "edge_end": {
-                "node": {
-                    "id": 13,
-                    "world_x": 28.0,
-                    "world_y": 36.0,
-                    "world_w": 20,
-                    "world_h": 0,
-                    "title": "plants__compounds",
-                    "kind": "data",
-                    "description": "",
-                    "fields": [
-                        {
-                            "name": "plant_compound_id",
-                            "key": "primary_key"
-                        },
-                        {
-                            "name": "plant_id",
-                            "key": "foreign_key"
-                        },
-                        {
-                            "name": "compound_id",
-                            "key": "foreign_key"
-                        },
-                        {
-                            "name": "study_id",
-                            "key": "foreign_key"
-                        }
-                    ]
-                },
-                "field_i": 4
-            },
-            "edge_type": "1:N"
-        },
-        {
-            "edge_start": {
-                "node": {
                     "world_x": -16.0,
                     "world_y": -80.0,
                     "world_w": 20,
@@ -1484,67 +1633,6 @@
         {
             "edge_start": {
                 "node": {
-                    "world_x": 72.0,
-                    "world_y": -4.0,
-                    "world_w": 20,
-                    "world_h": 100,
-                    "title": "studies",
-                    "kind": "data",
-                    "description": "",
-                    "fields": [
-                        {
-                            "name": "study_id",
-                            "key": "primary_key"
-                        },
-                        {
-                            "name": "study_pmid",
-                            "key": ""
-                        },
-                        {
-                            "name": "study_title",
-                            "key": "none"
-                        }
-                    ],
-                    "id": 4
-                },
-                "field_i": 1
-            },
-            "edge_end": {
-                "node": {
-                    "id": 14,
-                    "world_x": 28.0,
-                    "world_y": 108.0,
-                    "world_w": 20,
-                    "world_h": 0,
-                    "title": "plants__preparations",
-                    "kind": "data",
-                    "description": "",
-                    "fields": [
-                        {
-                            "name": "plant_preparation_id",
-                            "key": "primary_key"
-                        },
-                        {
-                            "name": "plant_id",
-                            "key": "foreign_key"
-                        },
-                        {
-                            "name": "preparation_id",
-                            "key": "foreign_key"
-                        },
-                        {
-                            "name": "study_id",
-                            "key": "foreign_key"
-                        }
-                    ]
-                },
-                "field_i": 4
-            },
-            "edge_type": "1:N"
-        },
-        {
-            "edge_start": {
-                "node": {
                     "world_x": -16.0,
                     "world_y": -80.0,
                     "world_w": 20,
@@ -1667,8 +1755,492 @@
         {
             "edge_start": {
                 "node": {
-                    "world_x": 72.0,
+                    "world_x": -16.0,
+                    "world_y": 0.0,
+                    "world_w": 20,
+                    "world_h": 100,
+                    "title": "activities",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "activity_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "activity_name_reference",
+                            "key": "none"
+                        },
+                        {
+                            "name": "activity_name_reference_normalize",
+                            "key": ""
+                        }
+                    ],
+                    "id": 3
+                },
+                "field_i": 1
+            },
+            "edge_end": {
+                "node": {
+                    "id": 19,
+                    "world_x": 28.0,
+                    "world_y": 8.0,
+                    "world_w": 20,
+                    "world_h": 0,
+                    "title": "phrases__plants__activities",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "plant_activity_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "plant_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "activity_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "phrase_id",
+                            "key": "foreign_key"
+                        }
+                    ]
+                },
+                "field_i": 3
+            },
+            "edge_type": "1:N"
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": 64.0,
+                    "world_y": -28.0,
+                    "world_w": 20,
+                    "world_h": 100,
+                    "title": "studies",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "study_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "study_pmid",
+                            "key": ""
+                        },
+                        {
+                            "name": "study_title",
+                            "key": "none"
+                        }
+                    ],
+                    "id": 4
+                },
+                "field_i": 1
+            },
+            "edge_end": {
+                "node": {
+                    "world_x": 28.0,
                     "world_y": -4.0,
+                    "world_w": 20,
+                    "world_h": 100,
+                    "title": "plants_activities",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "plant_activity_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "plant_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "activity_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "study_id",
+                            "key": "foreign_key"
+                        }
+                    ],
+                    "id": 2
+                },
+                "field_i": 4
+            },
+            "edge_type": "1:N"
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": 64.0,
+                    "world_y": -28.0,
+                    "world_w": 20,
+                    "world_h": 100,
+                    "title": "studies",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "study_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "study_pmid",
+                            "key": ""
+                        },
+                        {
+                            "name": "study_title",
+                            "key": "none"
+                        }
+                    ],
+                    "id": 4
+                },
+                "field_i": 1
+            },
+            "edge_end": {
+                "node": {
+                    "id": 13,
+                    "world_x": 28.0,
+                    "world_y": 36.0,
+                    "world_w": 20,
+                    "world_h": 0,
+                    "title": "plants__compounds",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "plant_compound_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "plant_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "compound_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "study_id",
+                            "key": "foreign_key"
+                        }
+                    ]
+                },
+                "field_i": 4
+            },
+            "edge_type": "1:N"
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": 64.0,
+                    "world_y": -28.0,
+                    "world_w": 20,
+                    "world_h": 100,
+                    "title": "studies",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "study_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "study_pmid",
+                            "key": ""
+                        },
+                        {
+                            "name": "study_title",
+                            "key": "none"
+                        }
+                    ],
+                    "id": 4
+                },
+                "field_i": 1
+            },
+            "edge_end": {
+                "node": {
+                    "world_x": 28.0,
+                    "world_y": 72.0,
+                    "world_w": 20,
+                    "world_h": 100,
+                    "title": "plants__conditions",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "plant_condition_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "plant_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "condition_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "study_id",
+                            "key": "foreign_key"
+                        }
+                    ],
+                    "id": 6
+                },
+                "field_i": 4
+            },
+            "edge_type": "1:N"
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": 64.0,
+                    "world_y": -28.0,
+                    "world_w": 20,
+                    "world_h": 100,
+                    "title": "studies",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "study_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "study_pmid",
+                            "key": ""
+                        },
+                        {
+                            "name": "study_title",
+                            "key": "none"
+                        }
+                    ],
+                    "id": 4
+                },
+                "field_i": 1
+            },
+            "edge_end": {
+                "node": {
+                    "id": 14,
+                    "world_x": 28.0,
+                    "world_y": 108.0,
+                    "world_w": 20,
+                    "world_h": 0,
+                    "title": "plants__preparations",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "plant_preparation_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "plant_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "preparation_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "study_id",
+                            "key": "foreign_key"
+                        }
+                    ]
+                },
+                "field_i": 4
+            },
+            "edge_type": "1:N"
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": -16.0,
+                    "world_y": -80.0,
+                    "world_w": 20,
+                    "world_h": 100,
+                    "title": "plants",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "plant_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "plant_name_scientific_reference",
+                            "key": "none"
+                        },
+                        {
+                            "name": "plant_name_scientific_reference_normalize",
+                            "key": ""
+                        }
+                    ],
+                    "id": 1
+                },
+                "field_i": 1
+            },
+            "edge_end": {
+                "node": {
+                    "id": 19,
+                    "world_x": 28.0,
+                    "world_y": 8.0,
+                    "world_w": 20,
+                    "world_h": 0,
+                    "title": "phrases__plants__activities",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "plant_activity_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "plant_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "activity_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "phrase_id",
+                            "key": "foreign_key"
+                        }
+                    ]
+                },
+                "field_i": 2
+            },
+            "edge_type": "1:N"
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "id": 20,
+                    "world_x": 96.0,
+                    "world_y": -20.0,
+                    "world_w": 20,
+                    "world_h": 0,
+                    "title": "phrases",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "phrase_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "study_id",
+                            "key": ""
+                        },
+                        {
+                            "name": "phrase_text",
+                            "key": ""
+                        }
+                    ]
+                },
+                "field_i": 1
+            },
+            "edge_end": {
+                "node": {
+                    "id": 19,
+                    "world_x": 28.0,
+                    "world_y": 8.0,
+                    "world_w": 20,
+                    "world_h": 0,
+                    "title": "phrases__plants__activities",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "plant_activity_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "plant_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "activity_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "phrase_id",
+                            "key": "foreign_key"
+                        }
+                    ]
+                },
+                "field_i": 4
+            },
+            "edge_type": "1:N"
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": 64.0,
+                    "world_y": -28.0,
+                    "world_w": 20,
+                    "world_h": 100,
+                    "title": "studies",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "study_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "study_pmid",
+                            "key": ""
+                        },
+                        {
+                            "name": "study_title",
+                            "key": "none"
+                        }
+                    ],
+                    "id": 4
+                },
+                "field_i": 1
+            },
+            "edge_end": {
+                "node": {
+                    "id": 20,
+                    "world_x": 96.0,
+                    "world_y": -20.0,
+                    "world_w": 20,
+                    "world_h": 0,
+                    "title": "phrases",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "phrase_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "study_id",
+                            "key": ""
+                        },
+                        {
+                            "name": "phrase_text",
+                            "key": ""
+                        }
+                    ]
+                },
+                "field_i": 2
+            },
+            "edge_type": "1:N"
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": 64.0,
+                    "world_y": -28.0,
                     "world_w": 20,
                     "world_h": 100,
                     "title": "studies",
@@ -1776,6 +2348,26 @@
             "world_x": -256.0,
             "world_y": -76.0,
             "text": "MANUAL"
+        },
+        {
+            "world_x": -384.0,
+            "world_y": -112.0,
+            "text": "EXTERNAL"
+        },
+        {
+            "world_x": -360.0,
+            "world_y": 16.0,
+            "text": "WFO"
+        },
+        {
+            "world_x": 104.0,
+            "world_y": 180.0,
+            "text": "traditional_medicinal_system"
+        },
+        {
+            "world_x": -252.0,
+            "world_y": 16.0,
+            "text": "REF_WFO"
         }
     ]
 }

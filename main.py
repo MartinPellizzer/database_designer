@@ -13,6 +13,7 @@ clock = pygame.time.Clock()
 
 core = {
     'running': True,
+    'shortcuts': []
 }
 
 grid_size = 4
@@ -599,6 +600,59 @@ def draw_edge(edge):
     text = font.render(edge['edge_type'], True, (255, 255, 255))
     screen.blit(text, (screen_x2, (screen_y2 + screen_y3) / 2))
 
+def input_shortcut(event, key, mods):
+    ###
+    mods_text = ''
+    if mods == pygame.KMOD_CTRL:
+        mods_text = 'ctrl'
+    core['shortcuts'].append({
+        'key': pygame.key.name(key),
+        'mods': mods_text,
+    })
+    if event.key == key and (pygame.key.get_mods() & mods):
+        return True
+    return False
+
+def sql_generate():
+    sql_all = []
+    for node in nodes:
+        if node != interaction['node_focus']: continue
+        # print(json.dumps(node, indent=4))
+        table_name = node['title']
+        sql_fields = []
+        for field in node['fields']:
+            sql_field = ''
+            if field['key'] == 'primary_key':
+                sql_field = f'''{field['name']} INTEGER PRIMARY KEY'''
+            else:
+                sql_field = f'''{field['name']} TEXT'''
+            sql_fields.append(sql_field)
+        sql_fields = ',\n'.join(sql_fields)
+        sql = f'''
+            CREATE TABLE IF NOT EXISTS {table_name} (
+                {sql_fields}
+            );
+        '''
+        def format_sql(sql):
+            lines = sql.strip().splitlines()
+            result = []
+            indent = 0
+            for line in lines:
+                line = line.strip()
+                if line.endswith(")"):
+                    indent -= 1
+                result.append("    " * indent + line)
+                if line.endswith("("):
+                    indent += 1
+            return "\n".join(result)
+        sql = format_sql(sql)
+        sql_all.append(sql)
+    with open(f'sql_output.txt', 'w') as f: 
+        for sql in sql_all:
+            sql_format = f'{sql.strip()}\n\n'
+            f.write(sql_format)
+            print(sql_format)
+
 def inputs_key_down(event):
     global nodes
     global comments
@@ -643,45 +697,9 @@ def inputs_key_down(event):
             print('---')
         print('################################################################')
 
-    # Ctrl+G -> Generate SQL
-    elif event.key == pygame.K_g and (pygame.key.get_mods() & pygame.KMOD_CTRL):
-        sql_all = []
-        for node in nodes:
-            print(json.dumps(node, indent=4))
-            table_name = node['title']
-            sql_fields = []
-            for field in node['fields']:
-                sql_field = ''
-                if field['key'] == 'primary_key':
-                    sql_field = f'''{field['name']} INTEGER PRIMARY KEY'''
-                else:
-                    sql_field = f'''{field['name']} TEXT'''
-                sql_fields.append(sql_field)
-            sql_fields = ',\n'.join(sql_fields)
-            sql = f'''
-                CREATE TABLE IF NOT EXISTS {table_name} (
-                    {sql_fields}
-                );
-            '''
-            def format_sql(sql):
-                lines = sql.strip().splitlines()
-                result = []
-                indent = 0
-                for line in lines:
-                    line = line.strip()
-                    if line.endswith(")"):
-                        indent -= 1
-                    result.append("    " * indent + line)
-                    if line.endswith("("):
-                        indent += 1
-                return "\n".join(result)
-            sql = format_sql(sql)
-            sql_all.append(sql)
-        print(sql_all)
-        with open(f'sql_output.txt', 'w') as f: 
-            for sql in sql_all:
-                sql_format = f'{sql.strip()}\n\n'
-                f.write(sql_format)
+    elif input_shortcut(event, pygame.K_g, pygame.KMOD_CTRL):
+        print('ctrl+g')
+        sql_generate()
 
     # Reorder Fields
     elif event.key == pygame.K_UP and pygame.key.get_mods() & pygame.KMOD_CTRL:
@@ -767,15 +785,19 @@ def inputs_key_down(event):
             elif interaction['comment_focus'] != None:
                 interaction['comment_focus']['text'] += letter
 
+
+    if event.key == pygame.K_F1:
+        print(core['shortcuts'])
+
 def inputs_mouse_wheel(event):
     global font
     global font_comment
     if event.y == 1:
         if camera['scale'] < 256:
-            camera['scale'] *= 2
+            camera['scale'] += 1
     elif event.y == -1:
         if camera['scale'] > 1:
-            camera['scale'] /= 2
+            camera['scale'] -= 1
     font = pygame.font.Font(None, font_size_base*int(camera['scale']))
     font_comment = pygame.font.Font(None, font_comment_size_base*int(camera['scale']))
 
@@ -1163,9 +1185,11 @@ def main():
         main_update()
         main_draw()
 
-        clock.tick(60)
+        core['shortcuts'] = []
 
+        clock.tick(60)
     pygame.quit()
 
 main()
+
 
