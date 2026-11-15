@@ -1,0 +1,1064 @@
+{
+    "nodes": [
+        {
+            "world_x": -23.40625,
+            "world_y": -6.34375,
+            "world_w": 16.625,
+            "world_h": 0.6875,
+            "text": "1_BOTANICAL_IDENTITY_AND_CLASSIFICATION"
+        },
+        {
+            "world_x": -2.28125,
+            "world_y": -15.875,
+            "world_w": 4.78125,
+            "world_h": 0.6875,
+            "text": "MONOGRAPH"
+        },
+        {
+            "world_x": -53.0,
+            "world_y": 4.0,
+            "world_w": 8.46875,
+            "world_h": 0.6875,
+            "text": "botanical_author_citation"
+        },
+        {
+            "world_x": -53.0,
+            "world_y": 5.0,
+            "world_w": 10.375,
+            "world_h": 0.71875,
+            "text": "scientific_name_pronunciation"
+        },
+        {
+            "world_x": -53.0,
+            "world_y": 6.0,
+            "world_w": 6.8125,
+            "world_h": 0.71875,
+            "text": "taxonomic_authority"
+        },
+        {
+            "world_x": -53.0,
+            "world_y": 7.0,
+            "world_w": 9.46875,
+            "world_h": 0.75,
+            "text": "year_of_original_description"
+        },
+        {
+            "world_x": -53.0,
+            "world_y": 8.0,
+            "world_w": 6.59375,
+            "world_h": 0.75,
+            "text": "original_publication"
+        },
+        {
+            "world_x": -53.0,
+            "world_y": 9.0,
+            "world_w": 3.1875,
+            "world_h": 0.71875,
+            "text": "basionym"
+        },
+        {
+            "world_x": -53.0,
+            "world_y": 10.0,
+            "world_w": 3.46875,
+            "world_h": 0.71875,
+            "text": "synonyms"
+        },
+        {
+            "world_x": -53.0,
+            "world_y": 11.0,
+            "world_w": 7.34375,
+            "world_h": 0.71875,
+            "text": "homotypic_synonyms"
+        },
+        {
+            "world_x": -53.0,
+            "world_y": 12.0,
+            "world_w": 7.625,
+            "world_h": 0.71875,
+            "text": "heterotypic_synonyms"
+        },
+        {
+            "world_x": -53.0,
+            "world_y": 13.0,
+            "world_w": 9.15625,
+            "world_h": 0.71875,
+            "text": "taxonomic_misapplications"
+        },
+        {
+            "world_x": -53.0,
+            "world_y": 14.0,
+            "world_w": 9.1875,
+            "world_h": 0.6875,
+            "text": "historical_scientific_names"
+        },
+        {
+            "world_x": -53.0,
+            "world_y": 15.0,
+            "world_w": 5.46875,
+            "world_h": 0.6875,
+            "text": "common_names"
+        },
+        {
+            "world_x": -53.0,
+            "world_y": 16.0,
+            "world_w": 8.53125,
+            "world_h": 0.75,
+            "text": "regional_common_names"
+        },
+        {
+            "world_x": -53.0,
+            "world_y": 17.0,
+            "world_w": 10.90625,
+            "world_h": 0.75,
+            "text": "varnacular_names_by_language"
+        },
+        {
+            "world_x": -53.0,
+            "world_y": 18.0,
+            "world_w": 6.09375,
+            "world_h": 0.6875,
+            "text": "traditional_names"
+        },
+        {
+            "world_x": -53.0,
+            "world_y": 19.0,
+            "world_w": 7.53125,
+            "world_h": 0.71875,
+            "text": "pharmaceutical_name"
+        },
+        {
+            "world_x": -53.0,
+            "world_y": 20.0,
+            "world_w": 15.46875,
+            "world_h": 0.75,
+            "text": "drug_nomenclature_used_in_pharmacopoeias"
+        },
+        {
+            "world_x": -53.0,
+            "world_y": 21.0,
+            "world_w": 11.625,
+            "world_h": 0.75,
+            "text": "etymology_of_the_scientific_name"
+        },
+        {
+            "world_x": -53.0,
+            "world_y": 22.0,
+            "world_w": 10.34375,
+            "world_h": 0.75,
+            "text": "etymology_of_common_names"
+        },
+        {
+            "world_x": -53.0,
+            "world_y": 1.0,
+            "world_w": 9.1875,
+            "world_h": 0.6875,
+            "text": "1_1_SCIENTIFIC_IDENTITY"
+        },
+        {
+            "world_x": -53.0,
+            "world_y": 3.0,
+            "world_w": 8.6875,
+            "world_h": 0.71875,
+            "text": "accepted_scientific_name"
+        },
+        {
+            "world_x": -32.0,
+            "world_y": 1.0,
+            "world_w": 5.5625,
+            "world_h": 0.6875,
+            "text": "1_2_TAXONOMY"
+        },
+        {
+            "world_x": -32.0,
+            "world_y": 3.0,
+            "world_w": 2.9375,
+            "world_h": 0.75,
+            "text": "kingdom"
+        },
+        {
+            "world_x": -32.0,
+            "world_y": 4.0,
+            "world_w": 1.84375,
+            "world_h": 0.6875,
+            "text": "clade"
+        },
+        {
+            "world_x": -32.0,
+            "world_y": 5.0,
+            "world_w": 2.65625,
+            "world_h": 0.6875,
+            "text": "division"
+        },
+        {
+            "world_x": -32.0,
+            "world_y": 6.0,
+            "world_w": 1.75,
+            "world_h": 0.6875,
+            "text": "class"
+        },
+        {
+            "world_x": -32.0,
+            "world_y": 7.0,
+            "world_w": 1.8125,
+            "world_h": 0.6875,
+            "text": "order"
+        },
+        {
+            "world_x": -32.0,
+            "world_y": 8.0,
+            "world_w": 2.0,
+            "world_h": 0.71875,
+            "text": "family"
+        },
+        {
+            "world_x": -32.0,
+            "world_y": 9.0,
+            "world_w": 3.21875,
+            "world_h": 0.71875,
+            "text": "subfamily"
+        },
+        {
+            "world_x": -32.0,
+            "world_y": 10.0,
+            "world_w": 1.5,
+            "world_h": 0.6875,
+            "text": "tribe"
+        },
+        {
+            "world_x": -32.0,
+            "world_y": 11.0,
+            "world_w": 2.03125,
+            "world_h": 0.75,
+            "text": "genus"
+        },
+        {
+            "world_x": -32.0,
+            "world_y": 12.0,
+            "world_w": 2.59375,
+            "world_h": 0.71875,
+            "text": "species"
+        },
+        {
+            "world_x": -32.0,
+            "world_y": 13.0,
+            "world_w": 3.8125,
+            "world_h": 0.71875,
+            "text": "subspecies"
+        },
+        {
+            "world_x": -32.0,
+            "world_y": 14.0,
+            "world_w": 2.3125,
+            "world_h": 0.71875,
+            "text": "variety"
+        },
+        {
+            "world_x": -32.0,
+            "world_y": 15.0,
+            "world_w": 1.53125,
+            "world_h": 0.6875,
+            "text": "form"
+        },
+        {
+            "world_x": -32.0,
+            "world_y": 16.0,
+            "world_w": 2.625,
+            "world_h": 0.6875,
+            "text": "cultivar"
+        },
+        {
+            "world_x": -32.0,
+            "world_y": 17.0,
+            "world_w": 7.4375,
+            "world_h": 0.6875,
+            "text": "taxonomic_authorities"
+        },
+        {
+            "world_x": -32.0,
+            "world_y": 18.0,
+            "world_w": 8.75,
+            "world_h": 0.6875,
+            "text": "current_taxonomic_status"
+        },
+        {
+            "world_x": -32.0,
+            "world_y": 19.0,
+            "world_w": 10.90625,
+            "world_h": 0.71875,
+            "text": "taxonomic_classification_history"
+        },
+        {
+            "world_x": -32.0,
+            "world_y": 20.0,
+            "world_w": 8.96875,
+            "world_h": 0.75,
+            "text": "phylogenetic_relationships"
+        },
+        {
+            "world_x": -32.0,
+            "world_y": 21.0,
+            "world_w": 7.15625,
+            "world_h": 0.75,
+            "text": "molecular_phylogeny"
+        },
+        {
+            "world_x": -32.0,
+            "world_y": 22.0,
+            "world_w": 8.03125,
+            "world_h": 0.71875,
+            "text": "closely_related_species"
+        },
+        {
+            "world_x": -32.0,
+            "world_y": 23.0,
+            "world_w": 8.8125,
+            "world_h": 0.75,
+            "text": "taxonomic_disagreements"
+        },
+        {
+            "world_x": -17.0,
+            "world_y": 1.0,
+            "world_w": 15.8125,
+            "world_h": 0.6875,
+            "text": "1_3_BOTANICAL_CLASSIFICATION_CONTEXT"
+        },
+        {
+            "world_x": -17.0,
+            "world_y": 3.0,
+            "world_w": 7.46875,
+            "world_h": 0.71875,
+            "text": "family_characteristics"
+        },
+        {
+            "world_x": -17.0,
+            "world_y": 4.0,
+            "world_w": 7.5,
+            "world_h": 0.75,
+            "text": "genus_characteristics"
+        },
+        {
+            "world_x": -17.0,
+            "world_y": 5.0,
+            "world_w": 8.9375,
+            "world_h": 0.71875,
+            "text": "related_medicinal_species"
+        },
+        {
+            "world_x": -17.0,
+            "world_y": 6.0,
+            "world_w": 8.96875,
+            "world_h": 0.71875,
+            "text": "evolutionary_relationships"
+        },
+        {
+            "world_x": -17.0,
+            "world_y": 7.0,
+            "world_w": 10.4375,
+            "world_h": 0.6875,
+            "text": "distinctive_taxonomic_features"
+        },
+        {
+            "world_x": -17.0,
+            "world_y": 8.0,
+            "world_w": 7.25,
+            "world_h": 0.75,
+            "text": "phylogenetic_position"
+        },
+        {
+            "world_x": 2.0,
+            "world_y": 1.0,
+            "world_w": 11.125,
+            "world_h": 0.6875,
+            "text": "1_4_TAXONOMIC_VERIFICATION"
+        },
+        {
+            "world_x": 2.0,
+            "world_y": 3.0,
+            "world_w": 10.5625,
+            "world_h": 0.71875,
+            "text": "accepted_taxonomic_databases"
+        },
+        {
+            "world_x": 2.0,
+            "world_y": 4.0,
+            "world_w": 6.375,
+            "world_h": 0.6875,
+            "text": "herbarium_records"
+        },
+        {
+            "world_x": 2.0,
+            "world_y": 5.0,
+            "world_w": 10.40625,
+            "world_h": 0.71875,
+            "text": "botanical_voucher_speciments"
+        },
+        {
+            "world_x": 2.0,
+            "world_y": 6.0,
+            "world_w": 5.5,
+            "world_h": 0.71875,
+            "text": "type_specimens"
+        },
+        {
+            "world_x": 2.0,
+            "world_y": 7.0,
+            "world_w": 12.28125,
+            "world_h": 0.6875,
+            "text": "dns_based_identification_references"
+        },
+        {
+            "world_x": 2.0,
+            "world_y": 8.0,
+            "world_w": 9.375,
+            "world_h": 0.6875,
+            "text": "taxonomic_verification_date"
+        },
+        {
+            "world_x": -6.0,
+            "world_y": 31.0,
+            "world_w": 14.1875,
+            "world_h": 0.6875,
+            "text": "2_OVERVIEW_AND_BOTANICAL_PROFILE"
+        },
+        {
+            "world_x": 15.0,
+            "world_y": 33.0,
+            "world_w": 12.09375,
+            "world_h": 0.6875,
+            "text": "2_3_MEDICINAL_PLANT_SUMMARY"
+        },
+        {
+            "world_x": -4.0,
+            "world_y": 33.0,
+            "world_w": 9.65625,
+            "world_h": 0.6875,
+            "text": "2_2_BOTANICAL_OVERVIEW"
+        },
+        {
+            "world_x": -22.0,
+            "world_y": 33.0,
+            "world_w": 6.3125,
+            "world_h": 0.6875,
+            "text": "2_1_QUICK_FACTS"
+        },
+        {
+            "world_x": -22.0,
+            "world_y": 35.0,
+            "world_w": 5.40625,
+            "world_h": 0.6875,
+            "text": "scientific_name"
+        },
+        {
+            "world_x": -22.0,
+            "world_y": 36.0,
+            "world_w": 5.46875,
+            "world_h": 0.6875,
+            "text": "common_names"
+        },
+        {
+            "world_x": -22.0,
+            "world_y": 37.0,
+            "world_w": 2.0,
+            "world_h": 0.71875,
+            "text": "family"
+        },
+        {
+            "world_x": -22.0,
+            "world_y": 38.0,
+            "world_w": 3.5625,
+            "world_h": 0.71875,
+            "text": "plant_type"
+        },
+        {
+            "world_x": -22.0,
+            "world_y": 39.0,
+            "world_w": 4.40625,
+            "world_h": 0.75,
+            "text": "growth_habit"
+        },
+        {
+            "world_x": -22.0,
+            "world_y": 40.0,
+            "world_w": 4.40625,
+            "world_h": 0.75,
+            "text": "native_range"
+        },
+        {
+            "world_x": -22.0,
+            "world_y": 41.0,
+            "world_w": 2.34375,
+            "world_h": 0.6875,
+            "text": "habitat"
+        },
+        {
+            "world_x": -22.0,
+            "world_y": 42.0,
+            "world_w": 3.15625,
+            "world_h": 0.71875,
+            "text": "life_cycle"
+        },
+        {
+            "world_x": -22.0,
+            "world_y": 43.0,
+            "world_w": 5.375,
+            "world_h": 0.71875,
+            "text": "medicinal_parts"
+        },
+        {
+            "world_x": -22.0,
+            "world_y": 44.0,
+            "world_w": 8.6875,
+            "world_h": 0.71875,
+            "text": "principal_traditional_uses"
+        },
+        {
+            "world_x": -22.0,
+            "world_y": 45.0,
+            "world_w": 14.375,
+            "world_h": 0.75,
+            "text": "principal_investigated_biological_activities"
+        },
+        {
+            "world_x": -22.0,
+            "world_y": 46.0,
+            "world_w": 10.03125,
+            "world_h": 0.71875,
+            "text": "major_chemical_constituents"
+        },
+        {
+            "world_x": -22.0,
+            "world_y": 47.0,
+            "world_w": 8.46875,
+            "world_h": 0.71875,
+            "text": "primary_safety_concerns"
+        },
+        {
+            "world_x": -22.0,
+            "world_y": 48.0,
+            "world_w": 6.84375,
+            "world_h": 0.6875,
+            "text": "conservation_status"
+        },
+        {
+            "world_x": -4.0,
+            "world_y": 35.0,
+            "world_w": 10.0625,
+            "world_h": 0.75,
+            "text": "general_botanical_description"
+        },
+        {
+            "world_x": -4.0,
+            "world_y": 37.0,
+            "world_w": 7.59375,
+            "world_h": 0.75,
+            "text": "ecological_significance"
+        },
+        {
+            "world_x": -4.0,
+            "world_y": 38.0,
+            "world_w": 7.53125,
+            "world_h": 0.75,
+            "text": "medicinal_significance"
+        },
+        {
+            "world_x": -4.0,
+            "world_y": 39.0,
+            "world_w": 7.15625,
+            "world_h": 0.71875,
+            "text": "historical_importance"
+        },
+        {
+            "world_x": -4.0,
+            "world_y": 40.0,
+            "world_w": 8.03125,
+            "world_h": 0.71875,
+            "text": "commercial_importance"
+        },
+        {
+            "world_x": -4.0,
+            "world_y": 36.0,
+            "world_w": 9.0,
+            "world_h": 0.6875,
+            "text": "distinctive_characteristics"
+        },
+        {
+            "world_x": 15.0,
+            "world_y": 35.0,
+            "world_w": 6.125,
+            "world_h": 0.71875,
+            "text": "what_the_plant_is"
+        },
+        {
+            "world_x": 15.0,
+            "world_y": 36.0,
+            "world_w": 13.71875,
+            "world_h": 0.71875,
+            "text": "what_it_has_traditionally_been_used_for"
+        },
+        {
+            "world_x": 15.0,
+            "world_y": 37.0,
+            "world_w": 13.875,
+            "world_h": 0.75,
+            "text": "what_modern_research_has_investigated"
+        },
+        {
+            "world_x": 15.0,
+            "world_y": 38.0,
+            "world_w": 17.8125,
+            "world_h": 0.71875,
+            "text": "what_evidence_supports_its_medicinal_applications"
+        },
+        {
+            "world_x": 15.0,
+            "world_y": 39.0,
+            "world_w": 8.34375,
+            "world_h": 0.6875,
+            "text": "what_remains_uncertain"
+        },
+        {
+            "world_x": 15.0,
+            "world_y": 40.0,
+            "world_w": 11.03125,
+            "world_h": 0.71875,
+            "text": "important_safety_considerations"
+        },
+        {
+            "world_x": 25.0,
+            "world_y": -15.0,
+            "world_w": 18.125,
+            "world_h": 0.6875,
+            "text": "4_IDENTIFICATION_AND_BOTANICAL_DESCRIPTION"
+        },
+        {
+            "world_x": 50.0,
+            "world_y": -17.0,
+            "world_w": 22.1875,
+            "world_h": 0.6875,
+            "text": "5_BOTANICAL_VARIETIES_AND_CULTIVARS_AND_CHEMOTYPES"
+        },
+        {
+            "world_x": 37.0,
+            "world_y": 1.0,
+            "world_w": 11.9375,
+            "world_h": 0.6875,
+            "text": "3_1_GEOGRAPHIC_DISTRIBUTION"
+        },
+        {
+            "world_x": 57.0,
+            "world_y": 1.0,
+            "world_w": 10.375,
+            "world_h": 0.6875,
+            "text": "3_2_HABITAT_AND_ECOLOGY"
+        },
+        {
+            "world_x": 75.0,
+            "world_y": 1.0,
+            "world_w": 12.25,
+            "world_h": 0.6875,
+            "text": "3_3_ECOLOGICAL_RELATIONSHIPS"
+        },
+        {
+            "world_x": 96.0,
+            "world_y": 1.0,
+            "world_w": 9.0625,
+            "world_h": 0.6875,
+            "text": "3_4_DISTRIBUTION_MAPS"
+        },
+        {
+            "world_x": 75.0,
+            "world_y": -4.0,
+            "world_w": 12.875,
+            "world_h": 0.6875,
+            "text": "3_DISTRIBUTION_AND_GEOGRAPHY"
+        },
+        {
+            "world_x": 115.0,
+            "world_y": 1.0,
+            "world_w": 10.625,
+            "world_h": 0.6875,
+            "text": "3_5_GEOGRAPHIC_VARIATION"
+        }
+    ],
+    "edges": [
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": -2.28125,
+                    "world_y": -15.875,
+                    "world_w": 4.78125,
+                    "world_h": 0.6875,
+                    "text": "MONOGRAPH"
+                }
+            },
+            "edge_end": {
+                "node": {
+                    "world_x": -23.40625,
+                    "world_y": -6.34375,
+                    "world_w": 16.625,
+                    "world_h": 0.6875,
+                    "text": "1_BOTANICAL_IDENTITY_AND_CLASSIFICATION"
+                }
+            },
+            "edge_relationship": "???",
+            "world_x1": -0.28125,
+            "world_y1": -15.875,
+            "world_x2": -15.40625,
+            "world_y2": -6.34375,
+            "text_world_x1": -9.0,
+            "text_world_y1": -4.0,
+            "text_world_x2": -8.0,
+            "text_world_y2": -4.0
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": -23.40625,
+                    "world_y": -6.34375,
+                    "world_w": 16.625,
+                    "world_h": 0.6875,
+                    "text": "1_BOTANICAL_IDENTITY_AND_CLASSIFICATION"
+                }
+            },
+            "edge_end": {
+                "node": {
+                    "world_x": -53.0,
+                    "world_y": 1.0,
+                    "world_w": 9.1875,
+                    "world_h": 0.6875,
+                    "text": "1_1_SCIENTIFIC_IDENTITY"
+                }
+            },
+            "edge_relationship": "???",
+            "world_x1": -15.40625,
+            "world_y1": -6.34375,
+            "world_x2": -49.0,
+            "world_y2": 1.0
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": -53.0,
+                    "world_y": 1.0,
+                    "world_w": 9.1875,
+                    "world_h": 0.6875,
+                    "text": "1_1_SCIENTIFIC_IDENTITY"
+                }
+            },
+            "edge_end": {
+                "node": {
+                    "world_x": -53.0,
+                    "world_y": 3.0,
+                    "world_w": 8.6875,
+                    "world_h": 0.71875,
+                    "text": "accepted_scientific_name"
+                }
+            },
+            "edge_relationship": "???",
+            "world_x1": -49.0,
+            "world_y1": 1.0,
+            "world_x2": -49.0,
+            "world_y2": 3.0
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": -23.40625,
+                    "world_y": -6.34375,
+                    "world_w": 16.625,
+                    "world_h": 0.6875,
+                    "text": "1_BOTANICAL_IDENTITY_AND_CLASSIFICATION"
+                }
+            },
+            "edge_end": {
+                "node": {
+                    "world_x": -32.0,
+                    "world_y": 1.0,
+                    "world_w": 5.5625,
+                    "world_h": 0.6875,
+                    "text": "1_2_TAXONOMY"
+                }
+            },
+            "edge_relationship": "???",
+            "world_x1": -15.40625,
+            "world_y1": -6.34375,
+            "world_x2": -30.0,
+            "world_y2": 1.0
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": -23.40625,
+                    "world_y": -6.34375,
+                    "world_w": 16.625,
+                    "world_h": 0.6875,
+                    "text": "1_BOTANICAL_IDENTITY_AND_CLASSIFICATION"
+                }
+            },
+            "edge_end": {
+                "node": {
+                    "world_x": -17.0,
+                    "world_y": 1.0,
+                    "world_w": 15.8125,
+                    "world_h": 0.6875,
+                    "text": "1_3_BOTANICAL_CLASSIFICATION_CONTEXT"
+                }
+            },
+            "edge_relationship": "???",
+            "world_x1": -15.40625,
+            "world_y1": -6.34375,
+            "world_x2": -10.0,
+            "world_y2": 1.0
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": -23.40625,
+                    "world_y": -6.34375,
+                    "world_w": 16.625,
+                    "world_h": 0.6875,
+                    "text": "1_BOTANICAL_IDENTITY_AND_CLASSIFICATION"
+                }
+            },
+            "edge_end": {
+                "node": {
+                    "world_x": 2.0,
+                    "world_y": 1.0,
+                    "world_w": 11.125,
+                    "world_h": 0.6875,
+                    "text": "1_4_TAXONOMIC_VERIFICATION"
+                }
+            },
+            "edge_relationship": "???",
+            "world_x1": -15.40625,
+            "world_y1": -6.34375,
+            "world_x2": 7.0,
+            "world_y2": 1.0
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": -2.28125,
+                    "world_y": -15.875,
+                    "world_w": 4.78125,
+                    "world_h": 0.6875,
+                    "text": "MONOGRAPH"
+                }
+            },
+            "edge_end": {
+                "node": {
+                    "world_x": -6.0,
+                    "world_y": 31.0,
+                    "world_w": 14.1875,
+                    "world_h": 0.6875,
+                    "text": "2_OVERVIEW_AND_BOTANICAL_PROFILE"
+                }
+            },
+            "edge_relationship": "???",
+            "world_x1": -0.28125,
+            "world_y1": -15.875,
+            "world_x2": 1.0,
+            "world_y2": 31.0
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": -2.28125,
+                    "world_y": -15.875,
+                    "world_w": 4.78125,
+                    "world_h": 0.6875,
+                    "text": "MONOGRAPH"
+                }
+            },
+            "edge_end": {
+                "node": {
+                    "world_x": 75.0,
+                    "world_y": -4.0,
+                    "world_w": 12.875,
+                    "world_h": 0.6875,
+                    "text": "3_DISTRIBUTION_AND_GEOGRAPHY"
+                }
+            },
+            "edge_relationship": "???",
+            "world_x1": -0.28125,
+            "world_y1": -15.875,
+            "world_x2": 81.0,
+            "world_y2": -4.0
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": -2.28125,
+                    "world_y": -15.875,
+                    "world_w": 4.78125,
+                    "world_h": 0.6875,
+                    "text": "MONOGRAPH"
+                }
+            },
+            "edge_end": {
+                "node": {
+                    "world_x": 25.0,
+                    "world_y": -15.0,
+                    "world_w": 18.125,
+                    "world_h": 0.6875,
+                    "text": "4_IDENTIFICATION_AND_BOTANICAL_DESCRIPTION"
+                }
+            },
+            "edge_relationship": "???",
+            "world_x1": -0.28125,
+            "world_y1": -15.875,
+            "world_x2": 34.0,
+            "world_y2": -15.0
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": -2.28125,
+                    "world_y": -15.875,
+                    "world_w": 4.78125,
+                    "world_h": 0.6875,
+                    "text": "MONOGRAPH"
+                }
+            },
+            "edge_end": {
+                "node": {
+                    "world_x": 50.0,
+                    "world_y": -17.0,
+                    "world_w": 22.1875,
+                    "world_h": 0.6875,
+                    "text": "5_BOTANICAL_VARIETIES_AND_CULTIVARS_AND_CHEMOTYPES"
+                }
+            },
+            "edge_relationship": "???",
+            "world_x1": -0.28125,
+            "world_y1": -15.875,
+            "world_x2": 61.0,
+            "world_y2": -17.0
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": 75.0,
+                    "world_y": -4.0,
+                    "world_w": 12.875,
+                    "world_h": 0.6875,
+                    "text": "3_DISTRIBUTION_AND_GEOGRAPHY"
+                }
+            },
+            "edge_end": {
+                "node": {
+                    "world_x": 37.0,
+                    "world_y": 1.0,
+                    "world_w": 11.9375,
+                    "world_h": 0.6875,
+                    "text": "3_1_GEOGRAPHIC_DISTRIBUTION"
+                }
+            },
+            "edge_relationship": "???",
+            "world_x1": 81.0,
+            "world_y1": -4.0,
+            "world_x2": 42.0,
+            "world_y2": 1.0
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": 75.0,
+                    "world_y": -4.0,
+                    "world_w": 12.875,
+                    "world_h": 0.6875,
+                    "text": "3_DISTRIBUTION_AND_GEOGRAPHY"
+                }
+            },
+            "edge_end": {
+                "node": {
+                    "world_x": 57.0,
+                    "world_y": 1.0,
+                    "world_w": 10.375,
+                    "world_h": 0.6875,
+                    "text": "3_2_HABITAT_AND_ECOLOGY"
+                }
+            },
+            "edge_relationship": "???",
+            "world_x1": 81.0,
+            "world_y1": -4.0,
+            "world_x2": 62.0,
+            "world_y2": 1.0
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": 75.0,
+                    "world_y": -4.0,
+                    "world_w": 12.875,
+                    "world_h": 0.6875,
+                    "text": "3_DISTRIBUTION_AND_GEOGRAPHY"
+                }
+            },
+            "edge_end": {
+                "node": {
+                    "world_x": 75.0,
+                    "world_y": 1.0,
+                    "world_w": 12.25,
+                    "world_h": 0.6875,
+                    "text": "3_3_ECOLOGICAL_RELATIONSHIPS"
+                }
+            },
+            "edge_relationship": "???",
+            "world_x1": 81.0,
+            "world_y1": -4.0,
+            "world_x2": 81.0,
+            "world_y2": 1.0
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": 75.0,
+                    "world_y": -4.0,
+                    "world_w": 12.875,
+                    "world_h": 0.6875,
+                    "text": "3_DISTRIBUTION_AND_GEOGRAPHY"
+                }
+            },
+            "edge_end": {
+                "node": {
+                    "world_x": 96.0,
+                    "world_y": 1.0,
+                    "world_w": 9.0625,
+                    "world_h": 0.6875,
+                    "text": "3_4_DISTRIBUTION_MAPS"
+                }
+            },
+            "edge_relationship": "???",
+            "world_x1": 81.0,
+            "world_y1": -4.0,
+            "world_x2": 100.0,
+            "world_y2": 1.0
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": 75.0,
+                    "world_y": -4.0,
+                    "world_w": 12.875,
+                    "world_h": 0.6875,
+                    "text": "3_DISTRIBUTION_AND_GEOGRAPHY"
+                }
+            },
+            "edge_end": {
+                "node": {
+                    "world_x": 115.0,
+                    "world_y": 1.0,
+                    "world_w": 10.625,
+                    "world_h": 0.6875,
+                    "text": "3_5_GEOGRAPHIC_VARIATION"
+                }
+            },
+            "edge_relationship": "???",
+            "world_x1": 81.0,
+            "world_y1": -4.0,
+            "world_x2": 120.0,
+            "world_y2": 1.0
+        }
+    ]
+}
