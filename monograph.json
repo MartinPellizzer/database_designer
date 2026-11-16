@@ -155,13 +155,6 @@
             "text": "1_1_SCIENTIFIC_IDENTITY"
         },
         {
-            "world_x": -53.0,
-            "world_y": 3.0,
-            "world_w": 8.6875,
-            "world_h": 0.71875,
-            "text": "accepted_scientific_name"
-        },
-        {
             "world_x": -32.0,
             "world_y": 1.0,
             "world_w": 5.5625,
@@ -678,6 +671,23 @@
             "world_w": 10.625,
             "world_h": 0.6875,
             "text": "3_5_GEOGRAPHIC_VARIATION"
+        },
+        {
+            "world_x": -53.0,
+            "world_y": 3.0,
+            "world_w": 8.6875,
+            "world_h": 0.71875,
+            "text": "accepted_scientific_name",
+            "sources": [
+                {
+                    "x": 0,
+                    "y": 42,
+                    "w": 320,
+                    "h": 18,
+                    "source_name": "WCVP",
+                    "source_field": "???"
+                }
+            ]
         }
     ],
     "edges": [
@@ -734,31 +744,6 @@
             "world_y1": -6.34375,
             "world_x2": -49.0,
             "world_y2": 1.0
-        },
-        {
-            "edge_start": {
-                "node": {
-                    "world_x": -53.0,
-                    "world_y": 1.0,
-                    "world_w": 9.1875,
-                    "world_h": 0.6875,
-                    "text": "1_1_SCIENTIFIC_IDENTITY"
-                }
-            },
-            "edge_end": {
-                "node": {
-                    "world_x": -53.0,
-                    "world_y": 3.0,
-                    "world_w": 8.6875,
-                    "world_h": 0.71875,
-                    "text": "accepted_scientific_name"
-                }
-            },
-            "edge_relationship": "???",
-            "world_x1": -49.0,
-            "world_y1": 1.0,
-            "world_x2": -49.0,
-            "world_y2": 3.0
         },
         {
             "edge_start": {

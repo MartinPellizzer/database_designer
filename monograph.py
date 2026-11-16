@@ -22,6 +22,7 @@ font_sidebar_size = 24
 font_debug = pygame.font.Font(None, font_sidebar_size)
 font_sidebar = pygame.font.Font(None, 18)
 font_bottom = pygame.font.Font(None, 24)
+font_icon = pygame.font.Font(None, 32)
 
 current_file = None
 
@@ -66,10 +67,17 @@ interaction = {
 nodes = []
 edges = []
 
-frame_center = {
+frame_left = {
     'x': 0,
     'y': 0,
-    'w': screen_w,
+    'w': 300,
+    'h': screen_h,
+}
+
+frame_center = {
+    'x': 0 + frame_left['w'],
+    'y': 0,
+    'w': screen_w - frame_left['w'],
     'h': screen_h,
 }
 
@@ -154,8 +162,9 @@ project_open(filename='monograph.json')
 # NODES
 # ============================================================
 
-def node_create(x, y, w, h, text):
+def node_create(x, y, w, h, text, kind=None):
     node = {
+        'kind': kind,
         'world_x': x,
         'world_y': y,
         'world_w': w,
@@ -299,11 +308,16 @@ def draw_nodes():
         screen_h = node['world_h'] * camera['scale']
         # screen_w = node['world_w']
         # screen_h = node['world_h']
-        pygame.draw.rect(screen, background_color, (screen_x, screen_y, screen_w, screen_h))
-        pygame.draw.rect(screen, border_color, (screen_x, screen_y, screen_w, screen_h), 1*int(camera['scale']))
+        if 'sources' in node and len(node['sources']) > 0:
+            pygame.draw.rect(screen, (0, 128, 0), (screen_x, screen_y, screen_w, screen_h))
+            # pygame.draw.rect(screen, (0, 0, 255), (screen_x, screen_y, screen_w, screen_h), 2*int(camera['scale']))
+        else:
+            # pygame.draw.rect(screen, background_color, (screen_x, screen_y, screen_w, screen_h))
+            pygame.draw.rect(screen, border_color, (screen_x, screen_y, screen_w, screen_h))
+        pygame.draw.rect(screen, border_color, (screen_x, screen_y, screen_w, screen_h), 2)
         ###
         if node == interaction['node_focus']:
-            pygame.draw.rect(screen, (0, 0, 255), (screen_x, screen_y, screen_w, screen_h), 2*int(camera['scale']))
+            pygame.draw.rect(screen, (0, 0, 255), (screen_x, screen_y, screen_w, screen_h), 2)
         ### TEXT
         # world_x = node['world_x'] + 10
         # world_y = node['world_y'] + 10
@@ -398,11 +412,19 @@ def inputs_key_press(event):
         project_open()
     # Ctrl+D
     elif event.key == pygame.K_d and (pygame.key.get_mods() & pygame.KMOD_CTRL):
-        edge_delete()
+        if interaction['source_focus'] != None:
+            for node in nodes:
+                if interaction['node_focus'] == node:
+                    node['sources'].remove(interaction['source_focus'])
+            interaction['source_focus'] = None
+        else:
+            edge_delete()
         pass
     # Editor
     elif event.key == pygame.K_BACKSPACE:
-        if interaction['node_focus'] != None:
+        if interaction['source_focus'] != None:
+            interaction['source_focus']['source_name'] = interaction['source_focus']['source_name'][:-1]
+        elif interaction['node_focus'] != None:
             interaction['node_focus']['text'] = interaction['node_focus']['text'][:-1]
             node_width_by_text(interaction['node_focus'])
         elif interaction['edge_focus'] != None:
@@ -414,7 +436,9 @@ def inputs_key_press(event):
             event.unicode == '_'
         ):
             letter = event.unicode
-            if interaction['node_focus'] != None:
+            if interaction['source_focus'] != None:
+                interaction['source_focus']['source_name'] += letter
+            elif interaction['node_focus'] != None:
                 interaction['node_focus']['text'] += letter
                 node_width_by_text(interaction['node_focus'])
             elif interaction['edge_focus'] != None:
@@ -428,76 +452,132 @@ def main_inputs():
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
-                if pygame.key.get_mods() & pygame.KMOD_CTRL:
-                    edge_start()
-                    ####
-                    interaction['node_focus'] = None
-                    for node in reversed(nodes):
+                interaction['source_focus'] = None
+                ### FRAME LEFT
+                if (
+                    mouse['screen_x'] > frame_left['x'] and
+                    mouse['screen_y'] > frame_left['y'] and
+                    mouse['screen_x'] < frame_left['x'] + frame_left['w'] and
+                    mouse['screen_y'] < frame_left['y'] + frame_left['h']
+                ):
+                    ### BUTTON_ADD
+                    if interaction['node_focus'] != None:
+                        if 'sources' not in interaction['node_focus']:
+                            interaction['node_focus']['sources'] = []
                         if (
-                            mouse['world_x'] >= node['world_x'] and 
-                            mouse['world_y'] >= node['world_y'] and 
-                            mouse['world_x'] <= node['world_x'] + node['world_w'] and 
-                            mouse['world_y'] <= node['world_y'] + node['world_h']
+                            mouse['screen_x'] > button_add['x'] and
+                            mouse['screen_y'] > button_add['y'] and
+                            mouse['screen_x'] < button_add['x'] + button_add['w'] and
+                            mouse['screen_y'] < button_add['y'] + button_add['h']
                         ):
-                            nodes.remove(node)
-                            nodes.append(node)
-                            interaction['node_focus'] = node
-                elif pygame.key.get_mods() & pygame.KMOD_SHIFT:
-                    interaction['node_focus'] = None
-                    interaction['field_focus'] = None
-                    interaction['field_i_focus'] = None
-                    for node in reversed(nodes):
-                        if (
-                            mouse['world_x'] >= node['world_x'] and 
-                            mouse['world_y'] >= node['world_y'] and 
-                            mouse['world_x'] <= node['world_x'] + node['world_w'] and 
-                            mouse['world_y'] <= node['world_y'] + node['world_h']
-                        ):
-                            nodes.remove(node)
-                            nodes.append(node)
-                            interaction['node_focus'] = node
-                            interaction['action'] = 'drag_snap'
-                            interaction['node_drag'] = node
-                            interaction['drag_offset_x'] = mouse['world_x'] - node['world_x']
-                            interaction['drag_offset_y'] = mouse['world_y'] - node['world_y']
-                            break
-                else:
-                    interaction['node_focus'] = None
-                    interaction['edge_focus'] = None
-                    for node in reversed(nodes):
-                        if (
-                            mouse['world_x'] >= node['world_x'] and 
-                            mouse['world_y'] >= node['world_y'] and 
-                            mouse['world_x'] <= node['world_x'] + node['world_w'] and 
-                            mouse['world_y'] <= node['world_y'] + node['world_h']
-                        ):
-                            nodes.remove(node)
-                            nodes.append(node)
-                            interaction['node_focus'] = node
-                            # interaction['action'] = 'drag'
-                            interaction['action'] = 'drag_snap'
-                            interaction['node_drag'] = node
-                            interaction['drag_offset_x'] = mouse['world_x'] - node['world_x']
-                            interaction['drag_offset_y'] = mouse['world_y'] - node['world_y']
-                            break
-                    for edge in reversed(edges):
-                        pass
-                        # print(json.dumps(edge, indent=4))
-                        """
-                        if (
-                            mouse['world_x'] >= edge['text_world_x1'] and 
-                            mouse['world_y'] >= edge['text_world_y1'] and 
-                            mouse['world_x'] <= edge['text_world_x2'] and 
-                            mouse['world_y'] <= edge['text_world_y2'] 
-                        ):
-                            interaction['edge_focus'] = edge
-                        """
+                            print('button_add')
+                            i = len(interaction['node_focus']['sources'])
+                            y_cur = 42
+                            interaction['node_focus']['sources'].append(
+                                {
+                                    'x': 0, 
+                                    'y': y_cur + 18*i, 
+                                    'w': 320, 
+                                    'h': 18, 
+                                    'source_name': '???', 
+                                    'source_field': '???'
+                                }
+                            )
+                        else:
+                            for source in interaction['node_focus']['sources']:
+                                if (
+                                    mouse['screen_x'] > source['x'] and
+                                    mouse['screen_y'] > source['y'] and
+                                    mouse['screen_x'] < source['x'] + source['w'] and
+                                    mouse['screen_y'] < source['y'] + source['h']
+                                ):
+                                    print(source)
+                                    interaction['source_focus'] = source
+                    else:
+                        print('frame_left')
+                ### FRAME CENTER
+                if (
+                    mouse['screen_x'] > frame_center['x'] and
+                    mouse['screen_y'] > frame_center['y'] and
+                    mouse['screen_x'] < frame_center['x'] + frame_center['w'] and
+                    mouse['screen_y'] < frame_center['y'] + frame_center['h']
+                ):
+                    if pygame.key.get_mods() & pygame.KMOD_CTRL:
+                        edge_start()
+                        ####
+                        interaction['node_focus'] = None
+                        for node in reversed(nodes):
+                            if (
+                                mouse['world_x'] >= node['world_x'] and 
+                                mouse['world_y'] >= node['world_y'] and 
+                                mouse['world_x'] <= node['world_x'] + node['world_w'] and 
+                                mouse['world_y'] <= node['world_y'] + node['world_h']
+                            ):
+                                nodes.remove(node)
+                                nodes.append(node)
+                                interaction['node_focus'] = node
+                    elif pygame.key.get_mods() & pygame.KMOD_SHIFT:
+                        interaction['node_focus'] = None
+                        interaction['field_focus'] = None
+                        interaction['field_i_focus'] = None
+                        for node in reversed(nodes):
+                            if (
+                                mouse['world_x'] >= node['world_x'] and 
+                                mouse['world_y'] >= node['world_y'] and 
+                                mouse['world_x'] <= node['world_x'] + node['world_w'] and 
+                                mouse['world_y'] <= node['world_y'] + node['world_h']
+                            ):
+                                nodes.remove(node)
+                                nodes.append(node)
+                                interaction['node_focus'] = node
+                                interaction['action'] = 'drag_snap'
+                                interaction['node_drag'] = node
+                                interaction['drag_offset_x'] = mouse['world_x'] - node['world_x']
+                                interaction['drag_offset_y'] = mouse['world_y'] - node['world_y']
+                                break
+                    else:
+                        interaction['node_focus'] = None
+                        interaction['edge_focus'] = None
+                        for node in reversed(nodes):
+                            if (
+                                mouse['world_x'] >= node['world_x'] and 
+                                mouse['world_y'] >= node['world_y'] and 
+                                mouse['world_x'] <= node['world_x'] + node['world_w'] and 
+                                mouse['world_y'] <= node['world_y'] + node['world_h']
+                            ):
+                                nodes.remove(node)
+                                nodes.append(node)
+                                interaction['node_focus'] = node
+                                # interaction['action'] = 'drag'
+                                interaction['action'] = 'drag_snap'
+                                interaction['node_drag'] = node
+                                interaction['drag_offset_x'] = mouse['world_x'] - node['world_x']
+                                interaction['drag_offset_y'] = mouse['world_y'] - node['world_y']
+                                break
+                        for edge in reversed(edges):
+                            pass
+                            # print(json.dumps(edge, indent=4))
+                            """
+                            if (
+                                mouse['world_x'] >= edge['text_world_x1'] and 
+                                mouse['world_y'] >= edge['text_world_y1'] and 
+                                mouse['world_x'] <= edge['text_world_x2'] and 
+                                mouse['world_y'] <= edge['text_world_y2'] 
+                            ):
+                                interaction['edge_focus'] = edge
+                            """
             elif event.button == 2:
-                interaction['action'] = 'pan'
-                interaction['camera_x_start'] = camera['world_x']
-                interaction['camera_y_start'] = camera['world_y']
-                interaction['mouse_x_start'] = event.pos[0]
-                interaction['mouse_y_start'] = event.pos[1]
+                if (
+                    mouse['screen_x'] > frame_center['x'] and
+                    mouse['screen_y'] > frame_center['y'] and
+                    mouse['screen_x'] < frame_center['x'] + frame_center['w'] and
+                    mouse['screen_y'] < frame_center['y'] + frame_center['h']
+                ):
+                    interaction['action'] = 'pan'
+                    interaction['camera_x_start'] = camera['world_x']
+                    interaction['camera_y_start'] = camera['world_y']
+                    interaction['mouse_x_start'] = event.pos[0]
+                    interaction['mouse_y_start'] = event.pos[1]
             elif event.button == 3:
                 inputs_mouse_click_right()
 
@@ -520,10 +600,10 @@ def main_inputs():
             ):
                 if event.y == 1:
                     if camera['scale'] < 128:
-                        camera['scale'] *= 2
+                        camera['scale'] += 1
                 elif event.y == -1:
                     if camera['scale'] > 1:
-                        camera['scale'] /= 2
+                        camera['scale'] -= 1
                 font = pygame.font.Font(None, font_size_base*int(camera['scale']))
 
         elif event.type == pygame.KEYDOWN:
@@ -571,6 +651,57 @@ def draw_debug():
 def draw_background():
     screen.fill((40, 40, 40))
 
+button_px = 10
+button_py = 10
+button_y_cur = 0
+button_size = 24
+
+button_add = {
+    'x': button_px,
+    'y': button_py,
+    'w': button_size,
+    'h': button_size,
+}
+
+def draw_frame_left():
+    ### RECT
+    frame_x = frame_left['x']
+    frame_y = frame_left['y']
+    frame_w = frame_left['w']
+    frame_h = frame_left['h']
+    pygame.draw.rect(screen, (60, 60, 60), (frame_x, frame_y, frame_w, frame_h))
+    ### PROPERTIES
+    if interaction['node_focus'] != None:
+        node = interaction['node_focus']
+        ### BUTTON ADD
+        pygame.draw.rect(screen, (80, 80, 80), (button_add['x'], button_add['y'], button_add['w'], button_add['h']))
+        text = font_icon.render('+', True, (255, 255, 255))
+        screen.blit(text, (button_add['x']+button_add['w']//4, button_add['y']))
+        ### BUTTON CROSS
+        px = 10
+        py = 10
+        y_cur = 0
+        button_size = 24
+        button_x = px*2 + button_size
+        button_y = py
+        pygame.draw.rect(screen, (80, 80, 80), (button_x, button_y, button_size, button_size))
+        text = font_icon.render('x', True, (255, 255, 255))
+        screen.blit(text, (button_x+button_size//4, button_y))
+        ### TEXT
+        x = px*3 + button_size*2
+        text = font_sidebar.render(node['text'], True, (255, 255, 255))
+        screen.blit(text, (x, py+y_cur+button_size//4))
+        y_cur += 24
+        ###
+        if 'sources' in node:
+            for source in node['sources']:
+                if interaction['source_focus'] == source:
+                    pygame.draw.rect(screen, (0, 0, 255), (source['x'], source['y'], source['w'], source['h']), 1)
+                text = font_sidebar.render(f'''{source['source_name']}''', True, (255, 255, 255))
+                # screen.blit(text, (px, py+y_cur+button_size//4))
+                screen.blit(text, (source['x'] + px, source['y']))
+                y_cur += 24
+
 def main_draw():
     draw_background()
     draw_grid()
@@ -578,6 +709,8 @@ def main_draw():
     draw_edges()
     draw_nodes()
     draw_debug()
+
+    draw_frame_left()
 
     pygame.display.flip()
 
