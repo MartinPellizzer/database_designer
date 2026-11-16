@@ -814,3 +814,99 @@ def sql_specifications_modbus_read_response_get_by_specification_id(
     else: item = None
     db.close()
     return item
+
+# ----------------------------------------------------------
+# SQLITE SPECIFICATIONS MODBUS REGISTER MAP
+# ----------------------------------------------------------
+
+specifications_modbus_read_response_fields = [
+    'specification_modbus_register_map_address_text',
+    'specification_modbus_register_map_parameter_text',
+]
+    
+def sql_specifications_modbus_register_map_drop(
+    db_filepath,
+    table_name,
+):
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        DROP TABLE IF EXISTS {table_name}
+    ''')
+    db.commit()
+    db.close()
+
+def sql_specifications_modbus_register_map_create(
+    db_filepath,
+    table_name,
+):
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    fields = []
+    for field in specifications_modbus_read_response_fields:
+        fields.append(f'{field} TEXT')
+    fields = ',\n'.join(fields)
+    query = f'''
+        CREATE TABLE IF NOT EXISTS {table_name} (
+            specification_modbus_register_map_id INTEGER PRIMARY KEY, 
+            specification_id TEXT,
+            {fields}
+        )
+    '''
+    cur.execute(query)
+    db.commit()
+    db.close()
+
+def sql_specifications_modbus_register_map_get_all(
+    db_filepath,
+    table_name,
+):
+    sql_specifications_modbus_register_map_create(db_filepath, table_name,)
+    db = sqlite3.connect(db_filepath)
+    db.row_factory = sqlite3.Row
+    cur = db.cursor()
+    rows = db.execute(f"SELECT * FROM {table_name}").fetchall()
+    items = [dict(row) for row in rows]
+    db.close()
+    return items
+
+def sql_specifications_modbus_register_map_insert(
+    db_filepath,
+    table_name,
+    specification_modbus_register_map_address_text,
+    specification_modbus_register_map_parameter_text,
+    specification_id,
+):
+    # sql_specifications_modbus_register_map_drop(db_filepath, table_name,)
+    sql_specifications_modbus_register_map_create(db_filepath, table_name,)
+    # sql_specifications_modbus_register_map_update(db_filepath, table_name,)
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        INSERT INTO {table_name} (
+            specification_modbus_register_map_address_text,
+            specification_modbus_register_map_parameter_text,
+            specification_id
+        ) 
+        VALUES (?, ?, ?)
+    ''', (
+        specification_modbus_register_map_address_text,
+        specification_modbus_register_map_parameter_text,
+        specification_id,
+    ))
+    db.commit()
+    db.close()
+
+def sql_specifications_modbus_register_map_delete(
+    db_filepath,
+    table_name,
+    specification_modbus_register_map_id,
+):
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        DELETE FROM {table_name} 
+        WHERE specification_modbus_register_map_id = ?
+    ''', (specification_modbus_register_map_id,))
+    db.commit()
+    db.close()

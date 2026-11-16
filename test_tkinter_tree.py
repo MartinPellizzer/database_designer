@@ -21,13 +21,14 @@ requirements_table_name = 'requirements'
 categories_table_name = 'categories'
 categories_requirements_table_name = 'categories_requirements'
 specifications_table_name = 'specifications'
+specifications_rs485_table_name = 'specifications_rs485'
 specifications_modbus_table_name = 'specifications_modbus'
 specifications_modbus_write_table_name = 'specifications_modbus_write'
 specifications_modbus_write_response_table_name = 'specifications_modbus_write_response'
 specifications_modbus_read_table_name = 'specifications_modbus_read'
 specifications_modbus_read_request_table_name = 'specifications_modbus_read_request'
 specifications_modbus_read_response_table_name = 'specifications_modbus_read_response'
-specifications_rs485_table_name = 'specifications_rs485'
+specifications_modbus_register_map_table_name = 'specifications_modbus_register_map'
 
 
 requirements_statements_list_cur = []
@@ -2632,15 +2633,106 @@ def tk_specifications_modbus_read_delete():
 # TKINTER SPECIFICATIONS MODBUS REGISTER MAP
 # ----------------------------------------------------------
 
-def tk_specifications_modbus_register_map_view():
-    pass
+def tk_specifications_modbus_register_map_view(items=None):
+    if not items:
+        items = sql_utils.sql_specifications_modbus_register_map_get_all(
+            db_filepath,
+            specifications_modbus_register_map_table_name,
+        )
+    # items = sorted(items, key=lambda x: x['sort_order'])
+    specifications_modbus_register_map_tree.delete(*specifications_modbus_register_map_tree.get_children())
+    print(items)
+    rows = []
+    for item in items:
+        row = [
+            item['specification_id'],
+            item['specification_modbus_register_map_id'],
+            item['specification_modbus_register_map_address_text'],
+            item['specification_modbus_register_map_parameter_text'],
+        ]
+        rows.append(row)
+    for row in rows:
+        specifications_modbus_register_map_tree.insert("", tk.END, values=list(row))
 
+# ;jump
 def tk_specifications_modbus_register_map_insert():
+    specifications_modbus_write_register_map_modify_address_text = specifications_modbus_write_register_map_modify_entry_address_text.get()
+    specifications_modbus_write_register_map_modify_parameter_text = specifications_modbus_write_register_map_modify_entry_parameter_text.get()
+    if specifications_modbus_write_register_map_modify_address_text.strip() == '':
+        print('ERR: specifications_modbus_write_register_map_modify_address_text text NOT valid')
+        return
+    if specifications_modbus_write_register_map_modify_parameter_text.strip() == '':
+        print('ERR: specifications_modbus_write_register_map_modify_parameter_text text NOT valid')
+        return
+    ###
+    if not specifications_tree.selection(): return
+    item = specifications_tree.selection()[0]
+    specification_id = specifications_tree.item(item)["values"][0]
+    ###
+    sql_utils.sql_specifications_modbus_register_map_insert(
+        db_filepath,
+        specifications_modbus_register_map_table_name,
+        specifications_modbus_write_register_map_modify_address_text,
+        specifications_modbus_write_register_map_modify_parameter_text,
+        specification_id,
+    )
+    tk_specifications_modbus_register_map_view()
+
     pass
+    """
+    specifications_items = sql_specifications_get_all()
+    sort_order_last = -1
+    for item in specifications_items:
+        sort_order = item['sort_order']
+        if sort_order_last < item['sort_order']: sort_order_last = item['sort_order']
+    sort_order_new = sort_order_last + 1
+    # return
+    """
 
 def tk_specifications_modbus_register_map_update():
-    pass
+    if not specifications_modbus_register_map_tree.selection(): return
+    item = specifications_modbus_register_map_tree.selection()[0]
+    specification_modbus_register_map_id = specifications_modbus_register_map_tree.item(item)["values"][1]
+    print(specification_modbus_register_map_id)
+    ###
+    specifications_modbus_write_register_map_modify_address_text = specifications_modbus_write_register_map_modify_entry_address_text.get()
+    specifications_modbus_write_register_map_modify_parameter_text = specifications_modbus_write_register_map_modify_entry_parameter_text.get()
+    if specifications_modbus_write_register_map_modify_address_text.strip() == '':
+        print('ERR: specifications_modbus_write_register_map_modify_address_text text NOT valid')
+        return
+    if specifications_modbus_write_register_map_modify_parameter_text.strip() == '':
+        print('ERR: specifications_modbus_write_register_map_modify_parameter_text text NOT valid')
+        return
+    ###
+    db = sqlite3.connect(db_filepath)
+    db.execute(f"""
+        UPDATE {specifications_modbus_register_map_table_name}
+        SET 
+            specification_modbus_register_map_address_text=?,
+            specification_modbus_register_map_parameter_text=?
+        WHERE specification_modbus_register_map_id=?
+    """, (
+        specifications_modbus_write_register_map_modify_address_text,
+        specifications_modbus_write_register_map_modify_parameter_text,
+        specification_modbus_register_map_id,
+    ))
+    db.commit()
+    db.close()
+    tk_specifications_modbus_register_map_view()
 
+def tk_specifications_modbus_register_map_delete(event):
+    print('here')
+    if not specifications_modbus_register_map_tree.selection(): return
+    item = specifications_modbus_register_map_tree.selection()[0]
+    id = specifications_modbus_register_map_tree.item(item)["values"][1]
+    ###
+    # sql_specifications_delete(id)
+    sql_utils.sql_specifications_modbus_register_map_delete(
+        db_filepath,
+        specifications_modbus_register_map_table_name,
+        id,
+    )
+    specifications_modbus_register_map_tree.delete(item)
 
 # ----------------------------------------------------------
 # TKINTER FUNCTIONS COMPILE
@@ -4467,6 +4559,7 @@ specifications_modbus_write_register_map_modify_entry_parameter_text.pack(side="
 specifications_modbus_write_register_map_modify_entry_parameter_text.insert(0, "Device Status")
 
 
+# jump
 # TODO
 
 tk.Button(
@@ -4487,6 +4580,7 @@ specifications_frame_modbus_register_map_2.pack(side="left", fill="both", expand
 specifications_frame_modbus_register_map_2.pack_propagate(False)
 
 specifications_modbus_register_map_fields = [
+    "specification_id",
     "_id",
     "_address",
     "_parameter",
@@ -4511,6 +4605,11 @@ specifications_modbus_register_map_tree.column(
     stretch=False,
 )
 specifications_modbus_register_map_tree.column(
+    "specification_id",
+    width=120,
+    stretch=False,
+)
+specifications_modbus_register_map_tree.column(
     "_address",
     width=120,
     stretch=False,
@@ -4523,6 +4622,9 @@ specifications_modbus_register_map_tree.column(
 
 # TODO
 tk_specifications_modbus_register_map_view()
+
+specifications_modbus_register_map_tree.bind("<Delete>", tk_specifications_modbus_register_map_delete)
+# specifications_tree.bind("<Delete>", tk_specifications_delete)
 
 # MODBUS WRITE
 # ..........................................................
@@ -4874,7 +4976,6 @@ specifications_modbus_read_response_text_intro_text.pack(fill="x", padx=(padx, p
 
 label_w = 25
 
-# jump
 specifications_modbus_read_response_frame_slave_address = tk.Frame(specifications_frame_modbus_read_2)
 specifications_modbus_read_response_frame_slave_address.pack(side="top", anchor="nw", fill="x")
 tk.Label(specifications_modbus_read_response_frame_slave_address, text="Slave Address", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
