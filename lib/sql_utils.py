@@ -910,3 +910,41 @@ def sql_specifications_modbus_register_map_delete(
     ''', (specification_modbus_register_map_id,))
     db.commit()
     db.close()
+
+def sql_specifications_modbus_register_map_get_by_specification_id(
+    db_filepath,
+    table_name,
+    specification_id,
+):
+    db = sqlite3.connect(db_filepath)
+    db.row_factory = sqlite3.Row
+    cur = db.cursor()
+    records = db.execute(f'''
+        SELECT * 
+        FROM {table_name}
+        WHERE specification_id = ?
+    ''', (specification_id,))
+    rows = records.fetchall()
+    items = [dict(row) for row in rows]
+    if items != []: item = items[0]
+    else: item = None
+    db.close()
+    return item
+
+def sql__specifications__modbus_register_map__get_all_by_specification_id(
+    db_filepath,
+    table_name,
+    specification_id,
+):
+    db = sqlite3.connect(db_filepath)
+    db.row_factory = sqlite3.Row
+    cur = db.cursor()
+    records = db.execute(f'''
+        SELECT * 
+        FROM {table_name}
+        WHERE specification_id = ?
+    ''', (specification_id,))
+    rows = records.fetchall()
+    items = [dict(row) for row in rows]
+    db.close()
+    return items

@@ -2117,6 +2117,9 @@ def tk_specifications_select(event):
             specification_id,
         )
         print(json.dumps(items, indent=4))
+    elif specification_template_text == 'modbus_register_map':
+        specifications_frame_modbus_tabs.select(specifications_frame_center_bottom_modbus_register_map_tab)
+        tk_specifications_modbus_register_map_view()
     elif specification_template_text == 'modbus_write':
         specifications_frame_modbus_tabs.select(specifications_frame_center_bottom_modbus_write_tab)
         ###
@@ -3585,9 +3588,29 @@ def markdown_specifications_create():
             # quit()
 
             output_text += dedent(f'''
-                The complete respnse data frame is: {data_frame}
+                The complete response data frame is: {data_frame}
             ''')
 
+            # output_text += dedent(f'''
+            #     ---
+            # ''')
+            
+        elif specification_template_text.strip().lower() == 'modbus_register_map':
+            specification_modbus_register_map_items = sql_utils.sql__specifications__modbus_register_map__get_all_by_specification_id(
+                db_filepath,
+                specifications_modbus_register_map_table_name,
+                specification_id,
+            )
+            registers_table_rows = []
+            for specification_modbus_register_map_item in specification_modbus_register_map_items:
+                registers_table_rows.append(f'''| {specification_modbus_register_map_item['specification_modbus_register_map_address_text']} | {specification_modbus_register_map_item['specification_modbus_register_map_parameter_text']} |''')
+            registers_table_rows = '\n'.join(registers_table_rows)
+            ###
+            output_text += dedent(f'''
+                | Address                           | Parameter                          |
+                | --------------------------------- | ------------------------------------ |
+                {registers_table_rows}
+            ''')
             # output_text += dedent(f'''
             #     ---
             # ''')
@@ -4386,37 +4409,37 @@ for col in specifications_fields:
     )
 specifications_tree.column(
     "_id",
-    width=120,
+    width=140,
     stretch=False,
 )
 specifications_tree.column(
     "_number",
-    width=120,
+    width=140,
     stretch=False,
 )
 specifications_tree.column(
     "_heading_1_text",
-    width=120,
+    width=140,
     stretch=False,
 )
 specifications_tree.column(
     "_heading_2_text",
-    width=120,
+    width=140,
     stretch=False,
 )
 specifications_tree.column(
     "_heading_3_text",
-    width=120,
+    width=140,
     stretch=False,
 )
 specifications_tree.column(
     "_heading_4_text",
-    width=120,
+    width=140,
     stretch=False,
 )
 specifications_tree.column(
     "_template_text",
-    width=120,
+    width=140,
     stretch=False,
 )
 
@@ -4451,7 +4474,6 @@ specifications_frame_center_bottom_tabs.add(specifications_frame_center_bottom_m
 
 specifications_frame_modbus = tk.Frame(specifications_frame_center_bottom_modbus_tab)
 specifications_frame_modbus.pack(side="left", fill="both", expand=True)
-
 
 specifications_frame_modbus_tabs = ttk.Notebook(specifications_frame_modbus)
 specifications_frame_modbus_tabs.pack(fill="both", expand=True)
