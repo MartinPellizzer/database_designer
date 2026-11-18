@@ -326,30 +326,6 @@
         },
         {
             "world_x": -16.0,
-            "world_y": -80.0,
-            "world_w": 20,
-            "world_h": 100,
-            "title": "plants",
-            "kind": "data",
-            "description": "",
-            "fields": [
-                {
-                    "name": "plant_id",
-                    "key": "primary_key"
-                },
-                {
-                    "name": "plant_name_scientific_reference",
-                    "key": "none"
-                },
-                {
-                    "name": "plant_name_scientific_reference_normalize",
-                    "key": ""
-                }
-            ],
-            "id": 1
-        },
-        {
-            "world_x": -16.0,
             "world_y": 0.0,
             "world_w": 20,
             "world_h": 100,
@@ -941,6 +917,142 @@
             ]
         },
         {
+            "id": 26,
+            "world_x": -196.0,
+            "world_y": -36.0,
+            "world_w": 20,
+            "world_h": 0,
+            "title": "ref__wcvp__names",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "plant_name_id",
+                    "key": "none"
+                },
+                {
+                    "name": "ipni_id",
+                    "key": "none"
+                },
+                {
+                    "name": "taxon_rank",
+                    "key": ""
+                },
+                {
+                    "name": "taxon_status",
+                    "key": ""
+                },
+                {
+                    "name": "family",
+                    "key": ""
+                },
+                {
+                    "name": "genus_hybrid",
+                    "key": ""
+                },
+                {
+                    "name": "genus",
+                    "key": ""
+                },
+                {
+                    "name": "species_hybrid",
+                    "key": ""
+                },
+                {
+                    "name": "species",
+                    "key": ""
+                },
+                {
+                    "name": "infraspecific_rank",
+                    "key": ""
+                },
+                {
+                    "name": "infraspecies",
+                    "key": ""
+                },
+                {
+                    "name": "parenthetical_author",
+                    "key": ""
+                },
+                {
+                    "name": "primary_author",
+                    "key": ""
+                },
+                {
+                    "name": "publication_author",
+                    "key": ""
+                },
+                {
+                    "name": "place_of_publication",
+                    "key": ""
+                },
+                {
+                    "name": "volume_and_page",
+                    "key": ""
+                },
+                {
+                    "name": "first_published",
+                    "key": ""
+                },
+                {
+                    "name": "nomenclatural_remarks",
+                    "key": ""
+                },
+                {
+                    "name": "geographic_area",
+                    "key": ""
+                },
+                {
+                    "name": "lifeform_description",
+                    "key": ""
+                },
+                {
+                    "name": "climate_description",
+                    "key": ""
+                },
+                {
+                    "name": "taxon_name",
+                    "key": ""
+                },
+                {
+                    "name": "taxon_authors",
+                    "key": ""
+                },
+                {
+                    "name": "accepted_plant_name_id",
+                    "key": ""
+                },
+                {
+                    "name": "basionym_plant_name_id",
+                    "key": ""
+                },
+                {
+                    "name": "replaced_synonym_author",
+                    "key": ""
+                },
+                {
+                    "name": "homotypic_synonym",
+                    "key": ""
+                },
+                {
+                    "name": "parent_plant_name_id",
+                    "key": ""
+                },
+                {
+                    "name": "powo_id",
+                    "key": ""
+                },
+                {
+                    "name": "hybrid_formula",
+                    "key": ""
+                },
+                {
+                    "name": "reviewed",
+                    "key": ""
+                }
+            ]
+        },
+        {
             "id": 24,
             "world_x": -376.0,
             "world_y": -32.0,
@@ -1077,137 +1189,53 @@
             ]
         },
         {
-            "id": 26,
-            "world_x": -196.0,
-            "world_y": -36.0,
+            "world_x": -16.0,
+            "world_y": -80.0,
             "world_w": 20,
-            "world_h": 0,
-            "title": "ref__wcvp__names",
+            "world_h": 100,
+            "title": "plants",
             "kind": "data",
             "description": "",
             "fields": [
                 {
-                    "name": "plant_name_id",
+                    "name": "plant_id",
+                    "key": "primary_key"
+                },
+                {
+                    "name": "plant_name_scientific_reference",
                     "key": "none"
                 },
                 {
-                    "name": "ipni_id",
+                    "name": "plant_name_scientific_reference_normalize",
+                    "key": ""
+                }
+            ],
+            "id": 1
+        },
+        {
+            "id": 28,
+            "world_x": 28.0,
+            "world_y": -36.0,
+            "world_w": 20,
+            "world_h": 0,
+            "title": "taxonomies",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "taxonomy_id",
                     "key": "none"
                 },
                 {
-                    "name": "taxon_rank",
+                    "name": "plant_id",
+                    "key": "none"
+                },
+                {
+                    "name": "source_name",
                     "key": ""
                 },
                 {
-                    "name": "taxon_status",
-                    "key": ""
-                },
-                {
-                    "name": "family",
-                    "key": ""
-                },
-                {
-                    "name": "genus_hybrid",
-                    "key": ""
-                },
-                {
-                    "name": "genus",
-                    "key": ""
-                },
-                {
-                    "name": "species_hybrid",
-                    "key": ""
-                },
-                {
-                    "name": "species",
-                    "key": ""
-                },
-                {
-                    "name": "infraspecific_rank",
-                    "key": ""
-                },
-                {
-                    "name": "infraspecies",
-                    "key": ""
-                },
-                {
-                    "name": "parenthetical_author",
-                    "key": ""
-                },
-                {
-                    "name": "primary_author",
-                    "key": ""
-                },
-                {
-                    "name": "publication_author",
-                    "key": ""
-                },
-                {
-                    "name": "place_of_publication",
-                    "key": ""
-                },
-                {
-                    "name": "volume_and_page",
-                    "key": ""
-                },
-                {
-                    "name": "first_published",
-                    "key": ""
-                },
-                {
-                    "name": "nomenclatural_remarks",
-                    "key": ""
-                },
-                {
-                    "name": "geographic_area",
-                    "key": ""
-                },
-                {
-                    "name": "lifeform_description",
-                    "key": ""
-                },
-                {
-                    "name": "climate_description",
-                    "key": ""
-                },
-                {
-                    "name": "taxon_name",
-                    "key": ""
-                },
-                {
-                    "name": "taxon_authors",
-                    "key": ""
-                },
-                {
-                    "name": "accepted_plant_name_id",
-                    "key": ""
-                },
-                {
-                    "name": "basionym_plant_name_id",
-                    "key": ""
-                },
-                {
-                    "name": "replaced_synonym_author",
-                    "key": ""
-                },
-                {
-                    "name": "homotypic_synonym",
-                    "key": ""
-                },
-                {
-                    "name": "parent_plant_name_id",
-                    "key": ""
-                },
-                {
-                    "name": "powo_id",
-                    "key": ""
-                },
-                {
-                    "name": "hybrid_formula",
-                    "key": ""
-                },
-                {
-                    "name": "reviewed",
+                    "name": "taxonomy_family",
                     "key": ""
                 }
             ]
@@ -2849,6 +2877,67 @@
                 "field_i": 2
             },
             "edge_type": "1:N"
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": -16.0,
+                    "world_y": -80.0,
+                    "world_w": 20,
+                    "world_h": 100,
+                    "title": "plants",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "plant_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "plant_name_scientific_reference",
+                            "key": "none"
+                        },
+                        {
+                            "name": "plant_name_scientific_reference_normalize",
+                            "key": ""
+                        }
+                    ],
+                    "id": 1
+                },
+                "field_i": 1
+            },
+            "edge_end": {
+                "node": {
+                    "id": 28,
+                    "world_x": 28.0,
+                    "world_y": -36.0,
+                    "world_w": 20,
+                    "world_h": 0,
+                    "title": "taxonomies",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "taxonomy_id",
+                            "key": "none"
+                        },
+                        {
+                            "name": "plant_id",
+                            "key": "none"
+                        },
+                        {
+                            "name": "source_name",
+                            "key": ""
+                        },
+                        {
+                            "name": "taxonomy_family",
+                            "key": ""
+                        }
+                    ]
+                },
+                "field_i": 2
+            },
+            "edge_type": "1:N"
         }
     ],
     "comments": [
@@ -2903,11 +2992,6 @@
             "text": "traditional_medicinal_system"
         },
         {
-            "world_x": -440.0,
-            "world_y": -108.0,
-            "text": "EXTERNAL"
-        },
-        {
             "world_x": -256.0,
             "world_y": 44.0,
             "text": "REF_COL"
@@ -2931,6 +3015,16 @@
             "world_x": -412.0,
             "world_y": -32.0,
             "text": "WCVP"
+        },
+        {
+            "world_x": -412.0,
+            "world_y": -112.0,
+            "text": "EXTERNAL"
+        },
+        {
+            "world_x": 48.0,
+            "world_y": -44.0,
+            "text": "***TODO***"
         }
     ]
 }

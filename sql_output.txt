@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS ref__wcvp__names (
+CREATE TABLE IF NOT EXISTS wcvp__names (
     plant_name_id TEXT,
     ipni_id TEXT,
     taxon_rank TEXT,
@@ -21,10 +21,10 @@ CREATE TABLE IF NOT EXISTS ref__wcvp__names (
     lifeform_description TEXT,
     climate_description TEXT,
     taxon_name TEXT,
-    tason_authors TEXT,
+    taxon_authors TEXT,
     accepted_plant_name_id TEXT,
     basionym_plant_name_id TEXT,
-    replaced_synonyms_author TEXT,
+    replaced_synonym_author TEXT,
     homotypic_synonym TEXT,
     parent_plant_name_id TEXT,
     powo_id TEXT,
