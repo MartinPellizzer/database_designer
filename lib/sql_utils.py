@@ -875,6 +875,7 @@ def sql_specifications_modbus_register_map_insert(
     table_name,
     specification_modbus_register_map_address_text,
     specification_modbus_register_map_parameter_text,
+    sort_order_new,
     specification_id,
 ):
     # sql_specifications_modbus_register_map_drop(db_filepath, table_name,)
@@ -886,12 +887,14 @@ def sql_specifications_modbus_register_map_insert(
         INSERT INTO {table_name} (
             specification_modbus_register_map_address_text,
             specification_modbus_register_map_parameter_text,
+            sort_order,
             specification_id
         ) 
-        VALUES (?, ?, ?)
+        VALUES (?, ?, ?, ?)
     ''', (
         specification_modbus_register_map_address_text,
         specification_modbus_register_map_parameter_text,
+        sort_order_new,
         specification_id,
     ))
     db.commit()

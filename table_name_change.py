@@ -27,9 +27,13 @@ conn = sqlite3.connect("requirements_projects/modulo_relay_x8.db")
 # conn.execute("ALTER TABLE specifications_modbus_read RENAME COLUMN specification_modbus_report_bytes_number_text TO specification_modbus_read_bytes_number_text")
 # conn.execute("ALTER TABLE specifications_modbus_read RENAME COLUMN specification_modbus_report_register_value_text TO specification_modbus_read_register_value_text")
 # conn.execute("ALTER TABLE specifications_modbus_write RENAME COLUMN specification_modbus_write_slave_id_text TO specification_modbus_write_slave_address_text")
-conn.execute("ALTER TABLE specifications_modbus_write_response RENAME COLUMN specification_modbus_write_response_slave_id_text TO specification_modbus_write_response_slave_address_text")
+# conn.execute("ALTER TABLE specifications_modbus_write_response RENAME COLUMN specification_modbus_write_response_slave_id_text TO specification_modbus_write_response_slave_address_text")
 # conn.execute("ALTER TABLE specifications_modbus_read RENAME COLUMN specification_modbus_read_slave_id_text TO specification_modbus_read_slave_address_text")
             
+            
+# conn.execute("ALTER TABLE specifications_modbus_register_map ADD COLUMN sort_order INTEGER")
+conn.execute("UPDATE specifications_modbus_register_map SET sort_order = rowid")
+
 conn.commit()
 conn.close()
 

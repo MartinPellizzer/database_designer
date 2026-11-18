@@ -2001,6 +2001,7 @@ def tk_specifications_view(items=None):
     for row in rows:
         specifications_tree.insert("", tk.END, values=list(row))
 
+# ;jump
 def tk_specifications_insert():
     specification_heading_1_text = specifications_entry_heading_1_text.get()
     specification_heading_2_text = specifications_entry_heading_2_text.get()
@@ -2642,7 +2643,7 @@ def tk_specifications_modbus_register_map_view(items=None):
             db_filepath,
             specifications_modbus_register_map_table_name,
         )
-    # items = sorted(items, key=lambda x: x['sort_order'])
+    items = sorted(items, key=lambda x: x['sort_order'])
     specifications_modbus_register_map_tree.delete(*specifications_modbus_register_map_tree.get_children())
     print(items)
     rows = []
@@ -2657,7 +2658,6 @@ def tk_specifications_modbus_register_map_view(items=None):
     for row in rows:
         specifications_modbus_register_map_tree.insert("", tk.END, values=list(row))
 
-# ;jump
 def tk_specifications_modbus_register_map_insert():
     specifications_modbus_write_register_map_modify_address_text = specifications_modbus_write_register_map_modify_entry_address_text.get()
     specifications_modbus_write_register_map_modify_parameter_text = specifications_modbus_write_register_map_modify_entry_parameter_text.get()
@@ -2672,11 +2672,22 @@ def tk_specifications_modbus_register_map_insert():
     item = specifications_tree.selection()[0]
     specification_id = specifications_tree.item(item)["values"][0]
     ###
+    specifications_items = sql_utils.sql_specifications_modbus_register_map_get_all(
+        db_filepath,
+        specifications_modbus_register_map_table_name,
+    )
+    sort_order_last = -1
+    for item in specifications_items:
+        sort_order = item['sort_order']
+        if sort_order_last < item['sort_order']: sort_order_last = item['sort_order']
+    sort_order_new = sort_order_last + 1
+    ###
     sql_utils.sql_specifications_modbus_register_map_insert(
         db_filepath,
         specifications_modbus_register_map_table_name,
         specifications_modbus_write_register_map_modify_address_text,
         specifications_modbus_write_register_map_modify_parameter_text,
+        sort_order_new,
         specification_id,
     )
     tk_specifications_modbus_register_map_view()
@@ -2736,6 +2747,79 @@ def tk_specifications_modbus_register_map_delete(event):
         id,
     )
     specifications_modbus_register_map_tree.delete(item)
+
+# ;jump
+def tk_specifications_modbus_register_map_move_record(direction):
+    selected = specifications_modbus_register_map_tree.selection()
+    if not selected: return
+
+    item = selected[0]
+    current = specifications_modbus_register_map_tree.item(item, "values")
+    current_id = current[1]  # Adjust index to your ID column
+    print(f'''CURRENT ID: {current_id}''')
+    # return
+
+    conn = sqlite3.connect(db_filepath)
+    cur = conn.cursor()
+    
+    # cur.execute(f"PRAGMA table_info({specifications_modbus_register_map_table_name})")
+    # print([column[1] for column in cur.fetchall()])
+    # quit()
+
+    cur.execute(f'''
+        SELECT sort_order 
+        FROM {specifications_modbus_register_map_table_name} 
+        WHERE specification_modbus_register_map_id = ?
+    ''', (current_id,))
+    current_order = cur.fetchone()[0]
+    print(f'''CURRENT ORDER: {current_order}''')
+    # quit()
+
+    if direction == "up":
+        cur.execute(f'''
+            SELECT specification_modbus_register_map_id, sort_order 
+            FROM {specifications_modbus_register_map_table_name} 
+            WHERE sort_order < ?
+            ORDER BY sort_order DESC LIMIT 1
+        ''', (current_order,))
+    else:
+        cur.execute(f'''
+            SELECT specification_modbus_register_map_id, sort_order 
+            FROM {specifications_modbus_register_map_table_name} 
+            WHERE sort_order > ?
+            ORDER BY sort_order ASC LIMIT 1
+        ''', (current_order,))
+    neighbor = cur.fetchone()
+    print(f'''neighbor: {neighbor}''')
+    # return
+
+    if neighbor:
+        neighbor_id, neighbor_order = neighbor
+        cur.execute(f"UPDATE {specifications_modbus_register_map_table_name} SET sort_order = ? WHERE specification_modbus_register_map_id = ?",
+                    (neighbor_order, current_id))
+        cur.execute(f"UPDATE {specifications_modbus_register_map_table_name} SET sort_order = ? WHERE specification_modbus_register_map_id = ?",
+                    (current_order, neighbor_id))
+        conn.commit()
+    conn.close()
+    tk_specifications_modbus_register_map_view()
+
+    print(f'CURRENT_ID: {current_id}')
+    for item in specifications_modbus_register_map_tree.get_children():
+        if specifications_modbus_register_map_tree.item(item, "values")[1] == current_id:
+            print(specifications_modbus_register_map_tree.item(item, "values"))
+            specifications_modbus_register_map_tree.selection_set(item)
+            # specifications_modbus_register_map_tree.focus(item)
+
+            specifications_modbus_register_map_tree.after_idle(
+                lambda item=item: specifications_modbus_register_map_tree.focus(item)
+            )
+            specifications_modbus_register_map_tree.see(item)
+            break
+
+    # print(direction)
+    # print(current_id)
+    # print(f'''CURRENT ORDER: {current_order}''')
+    # print(f'''NEIGHBOR ORDER: {neighbor}''')
 
 # ----------------------------------------------------------
 # TKINTER FUNCTIONS COMPILE
@@ -4450,6 +4534,7 @@ tk_specifications_view()
 specifications_tree.bind("<Delete>", tk_specifications_delete)
 
 # specifications_tree.bind("<Control-Down>", lambda e: tk_categories_move_record("down"))
+# ;jump
 specifications_tree.bind("<Control-Up>", lambda e: tk_specifications_move_record("up"))
 specifications_tree.bind("<Control-Down>", lambda e: tk_specifications_move_record("down"))
 
@@ -4581,9 +4666,6 @@ specifications_modbus_write_register_map_modify_entry_parameter_text.pack(side="
 specifications_modbus_write_register_map_modify_entry_parameter_text.insert(0, "Device Status")
 
 
-# jump
-# TODO
-
 tk.Button(
     specifications_frame_modbus_register_map_1,
     text="Insert Record",
@@ -4642,11 +4724,14 @@ specifications_modbus_register_map_tree.column(
     stretch=False,
 )
 
-# TODO
+# ;jump
 tk_specifications_modbus_register_map_view()
 
 specifications_modbus_register_map_tree.bind("<Delete>", tk_specifications_modbus_register_map_delete)
 # specifications_tree.bind("<Delete>", tk_specifications_delete)
+
+specifications_modbus_register_map_tree.bind("<Control-Up>", lambda e: tk_specifications_modbus_register_map_move_record("up"))
+specifications_modbus_register_map_tree.bind("<Control-Down>", lambda e: tk_specifications_modbus_register_map_move_record("down"))
 
 # MODBUS WRITE
 # ..........................................................
