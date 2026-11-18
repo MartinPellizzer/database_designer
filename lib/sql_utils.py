@@ -951,3 +951,104 @@ def sql__specifications__modbus_register_map__get_all_by_specification_id(
     items = [dict(row) for row in rows]
     db.close()
     return items
+
+
+# ----------------------------------------------------------
+# SQLITE GENERAL
+# ----------------------------------------------------------
+
+specifications_modbus_register_map_range_fields = [
+    'specification_modbus_register_map_range_id',
+    'specification_id',
+    'sort_order',
+    'specification_modbus_register_map_range_address_start_text',
+    'specification_modbus_register_map_range_address_end_text',
+    'specification_modbus_register_map_range_category_text',
+]
+
+
+def sql__drop(
+    db_filepath,
+    table_name,
+):
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        DROP TABLE IF EXISTS {table_name}
+    ''')
+    db.commit()
+    db.close()
+
+def sql__create(
+    db_filepath,
+    table_name,
+):
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    fields = []
+    for i, field in enumerate(specifications_modbus_register_map_range_fields):
+        if i == 0:
+            fields.append(f'{field} INTEGER PRIMARY KEY')
+        else:
+            fields.append(f'{field} TEXT')
+    fields = ',\n'.join(fields)
+    query = f'''
+        CREATE TABLE IF NOT EXISTS {table_name} (
+            {fields}
+        )
+    '''
+    # print(query)
+    # quit()
+    cur.execute(query)
+    db.commit()
+    db.close()
+
+def sql__get_all(
+    db_filepath,
+    table_name,
+):
+    sql__create(db_filepath, table_name,)
+    db = sqlite3.connect(db_filepath)
+    db.row_factory = sqlite3.Row
+    cur = db.cursor()
+    rows = db.execute(f"SELECT * FROM {table_name}").fetchall()
+    items = [dict(row) for row in rows]
+    db.close()
+    return items
+
+def sql__insert(
+    db_filepath,
+    table_name,
+    fields,
+):
+    # sql__drop(db_filepath, table_name,)
+    sql__create(db_filepath, table_name,)
+    # sql_specifications_modbus_register_map_update(db_filepath, table_name,)
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    ###
+    fields_insert = []
+    for field in fields:
+        fields_insert.append(f'{field}')
+    fields_insert = ',\n'.join(fields_insert)
+    ###
+    question_marks = []
+    for field in fields:
+        question_marks.append('?')
+    question_marks_insert = ', '.join(question_marks)
+    ###
+    fields_values = []
+    for key, val in fields.items():
+        fields_values.append(f'{val}')
+    ###
+    sql_query = f'''
+        INSERT INTO {table_name} (
+            {fields_insert}
+        ) 
+        VALUES ({question_marks_insert})
+    '''
+    # print(fields_values)
+    # quit()
+    cur.execute(sql_query, (*fields_values,))
+    db.commit()
+    db.close()

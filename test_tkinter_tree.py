@@ -29,6 +29,7 @@ specifications_modbus_read_table_name = 'specifications_modbus_read'
 specifications_modbus_read_request_table_name = 'specifications_modbus_read_request'
 specifications_modbus_read_response_table_name = 'specifications_modbus_read_response'
 specifications_modbus_register_map_table_name = 'specifications_modbus_register_map'
+specifications_modbus_register_map_range_table_name = 'specifications_modbus_register_map_range'
 
 
 requirements_statements_list_cur = []
@@ -2001,7 +2002,6 @@ def tk_specifications_view(items=None):
     for row in rows:
         specifications_tree.insert("", tk.END, values=list(row))
 
-# ;jump
 def tk_specifications_insert():
     specification_heading_1_text = specifications_entry_heading_1_text.get()
     specification_heading_2_text = specifications_entry_heading_2_text.get()
@@ -2658,6 +2658,7 @@ def tk_specifications_modbus_register_map_view(items=None):
     for row in rows:
         specifications_modbus_register_map_tree.insert("", tk.END, values=list(row))
 
+# ;jump
 def tk_specifications_modbus_register_map_insert():
     specifications_modbus_write_register_map_modify_address_text = specifications_modbus_write_register_map_modify_entry_address_text.get()
     specifications_modbus_write_register_map_modify_parameter_text = specifications_modbus_write_register_map_modify_entry_parameter_text.get()
@@ -2748,7 +2749,6 @@ def tk_specifications_modbus_register_map_delete(event):
     )
     specifications_modbus_register_map_tree.delete(item)
 
-# ;jump
 def tk_specifications_modbus_register_map_move_record(direction):
     selected = specifications_modbus_register_map_tree.selection()
     if not selected: return
@@ -2820,6 +2820,73 @@ def tk_specifications_modbus_register_map_move_record(direction):
     # print(current_id)
     # print(f'''CURRENT ORDER: {current_order}''')
     # print(f'''NEIGHBOR ORDER: {neighbor}''')
+
+# ;jump
+def tk_specifications_modbus_register_map_range_insert():
+    specifications_modbus_write_register_map_range_modify_address_start_text = specifications_modbus_write_register_map_range_modify_entry_address_start_text.get()
+    specifications_modbus_write_register_map_range_modify_address_end_text = specifications_modbus_write_register_map_range_modify_entry_address_start_text.get()
+    specifications_modbus_write_register_map_range_modify_category_text = specifications_modbus_write_register_map_range_modify_entry_category_text.get()
+    if specifications_modbus_write_register_map_range_modify_address_start_text.strip() == '':
+        print('ERR: specifications_modbus_write_register_map_range_modify_address_start_text text NOT valid')
+        return
+    if specifications_modbus_write_register_map_range_modify_address_end_text.strip() == '':
+        print('ERR: specifications_modbus_write_register_map_range_modify_address_end_text text NOT valid')
+        return
+    if specifications_modbus_write_register_map_range_modify_category_text.strip() == '':
+        print('ERR: specifications_modbus_write_register_map_range_modify_category_text text NOT valid')
+        return
+    ###
+    if not specifications_tree.selection(): 
+        print('ERR: spepcifications_tree item NOT selected')
+        return
+    item = specifications_tree.selection()[0]
+    specification_id = specifications_tree.item(item)["values"][0]
+    ###
+    # TODO: remove
+    # sql_utils.sql__drop(
+    #     db_filepath,
+    #     specifications_modbus_register_map_range_table_name,
+    # )
+
+    specifications_items = sql_utils.sql__get_all(
+        db_filepath,
+        specifications_modbus_register_map_range_table_name,
+    )
+    # print('here')
+    # print(specifications_items)
+    # return
+    sort_order_last = -1
+    for item in specifications_items:
+        sort_order = int(item['sort_order'])
+        if sort_order_last < sort_order: sort_order_last = sort_order
+    sort_order_new = sort_order_last + 1
+    ###
+    fields = {
+        'specification_id': specification_id,
+        'sort_order': f'{sort_order_new}',
+        'specification_modbus_register_map_range_address_start_text': specifications_modbus_write_register_map_range_modify_address_start_text,
+        'specification_modbus_register_map_range_address_end_text': specifications_modbus_write_register_map_range_modify_address_end_text,
+        'specification_modbus_register_map_range_category_text': specifications_modbus_write_register_map_range_modify_category_text,
+    }
+    # print(json.dumps(fields, indent=4))
+    # quit()
+    sql_utils.sql__insert(
+        db_filepath,
+        specifications_modbus_register_map_range_table_name,
+        fields,
+    )
+    # specifications_items = sql_utils.sql__get_all(
+    #     db_filepath,
+    #     specifications_modbus_register_map_range_table_name,
+    # )
+    # print('here')
+    # print(json.dumps(specifications_items, indent=4))
+    # return
+    # TODO: update following line to show the database of range
+    # tk_specifications_modbus_register_map_view()
+
+def tk_specifications_modbus_register_map_range_update():
+    pass
 
 # ----------------------------------------------------------
 # TKINTER FUNCTIONS COMPILE
@@ -4534,7 +4601,6 @@ tk_specifications_view()
 specifications_tree.bind("<Delete>", tk_specifications_delete)
 
 # specifications_tree.bind("<Control-Down>", lambda e: tk_categories_move_record("down"))
-# ;jump
 specifications_tree.bind("<Control-Up>", lambda e: tk_specifications_move_record("up"))
 specifications_tree.bind("<Control-Down>", lambda e: tk_specifications_move_record("down"))
 
@@ -4642,7 +4708,124 @@ specifications_frame_modbus_tabs.add(specifications_frame_center_bottom_modbus_r
 specifications_frame_modbus_register_map = tk.Frame(specifications_frame_center_bottom_modbus_register_map_tab)
 specifications_frame_modbus_register_map.pack(side="left", fill="both", expand=True)
 
-# MODBUS REGISTER MAP MODIFY
+specifications_frame_modbus_register_map_tabs = ttk.Notebook(specifications_frame_modbus_register_map)
+specifications_frame_modbus_register_map_tabs.pack(fill="both", expand=True)
+
+# MODBUS - REGISTER MAP - RANGE
+# ..........................................................
+
+specifications_frame_center_bottom_modbus_register_map_range_tab = tk.Frame(specifications_frame_modbus_register_map_tabs)
+specifications_frame_modbus_register_map_tabs.add(specifications_frame_center_bottom_modbus_register_map_range_tab, text="Range")
+
+specifications_frame_modbus_register_map_range = tk.Frame(specifications_frame_center_bottom_modbus_register_map_range_tab)
+specifications_frame_modbus_register_map_range.pack(side="left", fill="both", expand=True)
+
+# MODBUS - REGISTER MAP - RANGE - MODIFY
+# ..........................................................
+
+specifications_frame_modbus_register_map_range_col_1 = tk.LabelFrame(specifications_frame_modbus_register_map_range, text="Modify", width=240)
+specifications_frame_modbus_register_map_range_col_1.pack(side="left", fill="y")
+specifications_frame_modbus_register_map_range_col_1.pack_propagate(False)
+
+label_w = 10
+
+specifications_modbus_register_map_range_modify_frame_address_start = tk.Frame(specifications_frame_modbus_register_map_range_col_1)
+specifications_modbus_register_map_range_modify_frame_address_start.pack(side="top", anchor="nw", fill="x")
+tk.Label(specifications_modbus_register_map_range_modify_frame_address_start, text="Address Start", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_write_register_map_range_modify_entry_address_start_text = tk.Entry(specifications_modbus_register_map_range_modify_frame_address_start)
+specifications_modbus_write_register_map_range_modify_entry_address_start_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_write_register_map_range_modify_entry_address_start_text.insert(0, "40001")
+
+specifications_modbus_register_map_range_modify_frame_address_end = tk.Frame(specifications_frame_modbus_register_map_range_col_1)
+specifications_modbus_register_map_range_modify_frame_address_end.pack(side="top", anchor="nw", fill="x")
+tk.Label(specifications_modbus_register_map_range_modify_frame_address_end, text="Address End", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_write_register_map_range_modify_entry_address_end_text = tk.Entry(specifications_modbus_register_map_range_modify_frame_address_end)
+specifications_modbus_write_register_map_range_modify_entry_address_end_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_write_register_map_range_modify_entry_address_end_text.insert(0, "40001")
+
+specifications_modbus_register_map_range_modify_frame_category = tk.Frame(specifications_frame_modbus_register_map_range_col_1)
+specifications_modbus_register_map_range_modify_frame_category.pack(side="top", anchor="nw", fill="x")
+tk.Label(specifications_modbus_register_map_range_modify_frame_category, text="Category", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_write_register_map_range_modify_entry_category_text = tk.Entry(specifications_modbus_register_map_range_modify_frame_category)
+specifications_modbus_write_register_map_range_modify_entry_category_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_write_register_map_range_modify_entry_category_text.insert(0, "Device Status")
+
+tk.Button(
+    specifications_frame_modbus_register_map_range_col_1,
+    text="Insert Record",
+    command=tk_specifications_modbus_register_map_range_insert
+).pack(fill="x", padx=(padx, padx), pady=(10, 0))
+
+tk.Button(
+    specifications_frame_modbus_register_map_range_col_1,
+    text="Update Record",
+    command=tk_specifications_modbus_register_map_range_update
+).pack(fill="x", padx=(padx, padx), pady=(10, 0))
+
+# MODBUS - REGISTER MAP - RANGE - TREE
+# ..........................................................
+
+specifications_frame_modbus_register_map_range_col_2 = tk.LabelFrame(specifications_frame_modbus_register_map_range, text="Tree", width=240)
+specifications_frame_modbus_register_map_range_col_2.pack(side="left", fill="both", expand=True)
+specifications_frame_modbus_register_map_range_col_2.pack_propagate(False)
+
+specifications_modbus_register_map_range_fields = [
+    "_id",
+    "_address_start",
+    "_address_end",
+    "_category",
+    "specification_id",
+]
+
+specifications_modbus_register_map_range_tree = ttk.Treeview(
+    specifications_frame_modbus_register_map_range_col_2,
+    columns=specifications_modbus_register_map_range_fields,
+    show="headings"
+)
+specifications_modbus_register_map_range_tree.pack(fill="both", expand=True)
+
+for col in specifications_modbus_register_map_range_fields:
+    specifications_modbus_register_map_range_tree.heading(col, text=col)
+    specifications_modbus_register_map_range_tree.column(
+        col, 
+        stretch=False
+    )
+specifications_modbus_register_map_range_tree.column(
+    "_id",
+    width=120,
+    stretch=False,
+)
+specifications_modbus_register_map_range_tree.column(
+    "_address_start",
+    width=120,
+    stretch=False,
+)
+specifications_modbus_register_map_range_tree.column(
+    "_address_end",
+    width=120,
+    stretch=False,
+)
+specifications_modbus_register_map_range_tree.column(
+    "_category",
+    width=120,
+    stretch=False,
+)
+specifications_modbus_register_map_range_tree.column(
+    "specification_id",
+    width=120,
+    stretch=False,
+)
+
+# MODBUS - REGISTER MAP - VALUE
+# ..........................................................
+
+specifications_frame_center_bottom_modbus_register_map_value_tab = tk.Frame(specifications_frame_modbus_register_map_tabs)
+specifications_frame_modbus_register_map_tabs.add(specifications_frame_center_bottom_modbus_register_map_value_tab, text="Value")
+
+specifications_frame_modbus_register_map = tk.Frame(specifications_frame_center_bottom_modbus_register_map_value_tab)
+specifications_frame_modbus_register_map.pack(side="left", fill="both", expand=True)
+
+# MODBUS - REGISTER MAP - VALUE - MODIFY
 # ..........................................................
 
 specifications_frame_modbus_register_map_1 = tk.LabelFrame(specifications_frame_modbus_register_map, text="Modify", width=240)
@@ -4724,7 +4907,6 @@ specifications_modbus_register_map_tree.column(
     stretch=False,
 )
 
-# ;jump
 tk_specifications_modbus_register_map_view()
 
 specifications_modbus_register_map_tree.bind("<Delete>", tk_specifications_modbus_register_map_delete)
