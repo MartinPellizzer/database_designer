@@ -2121,6 +2121,7 @@ def tk_specifications_select(event):
     elif specification_template_text == 'modbus_register_map':
         specifications_frame_modbus_tabs.select(specifications_frame_center_bottom_modbus_register_map_tab)
         tk_specifications_modbus_register_map_view()
+        tk_specifications_modbus_register_map_range_view()
     elif specification_template_text == 'modbus_write':
         specifications_frame_modbus_tabs.select(specifications_frame_center_bottom_modbus_write_tab)
         ###
@@ -2658,7 +2659,6 @@ def tk_specifications_modbus_register_map_view(items=None):
     for row in rows:
         specifications_modbus_register_map_tree.insert("", tk.END, values=list(row))
 
-# ;jump
 def tk_specifications_modbus_register_map_insert():
     specifications_modbus_write_register_map_modify_address_text = specifications_modbus_write_register_map_modify_entry_address_text.get()
     specifications_modbus_write_register_map_modify_parameter_text = specifications_modbus_write_register_map_modify_entry_parameter_text.get()
@@ -2821,10 +2821,9 @@ def tk_specifications_modbus_register_map_move_record(direction):
     # print(f'''CURRENT ORDER: {current_order}''')
     # print(f'''NEIGHBOR ORDER: {neighbor}''')
 
-# ;jump
 def tk_specifications_modbus_register_map_range_insert():
     specifications_modbus_write_register_map_range_modify_address_start_text = specifications_modbus_write_register_map_range_modify_entry_address_start_text.get()
-    specifications_modbus_write_register_map_range_modify_address_end_text = specifications_modbus_write_register_map_range_modify_entry_address_start_text.get()
+    specifications_modbus_write_register_map_range_modify_address_end_text = specifications_modbus_write_register_map_range_modify_entry_address_end_text.get()
     specifications_modbus_write_register_map_range_modify_category_text = specifications_modbus_write_register_map_range_modify_entry_category_text.get()
     if specifications_modbus_write_register_map_range_modify_address_start_text.strip() == '':
         print('ERR: specifications_modbus_write_register_map_range_modify_address_start_text text NOT valid')
@@ -2875,18 +2874,150 @@ def tk_specifications_modbus_register_map_range_insert():
         specifications_modbus_register_map_range_table_name,
         fields,
     )
-    # specifications_items = sql_utils.sql__get_all(
-    #     db_filepath,
-    #     specifications_modbus_register_map_range_table_name,
-    # )
-    # print('here')
-    # print(json.dumps(specifications_items, indent=4))
-    # return
-    # TODO: update following line to show the database of range
-    # tk_specifications_modbus_register_map_view()
+    tk_specifications_modbus_register_map_range_view()
 
 def tk_specifications_modbus_register_map_range_update():
-    pass
+    if not specifications_modbus_register_map_range_tree.selection(): return
+    item = specifications_modbus_register_map_range_tree.selection()[0]
+    specifications_modbus_register_map_range_id = specifications_modbus_register_map_range_tree.item(item)["values"][0]
+    ###
+    specifications_modbus_register_map_range_modify_address_start = specifications_modbus_write_register_map_range_modify_entry_address_start_text.get()
+    specifications_modbus_register_map_range_modify_address_end = specifications_modbus_write_register_map_range_modify_entry_address_end_text.get()
+    specifications_modbus_register_map_range_modify_category = specifications_modbus_write_register_map_range_modify_entry_category_text.get()
+    if specifications_modbus_register_map_range_modify_address_start.strip() == '':
+        print('ERR: specifications_modbus_register_map_range_modify_address_start text NOT valid')
+        return
+    if specifications_modbus_register_map_range_modify_address_end.strip() == '':
+        print('ERR: specifications_modbus_register_map_range_modify_address_end text NOT valid')
+        return
+    if specifications_modbus_register_map_range_modify_category.strip() == '':
+        print('ERR: specifications_modbus_register_map_range_modify_category text NOT valid')
+        return
+    ###
+    db = sqlite3.connect(db_filepath)
+    db.execute(f"""
+        UPDATE {specifications_modbus_register_map_range_table_name}
+        SET 
+            specification_modbus_register_map_range_address_start_text=?,
+            specification_modbus_register_map_range_address_end_text=?,
+            specification_modbus_register_map_range_category_text=?
+        WHERE specification_modbus_register_map_range_id=?
+    """, (
+        specifications_modbus_register_map_range_modify_address_start,
+        specifications_modbus_register_map_range_modify_address_end,
+        specifications_modbus_register_map_range_modify_category,
+        specifications_modbus_register_map_range_id,
+    ))
+    db.commit()
+    db.close()
+    tk_specifications_modbus_register_map_range_view()
+
+def tk_specifications_modbus_register_map_range_view(items=None):
+    if not items:
+        items = sql_utils.sql__get_all(
+            db_filepath,
+            specifications_modbus_register_map_range_table_name,
+        )
+    # print(items)
+    items = sorted(items, key=lambda x: x['sort_order'])
+    specifications_modbus_register_map_range_tree.delete(*specifications_modbus_register_map_range_tree.get_children())
+    rows = []
+    for item in items:
+        # print(json.dumps(item, indent=4))
+        # quit()
+        row = [
+            item['specification_modbus_register_map_range_id'],
+            item['specification_id'],
+            item['specification_modbus_register_map_range_address_start_text'],
+            item['specification_modbus_register_map_range_address_end_text'],
+            item['specification_modbus_register_map_range_category_text'],
+        ]
+        rows.append(row)
+    for row in rows:
+        specifications_modbus_register_map_range_tree.insert("", tk.END, values=list(row))
+
+def tk_specifications_modbus_register_map_range_delete(event):
+    if not specifications_modbus_register_map_range_tree.selection(): return
+    item = specifications_modbus_register_map_range_tree.selection()[0]
+    _id = specifications_modbus_register_map_range_tree.item(item)["values"][0]
+    ###
+    # sql_specifications_delete(id)
+    fields = {
+        'specification_modbus_register_map_range_id': _id,
+    }
+    sql_utils.sql__delete(
+        db_filepath,
+        specifications_modbus_register_map_range_table_name,
+        fields,
+    )
+    specifications_modbus_register_map_range_tree.delete(item)
+
+def tk_specifications_modbus_register_map_range_move_record(direction):
+    selected = specifications_modbus_register_map_range_tree.selection()
+    if not selected: return
+
+    item = selected[0]
+    current = specifications_modbus_register_map_range_tree.item(item, "values")
+    current_id = current[0]  # Adjust index to your ID column
+    print(f'''CURRENT ID: {current_id}''')
+    # return
+
+    conn = sqlite3.connect(db_filepath)
+    cur = conn.cursor()
+    
+    # cur.execute(f"PRAGMA table_info({specifications_modbus_register_map_table_name})")
+    # print([column[1] for column in cur.fetchall()])
+    # quit()
+
+    cur.execute(f'''
+        SELECT sort_order 
+        FROM {specifications_modbus_register_map_range_table_name} 
+        WHERE specification_modbus_register_map_range_id = ?
+    ''', (current_id,))
+    current_order = cur.fetchone()[0]
+    print(f'''CURRENT ORDER: {current_order}''')
+    # quit()
+
+    if direction == "up":
+        cur.execute(f'''
+            SELECT specification_modbus_register_map_range_id, sort_order 
+            FROM {specifications_modbus_register_map_range_table_name} 
+            WHERE sort_order < ?
+            ORDER BY sort_order DESC LIMIT 1
+        ''', (current_order,))
+    else:
+        cur.execute(f'''
+            SELECT specification_modbus_register_map_range_id, sort_order 
+            FROM {specifications_modbus_register_map_range_table_name} 
+            WHERE sort_order > ?
+            ORDER BY sort_order ASC LIMIT 1
+        ''', (current_order,))
+    neighbor = cur.fetchone()
+    print(f'''neighbor: {neighbor}''')
+    # return
+
+    if neighbor:
+        neighbor_id, neighbor_order = neighbor
+        cur.execute(f"UPDATE {specifications_modbus_register_map_range_table_name} SET sort_order = ? WHERE specification_modbus_register_map_range_id = ?",
+                    (neighbor_order, current_id))
+        cur.execute(f"UPDATE {specifications_modbus_register_map_range_table_name} SET sort_order = ? WHERE specification_modbus_register_map_range_id = ?",
+                    (current_order, neighbor_id))
+        conn.commit()
+    conn.close()
+    tk_specifications_modbus_register_map_range_view()
+
+    print(f'CURRENT_ID: {current_id}')
+    for item in specifications_modbus_register_map_range_tree.get_children():
+        if specifications_modbus_register_map_range_tree.item(item, "values")[0] == current_id:
+            print(specifications_modbus_register_map_range_tree.item(item, "values"))
+            specifications_modbus_register_map_range_tree.selection_set(item)
+            # specifications_modbus_register_map_range_tree.focus(item)
+
+            specifications_modbus_register_map_range_tree.after_idle(
+                lambda item=item: specifications_modbus_register_map_range_tree.focus(item)
+            )
+            specifications_modbus_register_map_range_tree.see(item)
+            break
 
 # ----------------------------------------------------------
 # TKINTER FUNCTIONS COMPILE
@@ -3747,6 +3878,31 @@ def markdown_specifications_create():
             # ''')
             
         elif specification_template_text.strip().lower() == 'modbus_register_map':
+            output_text += dedent(f'''
+                The following table lists the address ranges for different modbus operations.
+            ''')
+            specification_modbus_register_map_range_items = sql_utils.sql__get_all__by_specification_id(
+                db_filepath,
+                specifications_modbus_register_map_range_table_name,
+                specification_id,
+            )
+            rows = []
+            for specification_modbus_register_map_range_item in specification_modbus_register_map_range_items:
+                rows.append(f'''| {specification_modbus_register_map_range_item['specification_modbus_register_map_range_address_start_text']}-{specification_modbus_register_map_range_item['specification_modbus_register_map_range_address_end_text']} | {specification_modbus_register_map_range_item['specification_modbus_register_map_range_category_text']} |''')
+            rows = '\n'.join(rows)
+            ###
+            output_text += dedent(f'''
+                | Address Range                     | Category                          |
+                | --------------------------------- | ------------------------------------ |
+                {rows}
+            ''')
+            output_text += dedent(f'''
+                ---
+            ''')
+            ###
+            output_text += dedent(f'''
+                The following table lists the specific addresses for each modbus operation.
+            ''')
             specification_modbus_register_map_items = sql_utils.sql__specifications__modbus_register_map__get_all_by_specification_id(
                 db_filepath,
                 specifications_modbus_register_map_table_name,
@@ -3762,9 +3918,7 @@ def markdown_specifications_create():
                 | --------------------------------- | ------------------------------------ |
                 {registers_table_rows}
             ''')
-            # output_text += dedent(f'''
-            #     ---
-            # ''')
+            
 
         output_text += dedent(f'''
             ---
@@ -4771,10 +4925,10 @@ specifications_frame_modbus_register_map_range_col_2.pack_propagate(False)
 
 specifications_modbus_register_map_range_fields = [
     "_id",
+    "specification_id",
     "_address_start",
     "_address_end",
     "_category",
-    "specification_id",
 ]
 
 specifications_modbus_register_map_range_tree = ttk.Treeview(
@@ -4796,6 +4950,11 @@ specifications_modbus_register_map_range_tree.column(
     stretch=False,
 )
 specifications_modbus_register_map_range_tree.column(
+    "specification_id",
+    width=120,
+    stretch=False,
+)
+specifications_modbus_register_map_range_tree.column(
     "_address_start",
     width=120,
     stretch=False,
@@ -4810,11 +4969,16 @@ specifications_modbus_register_map_range_tree.column(
     width=120,
     stretch=False,
 )
-specifications_modbus_register_map_range_tree.column(
-    "specification_id",
-    width=120,
-    stretch=False,
-)
+
+# ;jump
+
+tk_specifications_modbus_register_map_range_view()
+
+specifications_modbus_register_map_range_tree.bind("<Delete>", tk_specifications_modbus_register_map_range_delete)
+
+specifications_modbus_register_map_range_tree.bind("<Control-Up>", lambda e: tk_specifications_modbus_register_map_range_move_record("up"))
+specifications_modbus_register_map_range_tree.bind("<Control-Down>", lambda e: tk_specifications_modbus_register_map_range_move_record("down"))
+
 
 # MODBUS - REGISTER MAP - VALUE
 # ..........................................................

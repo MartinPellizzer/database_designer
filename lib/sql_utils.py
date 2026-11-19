@@ -1052,3 +1052,42 @@ def sql__insert(
     cur.execute(sql_query, (*fields_values,))
     db.commit()
     db.close()
+
+def sql__delete(
+    db_filepath,
+    table_name,
+    fields,
+):
+    field_key = ''
+    field_val = ''
+    for key, val in fields.items():
+        field_key = key
+        field_val = val
+        break
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    query = f'''
+        DELETE FROM {table_name} 
+        WHERE {field_key} = ?
+    '''
+    cur.execute(query, (field_val,))
+    db.commit()
+    db.close()
+
+def sql__get_all__by_specification_id(
+    db_filepath,
+    table_name,
+    specification_id,
+):
+    db = sqlite3.connect(db_filepath)
+    db.row_factory = sqlite3.Row
+    cur = db.cursor()
+    records = db.execute(f'''
+        SELECT * 
+        FROM {table_name}
+        WHERE specification_id = ?
+    ''', (specification_id,))
+    rows = records.fetchall()
+    items = [dict(row) for row in rows]
+    db.close()
+    return items
