@@ -39,10 +39,13 @@ interaction = {
     'action': None,
     'node_drag': None,
     'node_focus': None,
+    'nodes_focus': [],
     'field_focus': None,
     'field_i_focus': None,
     'drag_offset_x': 0,
     'drag_offset_y': 0,
+    'drag_offsets_x': [],
+    'drag_offsets_y': [],
     'camera_x_start': 0,
     'camera_y_start': 0,
     'mouse_x_start': 0,
@@ -185,6 +188,7 @@ def draw_grid():
 def draw_node(node):
     ### RECT
     background_color = (65, 65, 65)
+    background_color_done = (65, 100, 65)
     border_color = (26, 26, 26)
 
     ### RECT
@@ -210,7 +214,7 @@ def draw_node(node):
             (screen_x, screen_y + title_screen_h*interaction['field_i_focus'], screen_w, title_screen_h), 
             2*int(camera['scale']//8)
         )
-    elif node == interaction['node_focus']:
+    elif node in interaction['nodes_focus']:
         pygame.draw.rect(screen, (0, 0, 255), (screen_x, screen_y, screen_w, screen_h), 2*int(camera['scale']//8))
 
     ### TEXT TITLE
@@ -224,6 +228,15 @@ def draw_node(node):
     i = 0
     for field in node['fields']:
         i += 1
+
+        if 'state' in field and field['state'] == 'done':
+            world_x = node['world_x']
+            world_y = node['world_y'] + (i * row_h)
+            screen_x, screen_y = world_to_screen(world_x, world_y)
+            screen_w = node['world_w'] * camera['scale']
+            screen_h = row_h * camera['scale']
+            pygame.draw.rect(screen, background_color_done, (screen_x, screen_y, screen_w, screen_h))
+
         world_x = node['world_x'] + 0.75
         world_y = node['world_y'] + 0.75 + (i * row_h)
         screen_x, screen_y = world_to_screen(world_x, world_y)
@@ -615,6 +628,7 @@ def input_shortcut(event, key, mods):
 
 def sql_generate():
     sql_all = []
+    items = []
     for node in nodes:
         if node != interaction['node_focus']: continue
         # print(json.dumps(node, indent=4))
@@ -647,11 +661,40 @@ def sql_generate():
             return "\n".join(result)
         sql = format_sql(sql)
         sql_all.append(sql)
+        ###
+        for field in node['fields']:
+            items.append(f''''{field['name']}': {table_name}__item['{field['name']}'],''')
+        items.append('')
+        items.append('')
+        items.append('')
+        for i, field in enumerate(node['fields']):
+            if i != len(node['fields']) - 1:
+                items.append(f'''{field['name']},''')
+            else:
+                items.append(f'''{field['name']}''')
+        items.append('')
+        items.append('')
+        items.append('')
+        question_marks = []
+        for i, field in enumerate(node['fields']):
+            if i != len(node['fields']) - 1:
+                question_marks.append('?')
+        question_marks = ', '.join(question_marks)
+        question_marks = '(' + question_marks + ')'
+        items.append(question_marks)
+        items.append('')
+        items.append('')
+        items.append('')
+        for i, field in enumerate(node['fields']):
+            if i != 0:
+                items.append(f'''item.get('{field['name']}'),''')
     with open(f'sql_output.txt', 'w') as f: 
         for sql in sql_all:
             sql_format = f'{sql.strip()}\n\n'
             f.write(sql_format)
             print(sql_format)
+    for item in items:
+        print(item)
 
 def inputs_key_down(event):
     global nodes
@@ -684,6 +727,17 @@ def inputs_key_down(event):
                 interaction['node_focus']['fields'][i]['key'] = 'foreign_key'
             else:
                 interaction['node_focus']['fields'][i]['key'] = ''
+    # Ctrl+V
+    elif event.key == pygame.K_v and (pygame.key.get_mods() & pygame.KMOD_CTRL):
+        if interaction['field_i_focus'] != None:
+            i = interaction['field_i_focus']-1
+            if 'state' in interaction['node_focus']['fields'][i]:
+                if interaction['node_focus']['fields'][i]['state'] == 'done':
+                    interaction['node_focus']['fields'][i]['state'] = 'todo'
+                else:
+                    interaction['node_focus']['fields'][i]['state'] = 'done'
+            else:
+                interaction['node_focus']['fields'][i]['state'] = 'done'
 
     # Ctrl+Q
     elif event.key == pygame.K_q and (pygame.key.get_mods() & pygame.KMOD_CTRL):
@@ -767,6 +821,7 @@ def inputs_key_down(event):
                 if interaction['field_i_focus'] != None:
                     i = interaction['field_i_focus']-1
                     interaction['node_focus']['fields'][i]['name'] = interaction['node_focus']['fields'][i]['name'][:-1]
+                    print(json.dumps(interaction['node_focus'], indent=4))
         elif interaction['comment_focus'] != None:
             interaction['comment_focus']['text'] = interaction['comment_focus']['text'][:-1]
     else:
@@ -852,25 +907,43 @@ def comment_create_from_mouse():
     comment_create(x, y, title)
 
 def input_mouse_left_click_node():
+    print(len(interaction['nodes_focus']))
+    print(json.dumps(interaction['nodes_focus'], indent=True))
     interaction['comment_focus'] = None
     interaction['node_focus'] = None
     interaction['field_focus'] = None
     interaction['field_i_focus'] = None
-    for node in reversed(nodes):
+    interaction['drag_offsets_x'] = []
+    interaction['drag_offsets_y'] = []
+    clicked_on_node = False
+    for node in nodes:
         if (
             mouse['world_x'] >= node['world_x'] and 
             mouse['world_y'] >= node['world_y'] and 
             mouse['world_x'] <= node['world_x'] + node['world_w'] and 
             mouse['world_y'] <= node['world_y'] + row_h * (len(node['fields'])+1)
         ):
-            nodes.remove(node)
-            nodes.append(node)
-            interaction['node_focus'] = node
+            # nodes.remove(node)
+            # nodes.append(node)
+            if node not in interaction['nodes_focus']:
+                interaction['nodes_focus'] = []
+                interaction['drag_offsets_x'] = []
+                interaction['drag_offsets_y'] = []
+                interaction['nodes_focus'].append(node)
+            # interaction['node_focus'] = node
+            # interaction['drag_offset_x'] = mouse['world_x'] - node['world_x']
+            # interaction['drag_offset_y'] = mouse['world_y'] - node['world_y']
+            # break
             interaction['node_drag'] = node
             interaction['action'] = 'drag_snap'
-            interaction['drag_offset_x'] = mouse['world_x'] - node['world_x']
-            interaction['drag_offset_y'] = mouse['world_y'] - node['world_y']
-            break
+            clicked_on_node = True
+        if node in interaction['nodes_focus']:
+            interaction['drag_offsets_x'].append(mouse['world_x'] - node['world_x'])
+            interaction['drag_offsets_y'].append(mouse['world_y'] - node['world_y'])
+            print('here')
+    if not clicked_on_node:
+        interaction['nodes_focus'] = []
+    print(interaction['drag_offsets_x'])
 
 def input_mouse_left_click_comment():
     interaction['comment_focus'] = None
@@ -917,9 +990,13 @@ def main_inputs():
                             mouse['world_x'] <= node['world_x'] + node['world_w'] and 
                             mouse['world_y'] <= node['world_y'] + row_h * (len(node['fields'])+1)
                         ):
-                            nodes.remove(node)
-                            nodes.append(node)
-                            interaction['node_focus'] = node
+                            # nodes.remove(node)
+                            # nodes.append(node)
+                            # interaction['node_focus'] = node
+                            if node not in interaction['nodes_focus']:
+                                interaction['nodes_focus'].append(node)
+                            # print(len(interaction['nodes_focus']))
+                            # print(json.dumps(interaction['nodes_focus'], indent=4))
                             if (
                                 mouse['world_x'] >= node['world_x'] and 
                                 mouse['world_y'] >= node['world_y'] and 
@@ -939,8 +1016,8 @@ def main_inputs():
                             mouse['world_x'] <= node['world_x'] + node['world_w'] and 
                             mouse['world_y'] <= node['world_y'] + row_h * (len(node['fields'])+1)
                         ):
-                            nodes.remove(node)
-                            nodes.append(node)
+                            # nodes.remove(node)
+                            # nodes.append(node)
                             interaction['node_focus'] = node
                             interaction['action'] = 'drag_snap'
                             interaction['node_drag'] = node
@@ -1007,13 +1084,25 @@ def main_update():
         camera['world_y'] = interaction['camera_y_start'] - dy / camera['scale']
 
     if interaction['action'] == 'drag':
-        interaction['node_drag']['world_x'] = (mouse['world_x'] - interaction['drag_offset_x'])
-        interaction['node_drag']['world_y'] = (mouse['world_y'] - interaction['drag_offset_y'])
+        # interaction['node_drag']['world_x'] = (mouse['world_x'] - interaction['drag_offset_x'])
+        # interaction['node_drag']['world_y'] = (mouse['world_y'] - interaction['drag_offset_y'])
+        for i in range(interaction['drag_offsets_x']):
+            drag_offset_x = interaction['drag_offsets_x'][i]
+            drag_offset_y = interaction['drag_offsets_y'][i]
+            interaction['node_drag']['world_x'] = (mouse['world_x'] - drag_offset_x)
+            interaction['node_drag']['world_y'] = (mouse['world_y'] - drag_offset_y)
 
     if interaction['action'] == 'drag_snap':
-        if interaction['node_drag'] != None:
-            interaction['node_drag']['world_x'] = (mouse['world_x'] - interaction['drag_offset_x']) // grid_size * grid_size
-            interaction['node_drag']['world_y'] = (mouse['world_y'] - interaction['drag_offset_y']) // grid_size * grid_size
+        # if interaction['node_drag'] != None:
+            # interaction['node_drag']['world_x'] = (mouse['world_x'] - interaction['drag_offset_x']) // grid_size * grid_size
+            # interaction['node_drag']['world_y'] = (mouse['world_y'] - interaction['drag_offset_y']) // grid_size * grid_size
+        for i in range(len(interaction['drag_offsets_x'])):
+            drag_offset_x = interaction['drag_offsets_x'][i]
+            drag_offset_y = interaction['drag_offsets_y'][i]
+            # interaction['node_drag']['world_x'] = (mouse['world_x'] - drag_offset_x) // grid_size * grid_size
+            # interaction['node_drag']['world_y'] = (mouse['world_y'] - drag_offset_y) // grid_size * grid_size
+            interaction['nodes_focus'][i]['world_x'] = (mouse['world_x'] - drag_offset_x) // grid_size * grid_size
+            interaction['nodes_focus'][i]['world_y'] = (mouse['world_y'] - drag_offset_y) // grid_size * grid_size
 
     if interaction['action'] == 'drag_snap':
         if interaction['comment_drag'] != None:
