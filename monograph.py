@@ -6,8 +6,8 @@ import subprocess
 from lib import g
 from lib import io
 
-input_filepath = f'{g.VAULT_FOLDERPATH}/ozonogroup/data/parse/pubmed/terms/ozone/test.json'
-input_data = io.json_read(input_filepath)
+# input_filepath = f'{g.VAULT_FOLDERPATH}/ozonogroup/data/parse/pubmed/terms/ozone/test.json'
+# input_data = io.json_read(input_filepath)
 
 pygame.init()
 

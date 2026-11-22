@@ -348,7 +348,7 @@ def edge_start():
     interaction['field_focus'] = None
     interaction['field_i_focus'] = None
     ### CLICKED ON NODE?
-    for node in reversed(nodes):
+    for node in nodes:
         if (
             mouse['world_x'] >= node['world_x'] and 
             mouse['world_y'] >= node['world_y'] and 
@@ -379,7 +379,7 @@ def edge_end():
     interaction['field_focus'] = None
     interaction['field_i_focus'] = None
     ### CLICKED ON NODE?
-    for node in reversed(nodes):
+    for node in nodes:
         if (
             mouse['world_x'] >= node['world_x'] and 
             mouse['world_y'] >= node['world_y'] and 
@@ -630,7 +630,8 @@ def sql_generate():
     sql_all = []
     items = []
     for node in nodes:
-        if node != interaction['node_focus']: continue
+        # if node != interaction['node_focus']: continue
+        if node not in interaction['nodes_focus']: continue
         # print(json.dumps(node, indent=4))
         table_name = node['title']
         sql_fields = []
@@ -810,6 +811,7 @@ def inputs_key_down(event):
             nodes = [node for node in nodes if node["id"] != interaction['node_focus']['id']]
     # Editor
     elif event.unicode == '+':
+        print(interaction['node_focus'])
         if interaction['node_focus'] != None:
             interaction['node_focus']['fields'].append({'name': 'field'})
     # Editor
@@ -907,8 +909,6 @@ def comment_create_from_mouse():
     comment_create(x, y, title)
 
 def input_mouse_left_click_node():
-    print(len(interaction['nodes_focus']))
-    print(json.dumps(interaction['nodes_focus'], indent=True))
     interaction['comment_focus'] = None
     interaction['node_focus'] = None
     interaction['field_focus'] = None
@@ -943,6 +943,11 @@ def input_mouse_left_click_node():
             print('here')
     if not clicked_on_node:
         interaction['nodes_focus'] = []
+        interaction['action'] = 'box_select'
+        interaction['box_select_world_x1'] = mouse['world_x']
+        interaction['box_select_world_y1'] = mouse['world_y']
+        interaction['box_select_world_x2'] = mouse['world_x']
+        interaction['box_select_world_y2'] = mouse['world_y']
     print(interaction['drag_offsets_x'])
 
 def input_mouse_left_click_comment():
@@ -950,7 +955,7 @@ def input_mouse_left_click_comment():
     interaction['node_focus'] = None
     interaction['field_focus'] = None
     interaction['field_i_focus'] = None
-    for comment in reversed(comments):
+    for comment in comments:
         comment_screen_w, comment_screen_h = font_comment.size(comment['text'])
         comment_world_w = comment_screen_w / camera['scale']
         comment_world_h = comment_screen_h / camera['scale']
@@ -983,7 +988,7 @@ def main_inputs():
                     interaction['node_focus'] = None
                     interaction['field_focus'] = None
                     interaction['field_i_focus'] = None
-                    for node in reversed(nodes):
+                    for node in nodes:
                         if (
                             mouse['world_x'] >= node['world_x'] and 
                             mouse['world_y'] >= node['world_y'] and 
@@ -992,7 +997,7 @@ def main_inputs():
                         ):
                             # nodes.remove(node)
                             # nodes.append(node)
-                            # interaction['node_focus'] = node
+                            interaction['node_focus'] = node
                             if node not in interaction['nodes_focus']:
                                 interaction['nodes_focus'].append(node)
                             # print(len(interaction['nodes_focus']))
@@ -1004,12 +1009,13 @@ def main_inputs():
                                 mouse['world_y'] <= node['world_y'] + row_h
                             ):
                                 interaction['field_focus'] = 'title'
+                                print(interaction['node_focus'])
                                 break
                 elif pygame.key.get_mods() & pygame.KMOD_SHIFT:
                     interaction['node_focus'] = None
                     interaction['field_focus'] = None
                     interaction['field_i_focus'] = None
-                    for node in reversed(nodes):
+                    for node in nodes:
                         if (
                             mouse['world_x'] >= node['world_x'] and 
                             mouse['world_y'] >= node['world_y'] and 
@@ -1039,9 +1045,11 @@ def main_inputs():
                                     node_create_from_mouse()
                                 elif item['text'] == 'Add Comment':
                                     comment_create_from_mouse()
-                        
+                    ###
                     input_mouse_left_click_node()
                     input_mouse_left_click_comment()
+
+            ###
             elif event.button == 2:
                 interaction['action'] = 'pan'
                 interaction['camera_x_start'] = camera['world_x']
@@ -1059,6 +1067,21 @@ def main_inputs():
             if event.button == 1:
                 if interaction['action'] == 'edge':
                     edge_end()
+                if interaction['action'] == 'box_select':
+                    interaction['node_focus'] = None
+                    interaction['field_focus'] = None
+                    interaction['field_i_focus'] = None
+                    interaction['nodes_focus'] = []
+                    print('here')
+                    for node in nodes:
+                        if (
+                            node['world_x'] >= interaction['box_select_world_x1'] and 
+                            node['world_y'] >= interaction['box_select_world_y1'] and 
+                            node['world_x'] <= interaction['box_select_world_x2'] and 
+                            node['world_y'] <= interaction['box_select_world_y2']
+                        ):
+                            if node not in interaction['nodes_focus']:
+                                interaction['nodes_focus'].append(node)
                 interaction['action'] = None
                 interaction['node_drag'] = None
                 interaction['comment_drag'] = None
@@ -1111,6 +1134,10 @@ def main_update():
     # print(interaction['node_drag'])
     # print(interaction['comment_drag'])
     # print()
+    if interaction['action'] == 'box_select':
+        interaction['box_select_world_x2'] = mouse['world_x']
+        interaction['box_select_world_y2'] = mouse['world_y']
+        # screen_x, screen_y = world_to_screen(interaction['box_select_world_x2'], interaction['box_select_world_y2'])
 
 def draw_background():
     screen.fill((40, 40, 40))
@@ -1222,6 +1249,17 @@ def draw_comments():
             text_surface = font_comment.render(f"{text}", True, (255, 255, 255))
             screen.blit(text_surface, (screen_x, screen_y))
 
+def draw_box_select():
+    if interaction['action'] == 'box_select':
+        color = 255
+        screen_x1, screen_y1 = world_to_screen(interaction['box_select_world_x1'], interaction['box_select_world_y1'])
+        screen_x2, screen_y2 = world_to_screen(interaction['box_select_world_x2'], interaction['box_select_world_y2'])
+        screen_x = screen_x1
+        screen_y = screen_y1
+        screen_w = screen_x2 - screen_x1
+        screen_h = screen_y2 - screen_y1
+        pygame.draw.rect(screen, (color, color, color), (screen_x, screen_y, screen_w, screen_h), 1)
+
 def main_draw():
     draw_background()
 
@@ -1238,6 +1276,9 @@ def main_draw():
     # draw_button()
     draw_buttons()
     draw_comments()
+    draw_box_select()
+
+    ###
 
     draw_frame_left()
 
