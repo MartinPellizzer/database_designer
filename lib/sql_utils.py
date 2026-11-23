@@ -763,6 +763,7 @@ def sql_specifications_modbus_read_response_set(
     specification_id,
     specification_fields,
 ):
+
     sql_specifications_modbus_read_response_create(db_filepath, table_name,)
     sql_specifications_modbus_read_response_update(db_filepath, table_name,)
     db = sqlite3.connect(db_filepath)
@@ -780,7 +781,12 @@ def sql_specifications_modbus_read_response_set(
     
     fields_items = specification_fields
 
-    cur.execute(f'''
+    print()
+    print(fields_insert)
+    print(fields_update)
+    print(fields_items)
+    # quit()
+    query = f'''
         INSERT INTO {table_name} (
             specification_id,
             {fields_insert}
@@ -788,7 +794,9 @@ def sql_specifications_modbus_read_response_set(
         VALUES (?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(specification_id) DO UPDATE SET
             {fields_update}
-    ''', (
+    '''
+    print(query)
+    cur.execute(query, (
         specification_id,
         *fields_items,
     ))
@@ -819,7 +827,7 @@ def sql_specifications_modbus_read_response_get_by_specification_id(
 # SQLITE SPECIFICATIONS MODBUS REGISTER MAP
 # ----------------------------------------------------------
 
-specifications_modbus_read_response_fields = [
+specifications_modbus_register_map_fields = [
     'specification_modbus_register_map_address_text',
     'specification_modbus_register_map_parameter_text',
 ]
@@ -843,7 +851,7 @@ def sql_specifications_modbus_register_map_create(
     db = sqlite3.connect(db_filepath)
     cur = db.cursor()
     fields = []
-    for field in specifications_modbus_read_response_fields:
+    for field in specifications_modbus_register_map_fields:
         fields.append(f'{field} TEXT')
     fields = ',\n'.join(fields)
     query = f'''
