@@ -512,25 +512,11 @@
             "text": "important_safety_considerations"
         },
         {
-            "world_x": 25.0,
-            "world_y": -15.0,
-            "world_w": 18.125,
-            "world_h": 0.6875,
-            "text": "4_IDENTIFICATION_AND_BOTANICAL_DESCRIPTION"
-        },
-        {
             "world_x": 50.0,
             "world_y": -17.0,
             "world_w": 22.1875,
             "world_h": 0.6875,
             "text": "5_BOTANICAL_VARIETIES_AND_CULTIVARS_AND_CHEMOTYPES"
-        },
-        {
-            "world_x": 37.0,
-            "world_y": 1.0,
-            "world_w": 11.9375,
-            "world_h": 0.6875,
-            "text": "3_1_GEOGRAPHIC_DISTRIBUTION"
         },
         {
             "world_x": 57.0,
@@ -818,6 +804,780 @@
             "world_w": 4.40625,
             "world_h": 0.75,
             "text": "growth_habit"
+        },
+        {
+            "world_x": 37.0,
+            "world_y": 1.0,
+            "world_w": 11.9375,
+            "world_h": 0.6875,
+            "text": "3_1_GEOGRAPHIC_DISTRIBUTION"
+        },
+        {
+            "kind": null,
+            "world_x": 37.0,
+            "world_y": 3.0,
+            "world_w": 6.4,
+            "world_h": 0.68,
+            "text": "native_distribution"
+        },
+        {
+            "kind": null,
+            "world_x": 37.0,
+            "world_y": 4.0,
+            "world_w": 5.62962962962963,
+            "world_h": 0.7407407407407407,
+            "text": "endemic_regions"
+        },
+        {
+            "kind": null,
+            "world_x": 37.0,
+            "world_y": 5.0,
+            "world_w": 8.037037037037036,
+            "world_h": 0.6666666666666666,
+            "text": "naturalized_distribution"
+        },
+        {
+            "kind": null,
+            "world_x": 37.0,
+            "world_y": 6.0,
+            "world_w": 7.777777777777778,
+            "world_h": 0.6666666666666666,
+            "text": "introduced_distribution"
+        },
+        {
+            "kind": null,
+            "world_x": 37.0,
+            "world_y": 7.0,
+            "world_w": 6.925925925925926,
+            "world_h": 0.6666666666666666,
+            "text": "invasive_distribution"
+        },
+        {
+            "kind": null,
+            "world_x": 37.0,
+            "world_y": 8.0,
+            "world_w": 7.296296296296297,
+            "world_h": 0.6666666666666666,
+            "text": "historical_distribution"
+        },
+        {
+            "kind": null,
+            "world_x": 37.0,
+            "world_y": 9.0,
+            "world_w": 6.666666666666667,
+            "world_h": 0.6666666666666666,
+            "text": "current_distribution"
+        },
+        {
+            "kind": null,
+            "world_x": 37.0,
+            "world_y": 10.0,
+            "world_w": 6.142857142857143,
+            "world_h": 0.75,
+            "text": "geographic_range"
+        },
+        {
+            "kind": null,
+            "world_x": 37.0,
+            "world_y": 11.0,
+            "world_w": 9.0,
+            "world_h": 0.7142857142857143,
+            "text": "country_level_occurences"
+        },
+        {
+            "kind": null,
+            "world_x": 37.0,
+            "world_y": 12.0,
+            "world_w": 7.107142857142857,
+            "world_h": 0.75,
+            "text": "regional_occurences"
+        },
+        {
+            "kind": null,
+            "world_x": 37.0,
+            "world_y": 13.0,
+            "world_w": 5.928571428571429,
+            "world_h": 0.75,
+            "text": "altitudinal_range"
+        },
+        {
+            "kind": null,
+            "world_x": 37.0,
+            "world_y": 14.0,
+            "world_w": 5.107142857142857,
+            "world_h": 0.75,
+            "text": "latitude_range"
+        },
+        {
+            "kind": null,
+            "world_x": 57.0,
+            "world_y": 3.0,
+            "world_w": 5.714285714285714,
+            "world_h": 0.7142857142857143,
+            "text": "natural_habitats"
+        },
+        {
+            "kind": null,
+            "world_x": 57.0,
+            "world_y": 4.0,
+            "world_w": 8.214285714285714,
+            "world_h": 0.75,
+            "text": "ecological_communities"
+        },
+        {
+            "kind": null,
+            "world_x": 57.0,
+            "world_y": 5.0,
+            "world_w": 5.857142857142857,
+            "world_h": 0.75,
+            "text": "vegetation_types"
+        },
+        {
+            "kind": null,
+            "world_x": 57.0,
+            "world_y": 6.0,
+            "world_w": 5.607142857142857,
+            "world_h": 0.7142857142857143,
+            "text": "soil_preferences"
+        },
+        {
+            "kind": null,
+            "world_x": 57.0,
+            "world_y": 7.0,
+            "world_w": 2.4285714285714284,
+            "world_h": 0.7142857142857143,
+            "text": "soil_ph"
+        },
+        {
+            "kind": null,
+            "world_x": 57.0,
+            "world_y": 8.0,
+            "world_w": 4.535714285714286,
+            "world_h": 0.7142857142857143,
+            "text": "soil_moisture"
+        },
+        {
+            "kind": null,
+            "world_x": 57.0,
+            "world_y": 9.0,
+            "world_w": 6.392857142857143,
+            "world_h": 0.75,
+            "text": "light_requirements"
+        },
+        {
+            "kind": null,
+            "world_x": 57.0,
+            "world_y": 10.0,
+            "world_w": 8.571428571428571,
+            "world_h": 0.7142857142857143,
+            "text": "temperature_preferences"
+        },
+        {
+            "kind": null,
+            "world_x": 57.0,
+            "world_y": 11.0,
+            "world_w": 7.25,
+            "world_h": 0.7142857142857143,
+            "text": "rainfall_requirements"
+        },
+        {
+            "kind": null,
+            "world_x": 57.0,
+            "world_y": 12.0,
+            "world_w": 7.392857142857143,
+            "world_h": 0.7142857142857143,
+            "text": "humidity_preferences"
+        },
+        {
+            "kind": null,
+            "world_x": 57.0,
+            "world_y": 13.0,
+            "world_w": 8.25,
+            "world_h": 0.7142857142857143,
+            "text": "elevational_preferences"
+        },
+        {
+            "kind": null,
+            "world_x": 57.0,
+            "world_y": 14.0,
+            "world_w": 7.928571428571429,
+            "world_h": 0.75,
+            "text": "ecological_adaptations"
+        },
+        {
+            "kind": null,
+            "world_x": 57.0,
+            "world_y": 15.0,
+            "world_w": 8.928571428571429,
+            "world_h": 0.7142857142857143,
+            "text": "environmental_rolerances"
+        },
+        {
+            "kind": null,
+            "world_x": 75.0,
+            "world_y": 3.0,
+            "world_w": 3.5714285714285716,
+            "world_h": 0.7142857142857143,
+            "text": "pollinators"
+        },
+        {
+            "kind": null,
+            "world_x": 75.0,
+            "world_y": 4.0,
+            "world_w": 5.642857142857143,
+            "world_h": 0.7142857142857143,
+            "text": "seed_dispersers"
+        },
+        {
+            "kind": null,
+            "world_x": 75.0,
+            "world_y": 5.0,
+            "world_w": 5.5,
+            "world_h": 0.75,
+            "text": "host_organisms"
+        },
+        {
+            "kind": null,
+            "world_x": 75.0,
+            "world_y": 6.0,
+            "world_w": 8.964285714285714,
+            "world_h": 0.7142857142857143,
+            "text": "associated_plant_species"
+        },
+        {
+            "kind": null,
+            "world_x": 75.0,
+            "world_y": 7.0,
+            "world_w": 9.75,
+            "world_h": 0.7142857142857143,
+            "text": "plant_microbe_relationships"
+        },
+        {
+            "kind": null,
+            "world_x": 75.0,
+            "world_y": 8.0,
+            "world_w": 8.821428571428571,
+            "world_h": 0.7142857142857143,
+            "text": "mycorrhizal_associations"
+        },
+        {
+            "kind": null,
+            "world_x": 75.0,
+            "world_y": 9.0,
+            "world_w": 7.821428571428571,
+            "world_h": 0.75,
+            "text": "ecological_competitors"
+        },
+        {
+            "kind": null,
+            "world_x": 75.0,
+            "world_y": 10.0,
+            "world_w": 3.642857142857143,
+            "world_h": 0.6785714285714286,
+            "text": "herbivores"
+        },
+        {
+            "kind": null,
+            "world_x": 75.0,
+            "world_y": 11.0,
+            "world_w": 4.714285714285714,
+            "world_h": 0.7142857142857143,
+            "text": "natural_pests"
+        },
+        {
+            "kind": null,
+            "world_x": 75.0,
+            "world_y": 12.0,
+            "world_w": 5.107142857142857,
+            "world_h": 0.75,
+            "text": "ecological_role"
+        },
+        {
+            "kind": null,
+            "world_x": 96.0,
+            "world_y": 3.0,
+            "world_w": 6.464285714285714,
+            "world_h": 0.75,
+            "text": "native_range_map"
+        },
+        {
+            "kind": null,
+            "world_x": 96.0,
+            "world_y": 4.0,
+            "world_w": 8.357142857142858,
+            "world_h": 0.75,
+            "text": "global_distribution_map"
+        },
+        {
+            "kind": null,
+            "world_x": 96.0,
+            "world_y": 5.0,
+            "world_w": 8.642857142857142,
+            "world_h": 0.75,
+            "text": "regional_occurence_map"
+        },
+        {
+            "kind": null,
+            "world_x": 96.0,
+            "world_y": 6.0,
+            "world_w": 6.785714285714286,
+            "world_h": 0.7142857142857143,
+            "text": "habitat_distribution"
+        },
+        {
+            "kind": null,
+            "world_x": 96.0,
+            "world_y": 7.0,
+            "world_w": 8.035714285714286,
+            "world_h": 0.7142857142857143,
+            "text": "cultivation_distribution"
+        },
+        {
+            "kind": null,
+            "world_x": 96.0,
+            "world_y": 8.0,
+            "world_w": 8.0,
+            "world_h": 0.7142857142857143,
+            "text": "naturalized_population"
+        },
+        {
+            "kind": null,
+            "world_x": 96.0,
+            "world_y": 9.0,
+            "world_w": 7.321428571428571,
+            "world_h": 0.7142857142857143,
+            "text": "invasive_populations"
+        },
+        {
+            "kind": null,
+            "world_x": 115.0,
+            "world_y": 3.0,
+            "world_w": 12.214285714285714,
+            "world_h": 0.75,
+            "text": "regional_morphological_differences"
+        },
+        {
+            "kind": null,
+            "world_x": 115.0,
+            "world_y": 4.0,
+            "world_w": 9.5,
+            "world_h": 0.75,
+            "text": "regional_chemcal_variation"
+        },
+        {
+            "kind": null,
+            "world_x": 115.0,
+            "world_y": 5.0,
+            "world_w": 12.142857142857142,
+            "world_h": 0.75,
+            "text": "chemotypes_by_geographic_region"
+        },
+        {
+            "kind": null,
+            "world_x": 115.0,
+            "world_y": 6.0,
+            "world_w": 14.678571428571429,
+            "world_h": 0.7142857142857143,
+            "text": "environmental_influences_on_composition"
+        },
+        {
+            "kind": null,
+            "world_x": 115.0,
+            "world_y": 7.0,
+            "world_w": 10.035714285714286,
+            "world_h": 0.75,
+            "text": "population_genetic_variation"
+        },
+        {
+            "kind": null,
+            "world_x": 180.0,
+            "world_y": -1.0,
+            "world_w": 5.608695652173913,
+            "world_h": 0.6521739130434783,
+            "text": "4_2_PHENOLOGY"
+        },
+        {
+            "kind": null,
+            "world_x": 193.0,
+            "world_y": -1.0,
+            "world_w": 11.608695652173912,
+            "world_h": 0.6521739130434783,
+            "text": "4_3_ANATOMICAL_IDENTIFICATION"
+        },
+        {
+            "kind": null,
+            "world_x": 232.0,
+            "world_y": -1.0,
+            "world_w": 11.608695652173912,
+            "world_h": 0.6521739130434783,
+            "text": "4_5_IDENTIFICATION_IN_PRACTICE"
+        },
+        {
+            "kind": null,
+            "world_x": 251.0,
+            "world_y": -1.0,
+            "world_w": 13.608695652173912,
+            "world_h": 0.6521739130434783,
+            "text": "4_6_SIMILAR_SPECIES_AND_CONFUSION"
+        },
+        {
+            "world_x": 159.0,
+            "world_y": -4.0,
+            "world_w": 18.125,
+            "world_h": 0.6875,
+            "text": "4_IDENTIFICATION_AND_BOTANICAL_DESCRIPTION"
+        },
+        {
+            "kind": null,
+            "world_x": 159.0,
+            "world_y": -1.0,
+            "world_w": 12.391304347826088,
+            "world_h": 0.6521739130434783,
+            "text": "4_1_MORPHOLOGICAL_DESCRIPTION"
+        },
+        {
+            "kind": null,
+            "world_x": 212.0,
+            "world_y": -1.0,
+            "world_w": 12.166666666666666,
+            "world_h": 0.6666666666666666,
+            "text": "4_4_MICROSCOPIC_IDENTIFICATION"
+        },
+        {
+            "kind": null,
+            "world_x": 159.0,
+            "world_y": 1.0,
+            "world_w": 4.277777777777778,
+            "world_h": 0.7777777777777778,
+            "text": "growth_habit"
+        },
+        {
+            "kind": null,
+            "world_x": 159.0,
+            "world_y": 2.0,
+            "world_w": 4.055555555555555,
+            "world_h": 0.7777777777777778,
+            "text": "plant_height"
+        },
+        {
+            "kind": null,
+            "world_x": 159.0,
+            "world_y": 3.0,
+            "world_w": 3.8,
+            "world_h": 0.7,
+            "text": "plant_width"
+        },
+        {
+            "kind": null,
+            "world_x": 159.0,
+            "world_y": 4.0,
+            "world_w": 4.127659574468085,
+            "world_h": 0.7021276595744681,
+            "text": "root_system"
+        },
+        {
+            "kind": null,
+            "world_x": 159.0,
+            "world_y": 5.0,
+            "world_w": 5.787234042553192,
+            "world_h": 0.723404255319149,
+            "text": "root_morphology"
+        },
+        {
+            "kind": null,
+            "world_x": 159.0,
+            "world_y": 6.0,
+            "world_w": 7.127659574468085,
+            "world_h": 0.723404255319149,
+            "text": "rhizome_morphology"
+        },
+        {
+            "kind": null,
+            "world_x": 159.0,
+            "world_y": 7.0,
+            "world_w": 7.170212765957447,
+            "world_h": 0.6808510638297872,
+            "text": "stem_characteristics"
+        },
+        {
+            "kind": null,
+            "world_x": 159.0,
+            "world_y": 8.0,
+            "world_w": 6.382978723404255,
+            "world_h": 0.723404255319149,
+            "text": "branching_pattern"
+        },
+        {
+            "kind": null,
+            "world_x": 159.0,
+            "world_y": 9.0,
+            "world_w": 7.0638297872340425,
+            "world_h": 0.6808510638297872,
+            "text": "bark_characteristics"
+        },
+        {
+            "kind": null,
+            "world_x": 159.0,
+            "world_y": 10.0,
+            "world_w": 6.0638297872340425,
+            "world_h": 0.723404255319149,
+            "text": "leaf_arrangement"
+        },
+        {
+            "kind": null,
+            "world_x": 159.0,
+            "world_y": 11.0,
+            "world_w": 3.74468085106383,
+            "world_h": 0.7021276595744681,
+            "text": "leaf_shape"
+        },
+        {
+            "kind": null,
+            "world_x": 159.0,
+            "world_y": 12.0,
+            "world_w": 3.0638297872340425,
+            "world_h": 0.6808510638297872,
+            "text": "leaf_size"
+        },
+        {
+            "kind": null,
+            "world_x": 159.0,
+            "world_y": 13.0,
+            "world_w": 4.446808510638298,
+            "world_h": 0.723404255319149,
+            "text": "leaf_margins"
+        },
+        {
+            "kind": null,
+            "world_x": 159.0,
+            "world_y": 14.0,
+            "world_w": 4.680851063829787,
+            "world_h": 0.6808510638297872,
+            "text": "leaf_venation"
+        },
+        {
+            "kind": null,
+            "world_x": 159.0,
+            "world_y": 15.0,
+            "world_w": 4.0,
+            "world_h": 0.6808510638297872,
+            "text": "leaf_texture"
+        },
+        {
+            "kind": null,
+            "world_x": 159.0,
+            "world_y": 16.0,
+            "world_w": 3.3404255319148937,
+            "world_h": 0.6808510638297872,
+            "text": "leaf_color"
+        },
+        {
+            "kind": null,
+            "world_x": 159.0,
+            "world_y": 17.0,
+            "world_w": 7.851063829787234,
+            "world_h": 0.7021276595744681,
+            "text": "petiole_characteristics"
+        },
+        {
+            "kind": null,
+            "world_x": 159.0,
+            "world_y": 18.0,
+            "world_w": 4.468085106382978,
+            "world_h": 0.6808510638297872,
+            "text": "inflorescence"
+        },
+        {
+            "kind": null,
+            "world_x": 159.0,
+            "world_y": 19.0,
+            "world_w": 6.51063829787234,
+            "world_h": 0.723404255319149,
+            "text": "flower_morphology"
+        },
+        {
+            "kind": null,
+            "world_x": 159.0,
+            "world_y": 20.0,
+            "world_w": 4.1063829787234045,
+            "world_h": 0.6808510638297872,
+            "text": "flower_color"
+        },
+        {
+            "kind": null,
+            "world_x": 159.0,
+            "world_y": 21.0,
+            "world_w": 5.659574468085107,
+            "world_h": 0.6808510638297872,
+            "text": "floral_structures"
+        },
+        {
+            "kind": null,
+            "world_x": 159.0,
+            "world_y": 22.0,
+            "world_w": 5.9361702127659575,
+            "world_h": 0.723404255319149,
+            "text": "fruit_morphology"
+        },
+        {
+            "kind": null,
+            "world_x": 159.0,
+            "world_y": 23.0,
+            "world_w": 6.0212765957446805,
+            "world_h": 0.723404255319149,
+            "text": "seed_morphology"
+        },
+        {
+            "kind": null,
+            "world_x": 159.0,
+            "world_y": 24.0,
+            "world_w": 5.8936170212765955,
+            "world_h": 0.6808510638297872,
+            "text": "seed_dimensions"
+        },
+        {
+            "kind": null,
+            "world_x": 159.0,
+            "world_y": 25.0,
+            "world_w": 10.680851063829786,
+            "world_h": 0.7021276595744681,
+            "text": "seed_dispersal_characteristics"
+        },
+        {
+            "kind": null,
+            "world_x": 180.0,
+            "world_y": 1.0,
+            "world_w": 6.384615384615385,
+            "world_h": 0.717948717948718,
+            "text": "germination_period"
+        },
+        {
+            "kind": null,
+            "world_x": 180.0,
+            "world_y": 2.0,
+            "world_w": 8.384615384615385,
+            "world_h": 0.717948717948718,
+            "text": "vegetative_growth_period"
+        },
+        {
+            "kind": null,
+            "world_x": 180.0,
+            "world_y": 3.0,
+            "world_w": 5.641025641025641,
+            "world_h": 0.717948717948718,
+            "text": "flowering_season"
+        },
+        {
+            "kind": null,
+            "world_x": 180.0,
+            "world_y": 4.0,
+            "world_w": 5.128205128205129,
+            "world_h": 0.717948717948718,
+            "text": "fruiting_season"
+        },
+        {
+            "kind": null,
+            "world_x": 180.0,
+            "world_y": 5.0,
+            "world_w": 5.512820512820513,
+            "world_h": 0.6666666666666666,
+            "text": "seed_maturation"
+        },
+        {
+            "kind": null,
+            "world_x": 180.0,
+            "world_y": 6.0,
+            "world_w": 3.230769230769231,
+            "world_h": 0.6923076923076923,
+            "text": "dormancy"
+        },
+        {
+            "kind": null,
+            "world_x": 180.0,
+            "world_y": 7.0,
+            "world_w": 11.076923076923077,
+            "world_h": 0.717948717948718,
+            "text": "seasonal_morphological_changes"
+        },
+        {
+            "kind": null,
+            "world_x": 193.0,
+            "world_y": 1.0,
+            "world_w": 4.512820512820513,
+            "world_h": 0.6923076923076923,
+            "text": "root_anatomy"
+        },
+        {
+            "kind": null,
+            "world_x": 193.0,
+            "world_y": 2.0,
+            "world_w": 4.769230769230769,
+            "world_h": 0.6923076923076923,
+            "text": "stem_anatomy"
+        },
+        {
+            "kind": null,
+            "world_x": 193.0,
+            "world_y": 3.0,
+            "world_w": 4.410256410256411,
+            "world_h": 0.6923076923076923,
+            "text": "leaf_anatomy"
+        },
+        {
+            "kind": null,
+            "world_x": 193.0,
+            "world_y": 4.0,
+            "world_w": 5.17948717948718,
+            "world_h": 0.6923076923076923,
+            "text": "flower_anatomy"
+        },
+        {
+            "kind": null,
+            "world_x": 193.0,
+            "world_y": 5.0,
+            "world_w": 4.641025641025641,
+            "world_h": 0.6923076923076923,
+            "text": "fruit_anatomy"
+        },
+        {
+            "kind": null,
+            "world_x": 193.0,
+            "world_y": 6.0,
+            "world_w": 4.6923076923076925,
+            "world_h": 0.6923076923076923,
+            "text": "seed_anatomy"
+        },
+        {
+            "kind": null,
+            "world_x": 193.0,
+            "world_y": 7.0,
+            "world_w": 10.666666666666666,
+            "world_h": 0.717948717948718,
+            "text": "microscopic_diagnostic_features"
+        },
+        {
+            "kind": null,
+            "world_x": 193.0,
+            "world_y": 8.0,
+            "world_w": 6.410256410256411,
+            "world_h": 0.6923076923076923,
+            "text": "secretory_structure"
+        },
+        {
+            "kind": null,
+            "world_x": 193.0,
+            "world_y": 9.0,
+            "world_w": 6.923076923076923,
+            "world_h": 0.717948717948718,
+            "text": "glandular_structures"
+        },
+        {
+            "kind": null,
+            "world_x": 193.0,
+            "world_y": 10.0,
+            "world_w": 10.717948717948717,
+            "world_h": 0.6923076923076923,
+            "text": "specialized_anatomical_features"
         }
     ],
     "edges": [
@@ -1012,8 +1772,8 @@
             },
             "edge_end": {
                 "node": {
-                    "world_x": 25.0,
-                    "world_y": -15.0,
+                    "world_x": 159.0,
+                    "world_y": -4.0,
                     "world_w": 18.125,
                     "world_h": 0.6875,
                     "text": "4_IDENTIFICATION_AND_BOTANICAL_DESCRIPTION"
@@ -1022,8 +1782,8 @@
             "edge_relationship": "???",
             "world_x1": -0.28125,
             "world_y1": -15.875,
-            "world_x2": 34.0,
-            "world_y2": -15.0
+            "world_x2": 168.0,
+            "world_y2": -4.0
         },
         {
             "edge_start": {
@@ -1174,6 +1934,32 @@
             "world_y1": -4.0,
             "world_x2": 120.0,
             "world_y2": 1.0
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": 159.0,
+                    "world_y": -4.0,
+                    "world_w": 18.125,
+                    "world_h": 0.6875,
+                    "text": "4_IDENTIFICATION_AND_BOTANICAL_DESCRIPTION"
+                }
+            },
+            "edge_end": {
+                "node": {
+                    "kind": null,
+                    "world_x": 159.0,
+                    "world_y": -1.0,
+                    "world_w": 12.391304347826088,
+                    "world_h": 0.6521739130434783,
+                    "text": "4_1_MORPHOLOGICAL_DESCRIPTION"
+                }
+            },
+            "edge_relationship": "???",
+            "world_x1": 168.0,
+            "world_y1": -4.0,
+            "world_x2": 165.0,
+            "world_y2": -1.0
         }
     ]
 }

@@ -1006,54 +1006,6 @@
             ]
         },
         {
-            "id": 9,
-            "world_x": 28.0,
-            "world_y": -148.0,
-            "world_w": 20,
-            "world_h": 0,
-            "title": "plants__plants_names_common",
-            "kind": "data",
-            "description": "",
-            "fields": [
-                {
-                    "name": "plant_plant_name_common_id",
-                    "key": "primary_key"
-                },
-                {
-                    "name": "plant_id",
-                    "key": "none"
-                },
-                {
-                    "name": "plant_name_common_id",
-                    "key": ""
-                },
-                {
-                    "name": "source_id",
-                    "key": ""
-                }
-            ]
-        },
-        {
-            "id": 11,
-            "world_x": 56.0,
-            "world_y": -152.0,
-            "world_w": 20,
-            "world_h": 0,
-            "title": "sources",
-            "kind": "data",
-            "description": "",
-            "fields": [
-                {
-                    "name": "source_id",
-                    "key": "primary_key"
-                },
-                {
-                    "name": "source_name_reference",
-                    "key": "none"
-                }
-            ]
-        },
-        {
             "id": 29,
             "world_x": 28.0,
             "world_y": -108.0,
@@ -1161,6 +1113,42 @@
                 },
                 {
                     "name": "taxonomy_infraspecies",
+                    "key": ""
+                }
+            ]
+        },
+        {
+            "id": 30,
+            "world_x": 28.0,
+            "world_y": -84.0,
+            "world_w": 20,
+            "world_h": 0,
+            "title": "plants__geographies",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "plant_geography_id",
+                    "key": "primary_key"
+                },
+                {
+                    "name": "plant_id",
+                    "key": "foreign_key"
+                },
+                {
+                    "name": "source_name",
+                    "key": ""
+                },
+                {
+                    "name": "geographic_area",
+                    "key": ""
+                },
+                {
+                    "name": "lifeform_description",
+                    "key": ""
+                },
+                {
+                    "name": "climate_description",
                     "key": ""
                 }
             ]
@@ -1345,17 +1333,65 @@
             "id": 1
         },
         {
-            "id": 30,
-            "world_x": 28.0,
-            "world_y": -84.0,
+            "id": 11,
+            "world_x": 56.0,
+            "world_y": -152.0,
             "world_w": 20,
             "world_h": 0,
-            "title": "plants__geographies",
+            "title": "sources",
             "kind": "data",
             "description": "",
             "fields": [
                 {
-                    "name": "plant_geography_id",
+                    "name": "source_id",
+                    "key": "primary_key"
+                },
+                {
+                    "name": "source_name_reference",
+                    "key": "none"
+                }
+            ]
+        },
+        {
+            "id": 9,
+            "world_x": 28.0,
+            "world_y": -148.0,
+            "world_w": 20,
+            "world_h": 0,
+            "title": "plants__plants_names_common",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "plant_plant_name_common_id",
+                    "key": "primary_key"
+                },
+                {
+                    "name": "plant_id",
+                    "key": "none"
+                },
+                {
+                    "name": "plant_name_common_id",
+                    "key": ""
+                },
+                {
+                    "name": "source_id",
+                    "key": ""
+                }
+            ]
+        },
+        {
+            "id": 31,
+            "world_x": 28.0,
+            "world_y": -168.0,
+            "world_w": 20,
+            "world_h": 0,
+            "title": "plants__synonyms",
+            "kind": "data",
+            "description": "",
+            "fields": [
+                {
+                    "name": "plant_synonym_id",
                     "key": "primary_key"
                 },
                 {
@@ -1367,15 +1403,11 @@
                     "key": ""
                 },
                 {
-                    "name": "geographic_area",
+                    "name": "synonym_scientific_reference",
                     "key": ""
                 },
                 {
-                    "name": "lifeform_description",
-                    "key": ""
-                },
-                {
-                    "name": "climate_description",
+                    "name": "author_primary",
                     "key": ""
                 }
             ]
@@ -1847,63 +1879,6 @@
                     ]
                 },
                 "field_i": 3
-            },
-            "edge_type": "1:N"
-        },
-        {
-            "edge_start": {
-                "node": {
-                    "id": 11,
-                    "world_x": 56.0,
-                    "world_y": -152.0,
-                    "world_w": 20,
-                    "world_h": 0,
-                    "title": "sources",
-                    "kind": "data",
-                    "description": "",
-                    "fields": [
-                        {
-                            "name": "source_id",
-                            "key": "primary_key"
-                        },
-                        {
-                            "name": "source_name_reference",
-                            "key": "none"
-                        }
-                    ]
-                },
-                "field_i": 1
-            },
-            "edge_end": {
-                "node": {
-                    "id": 9,
-                    "world_x": 28.0,
-                    "world_y": -148.0,
-                    "world_w": 20,
-                    "world_h": 0,
-                    "title": "plants__plants_names_common",
-                    "kind": "data",
-                    "description": "",
-                    "fields": [
-                        {
-                            "name": "plant_plant_name_common_id",
-                            "key": "primary_key"
-                        },
-                        {
-                            "name": "plant_id",
-                            "key": "none"
-                        },
-                        {
-                            "name": "plant_name_common_id",
-                            "key": ""
-                        },
-                        {
-                            "name": "source_id",
-                            "key": ""
-                        }
-                    ]
-                },
-                "field_i": 4
             },
             "edge_type": "1:N"
         },
@@ -3354,6 +3329,250 @@
                 "field_i": 2
             },
             "edge_type": "1:N"
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": -16.0,
+                    "world_y": -152.0,
+                    "world_w": 20,
+                    "world_h": 100,
+                    "title": "plants",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "plant_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "plant_name_scientific_reference",
+                            "key": "none"
+                        },
+                        {
+                            "name": "plant_name_scientific_reference_normalize",
+                            "key": ""
+                        }
+                    ],
+                    "id": 1
+                },
+                "field_i": 1
+            },
+            "edge_end": {
+                "node": {
+                    "id": 31,
+                    "world_x": 28.0,
+                    "world_y": -168.0,
+                    "world_w": 20,
+                    "world_h": 0,
+                    "title": "plants__synonyms",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "plant_synonym_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "plant_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "source_name",
+                            "key": ""
+                        },
+                        {
+                            "name": "synonym_scientific_reference",
+                            "key": ""
+                        },
+                        {
+                            "name": "author_primary",
+                            "key": ""
+                        }
+                    ]
+                },
+                "field_i": 2
+            },
+            "edge_type": "1:N"
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "world_x": -16.0,
+                    "world_y": -152.0,
+                    "world_w": 20,
+                    "world_h": 100,
+                    "title": "plants",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "plant_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "plant_name_scientific_reference",
+                            "key": "none"
+                        },
+                        {
+                            "name": "plant_name_scientific_reference_normalize",
+                            "key": ""
+                        }
+                    ],
+                    "id": 1
+                },
+                "field_i": 1
+            },
+            "edge_end": {
+                "node": {
+                    "id": 31,
+                    "world_x": 28.0,
+                    "world_y": -168.0,
+                    "world_w": 20,
+                    "world_h": 0,
+                    "title": "plants__synonyms",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "plant_synonym_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "plant_id",
+                            "key": "foreign_key"
+                        },
+                        {
+                            "name": "source_name",
+                            "key": ""
+                        },
+                        {
+                            "name": "synonym_scientific_reference",
+                            "key": ""
+                        },
+                        {
+                            "name": "author_primary",
+                            "key": ""
+                        }
+                    ]
+                },
+                "field_i": 2
+            },
+            "edge_type": "1:N"
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "id": 11,
+                    "world_x": 56.0,
+                    "world_y": -152.0,
+                    "world_w": 20,
+                    "world_h": 0,
+                    "title": "sources",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "source_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "source_name_reference",
+                            "key": "none"
+                        }
+                    ]
+                },
+                "field_i": 1
+            },
+            "edge_end": {
+                "node": {
+                    "id": 9,
+                    "world_x": 28.0,
+                    "world_y": -148.0,
+                    "world_w": 20,
+                    "world_h": 0,
+                    "title": "plants__plants_names_common",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "plant_plant_name_common_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "plant_id",
+                            "key": "none"
+                        },
+                        {
+                            "name": "plant_name_common_id",
+                            "key": ""
+                        },
+                        {
+                            "name": "source_id",
+                            "key": ""
+                        }
+                    ]
+                },
+                "field_i": 4
+            },
+            "edge_type": "1:N"
+        },
+        {
+            "edge_start": {
+                "node": {
+                    "id": 11,
+                    "world_x": 56.0,
+                    "world_y": -152.0,
+                    "world_w": 20,
+                    "world_h": 0,
+                    "title": "sources",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "source_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "source_name_reference",
+                            "key": "none"
+                        }
+                    ]
+                },
+                "field_i": 1
+            },
+            "edge_end": {
+                "node": {
+                    "id": 9,
+                    "world_x": 28.0,
+                    "world_y": -148.0,
+                    "world_w": 20,
+                    "world_h": 0,
+                    "title": "plants__plants_names_common",
+                    "kind": "data",
+                    "description": "",
+                    "fields": [
+                        {
+                            "name": "plant_plant_name_common_id",
+                            "key": "primary_key"
+                        },
+                        {
+                            "name": "plant_id",
+                            "key": "none"
+                        },
+                        {
+                            "name": "plant_name_common_id",
+                            "key": ""
+                        },
+                        {
+                            "name": "source_id",
+                            "key": ""
+                        }
+                    ]
+                },
+                "field_i": 4
+            },
+            "edge_type": "1:N"
         }
     ],
     "comments": [
@@ -3438,8 +3657,8 @@
             "text": "names_common"
         },
         {
-            "world_x": 12.0,
-            "world_y": -164.0,
+            "world_x": 8.0,
+            "world_y": -180.0,
             "text": "TERRA"
         }
     ]
