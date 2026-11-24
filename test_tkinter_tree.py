@@ -3760,6 +3760,7 @@ def markdown_specifications_create():
                 specifications_modbus_read_request_quantity_of_registers_hb_text,
                 specifications_modbus_read_request_quantity_of_registers_lb_text,
             ]
+            print(json.dumps(specification_modbus_read_request_item, indent=4))
             try: 
                 data = bytes(int(x, 16) for x in hex_list)
                 crc = crc16(data)
@@ -3768,6 +3769,8 @@ def markdown_specifications_create():
             except:
                 high_byte = 'XX'
                 low_byte  = 'XX'
+                high_byte = 0
+                low_byte  = 0
 
             output_text += dedent(f'''
                 | Setting                           | Value (HEX)                          |
@@ -5078,6 +5081,55 @@ specifications_modbus_register_map_tree.bind("<Delete>", tk_specifications_modbu
 
 specifications_modbus_register_map_tree.bind("<Control-Up>", lambda e: tk_specifications_modbus_register_map_move_record("up"))
 specifications_modbus_register_map_tree.bind("<Control-Down>", lambda e: tk_specifications_modbus_register_map_move_record("down"))
+
+
+# MODBUS - FUNCTION
+# ..........................................................
+
+specifications_frame_center_bottom_modbus_function_tab = tk.Frame(specifications_frame_modbus_tabs)
+specifications_frame_modbus_tabs.add(specifications_frame_center_bottom_modbus_function_tab, text="Modbus Function")
+
+specifications_frame_modbus_function = tk.Frame(specifications_frame_center_bottom_modbus_function_tab)
+specifications_frame_modbus_function.pack(side="left", fill="both", expand=True)
+
+specifications_frame_modbus_function_tabs = ttk.Notebook(specifications_frame_modbus_function)
+specifications_frame_modbus_function_tabs.pack(fill="both", expand=True)
+
+# MODBUS - FUNCTION - FC01
+# ..........................................................
+
+specifications_frame_center_bottom_modbus_function_fc01_tab = tk.Frame(specifications_frame_modbus_function_tabs)
+specifications_frame_modbus_function_tabs.add(specifications_frame_center_bottom_modbus_function_fc01_tab, text="FC01")
+
+specifications_frame_modbus_function_fc01 = tk.Frame(specifications_frame_center_bottom_modbus_function_fc01_tab)
+specifications_frame_modbus_function_fc01.pack(side="left", fill="both", expand=True)
+
+
+# MODBUS - FUNCTION - FC01 - DESCRIPTION
+# ..........................................................
+
+frame_width = 240
+
+specifications_frame_modbus_function_fc01_col_1 = tk.LabelFrame(specifications_frame_modbus_function_fc01, text="Description", width=frame_width)
+specifications_frame_modbus_function_fc01_col_1.pack(side="left", fill="y")
+specifications_frame_modbus_function_fc01_col_1.pack_propagate(False)
+
+tk.Label(
+    specifications_frame_modbus_function_fc01_col_1, 
+    text="01 (0x01) Read Coils", 
+    # width=label_w, 
+    anchor="e",
+).pack(side="top", padx=(padx, padx), pady=(10, 0))
+tk.Label(
+    specifications_frame_modbus_function_fc01_col_1, 
+    text='''This function code is used to read from 1 to 2000 contiguous status of coils in a remote
+device. The Request PDU specifies the starting address, i.e. the address of the first coil
+specified, and the number of coils. In the PDU Coils are addressed starting at zero. Therefore
+coils numbered 1-16 are addressed as 0-15.''', 
+    # width=label_w, 
+    anchor="e",
+).pack(side="top", padx=(padx, padx), pady=(10, 0))
+
 
 # MODBUS WRITE
 # ..........................................................
