@@ -5108,27 +5108,130 @@ specifications_frame_modbus_function_fc01.pack(side="left", fill="both", expand=
 # MODBUS - FUNCTION - FC01 - DESCRIPTION
 # ..........................................................
 
-frame_width = 240
+frame_width = 220
 
 specifications_frame_modbus_function_fc01_col_1 = tk.LabelFrame(specifications_frame_modbus_function_fc01, text="Description", width=frame_width)
 specifications_frame_modbus_function_fc01_col_1.pack(side="left", fill="y")
 specifications_frame_modbus_function_fc01_col_1.pack_propagate(False)
 
+label_w = frame_width - padx - padx - padx
+
 tk.Label(
-    specifications_frame_modbus_function_fc01_col_1, 
-    text="01 (0x01) Read Coils", 
-    # width=label_w, 
-    anchor="e",
+    specifications_frame_modbus_function_fc01_col_1,
+    text="01 (0x01) Read Coils",
+    width=label_w,
+    wraplength=label_w,
+    anchor="nw",
 ).pack(side="top", padx=(padx, padx), pady=(10, 0))
+
 tk.Label(
-    specifications_frame_modbus_function_fc01_col_1, 
-    text='''This function code is used to read from 1 to 2000 contiguous status of coils in a remote
+    specifications_frame_modbus_function_fc01_col_1,
+    text='''
+This function code is used to read from 1 to 2000 contiguous status of coils in a remote
 device. The Request PDU specifies the starting address, i.e. the address of the first coil
 specified, and the number of coils. In the PDU Coils are addressed starting at zero. Therefore
-coils numbered 1-16 are addressed as 0-15.''', 
-    # width=label_w, 
-    anchor="e",
+coils numbered 1-16 are addressed as 0-15.'''.replace('\n', ' '),
+    width=label_w,
+    wraplength=label_w,
+    anchor="nw",
+    justify="left",
 ).pack(side="top", padx=(padx, padx), pady=(10, 0))
+
+
+# MODBUS - FUNCTION - FC01 - REQUEST
+# ..........................................................
+
+specifications_frame_modbus_function_fc01_col_2 = tk.LabelFrame(specifications_frame_modbus_function_fc01, text="Request", width=frame_width)
+specifications_frame_modbus_function_fc01_col_2.pack(side="left", fill="y")
+specifications_frame_modbus_function_fc01_col_2.pack_propagate(False)
+
+label_w = 18
+
+# specifications_modbus_function_fc01_request_frame_slave_address = tk.Frame(specifications_frame_modbus_function_fc01_col_2)
+# specifications_modbus_function_fc01_request_frame_slave_address.pack(side="top", anchor="nw", fill="x")
+# tk.Label(specifications_modbus_function_fc01_request_frame_slave_address, text="Slave Address", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
+# specifications_modbus_function_fc01_request_entry_slave_address_text = tk.Entry(specifications_modbus_function_fc01_request_frame_slave_address)
+# specifications_modbus_function_fc01_request_entry_slave_address_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+# specifications_modbus_function_fc01_request_entry_slave_address_text.insert(0, "01")
+
+specifications_modbus_function_fc01_request_frame_starting_address = tk.Frame(specifications_frame_modbus_function_fc01_col_2)
+specifications_modbus_function_fc01_request_frame_starting_address.pack(side="top", anchor="nw", fill="x")
+tk.Label(specifications_modbus_function_fc01_request_frame_starting_address, text="Starting Address", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_function_fc01_request_entry_starting_address_text = tk.Entry(specifications_modbus_function_fc01_request_frame_starting_address)
+specifications_modbus_function_fc01_request_entry_starting_address_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_function_fc01_request_entry_starting_address_text.insert(0, "0")
+
+specifications_modbus_function_fc01_request_frame_quantity_of_coils = tk.Frame(specifications_frame_modbus_function_fc01_col_2)
+specifications_modbus_function_fc01_request_frame_quantity_of_coils.pack(side="top", anchor="nw", fill="x")
+tk.Label(specifications_modbus_function_fc01_request_frame_quantity_of_coils, text="Quantity of coils", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_function_fc01_request_entry_quantity_of_coils_text = tk.Entry(specifications_modbus_function_fc01_request_frame_quantity_of_coils)
+specifications_modbus_function_fc01_request_entry_quantity_of_coils_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_function_fc01_request_entry_quantity_of_coils_text.insert(0, "1")
+
+# MODBUS - FUNCTION - FC01 - RESPONSE
+# ..........................................................
+
+specifications_frame_modbus_function_fc01_col_3 = tk.LabelFrame(specifications_frame_modbus_function_fc01, text="Response", width=frame_width)
+specifications_frame_modbus_function_fc01_col_3.pack(side="left", fill="y")
+specifications_frame_modbus_function_fc01_col_3.pack_propagate(False)
+
+specifications_modbus_function_fc01_request_frame_byte_count = tk.Frame(specifications_frame_modbus_function_fc01_col_3)
+specifications_modbus_function_fc01_request_frame_byte_count.pack(side="top", anchor="nw", fill="x")
+tk.Label(specifications_modbus_function_fc01_request_frame_byte_count, text="Byte count", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_function_fc01_request_entry_byte_count_text = tk.Entry(specifications_modbus_function_fc01_request_frame_byte_count)
+specifications_modbus_function_fc01_request_entry_byte_count_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_function_fc01_request_entry_byte_count_text.insert(0, "0")
+
+specifications_modbus_function_fc01_request_frame_coil_status = tk.Frame(specifications_frame_modbus_function_fc01_col_3)
+specifications_modbus_function_fc01_request_frame_coil_status.pack(side="top", anchor="nw", fill="x")
+tk.Label(specifications_modbus_function_fc01_request_frame_coil_status, text="Coil status", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_function_fc01_request_entry_coil_status_text = tk.Entry(specifications_modbus_function_fc01_request_frame_coil_status)
+specifications_modbus_function_fc01_request_entry_coil_status_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_function_fc01_request_entry_coil_status_text.insert(0, "1")
+
+
+# MODBUS - FUNCTION - FC01 - ERROR (TODO: autogenerate?)
+# ..........................................................
+
+# specifications_frame_modbus_function_fc01_col_4 = tk.LabelFrame(specifications_frame_modbus_function_fc01, text="Error", width=frame_width)
+# specifications_frame_modbus_function_fc01_col_4.pack(side="left", fill="y")
+# specifications_frame_modbus_function_fc01_col_4.pack_propagate(False)
+
+# specifications_modbus_function_fc01_request_frame_byte_count = tk.Frame(specifications_frame_modbus_function_fc01_col_4)
+# specifications_modbus_function_fc01_request_frame_byte_count.pack(side="top", anchor="nw", fill="x")
+# tk.Label(specifications_modbus_function_fc01_request_frame_byte_count, text="Byte count", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
+# specifications_modbus_function_fc01_request_entry_byte_count_text = tk.Entry(specifications_modbus_function_fc01_request_frame_byte_count)
+# specifications_modbus_function_fc01_request_entry_byte_count_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+# specifications_modbus_function_fc01_request_entry_byte_count_text.insert(0, "0")
+
+# specifications_modbus_function_fc01_request_frame_coil_status = tk.Frame(specifications_frame_modbus_function_fc01_col_4)
+# specifications_modbus_function_fc01_request_frame_coil_status.pack(side="top", anchor="nw", fill="x")
+# tk.Label(specifications_modbus_function_fc01_request_frame_coil_status, text="Coil status", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
+# specifications_modbus_function_fc01_request_entry_coil_status_text = tk.Entry(specifications_modbus_function_fc01_request_frame_coil_status)
+# specifications_modbus_function_fc01_request_entry_coil_status_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+# specifications_modbus_function_fc01_request_entry_coil_status_text.insert(0, "1")
+
+
+
+# MODBUS - FUNCTION - FC01 - ACTIONS
+# ..........................................................
+
+specifications_frame_modbus_function_fc01_col_5 = tk.LabelFrame(specifications_frame_modbus_function_fc01, text="Actions", width=frame_width)
+specifications_frame_modbus_function_fc01_col_5.pack(side="left", fill="y")
+specifications_frame_modbus_function_fc01_col_5.pack_propagate(False)
+
+tk.Button(
+    specifications_frame_modbus_function_fc01_col_5,
+    text="Set",
+    command=tk_specifications_modbus_write_set
+).pack(fill="x", padx=(padx, padx), pady=(10, 0))
+
+tk.Button(
+    specifications_frame_modbus_function_fc01_col_5,
+    text="Delete",
+    command=tk_specifications_modbus_write_delete
+).pack(fill="x", padx=(padx, padx), pady=(10, 0))
+
 
 
 # MODBUS WRITE
