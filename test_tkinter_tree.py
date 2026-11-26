@@ -2414,6 +2414,7 @@ def tk_specifications_rs485_delete():
     )
     # specifications_tree.delete(item)
 
+# ;jump
 def tk_specifications_modbus_write_set():
     specifications_modbus_write_request_intro_text = specifications_modbus_write_request_text_intro_text.get("1.0", tk.END)
     specifications_modbus_write_request_slave_address_text = specifications_modbus_write_request_entry_slave_address_text.get()
@@ -3018,6 +3019,38 @@ def tk_specifications_modbus_register_map_range_move_record(direction):
             )
             specifications_modbus_register_map_range_tree.see(item)
             break
+
+# ;jump
+def tk_specifications_modbus_function_fc01_set():
+    specifications_modbus_function_fc01_request_intro_text = specifications_modbus_function_fc01_request_text_intro_text.get("1.0", tk.END)
+    # TODO
+    specifications_modbus_write_request_slave_address_text = specifications_modbus_write_request_entry_slave_address_text.get()
+    specifications_modbus_write_request_function_code_text = specifications_modbus_write_request_entry_function_code_text.get()
+    specifications_modbus_write_request_coil_address_hb_text = specifications_modbus_write_request_entry_coil_address_hb_text.get()
+    specifications_modbus_write_request_coil_address_lb_text = specifications_modbus_write_request_entry_coil_address_lb_text.get()
+    specifications_modbus_write_request_coil_value_hb_text = specifications_modbus_write_request_entry_coil_value_hb_text.get()
+    specifications_modbus_write_request_coil_value_lb_text = specifications_modbus_write_request_entry_coil_value_lb_text.get()
+    if specifications_modbus_write_request_intro_text.strip() == '':
+        print('ERR: specifications_modbus_write_request_intro_text text NOT valid')
+        return
+    if specifications_modbus_write_request_slave_address_text.strip() == '':
+        print('ERR: specifications_modbus_write_request_slave_address_text text NOT valid')
+        return
+    if specifications_modbus_write_request_function_code_text.strip() == '':
+        print('ERR: specifications_modbus_write_request_function_code_text text NOT valid')
+        return
+    if specifications_modbus_write_request_coil_address_hb_text.strip() == '':
+        print('ERR: specifications_modbus_write_request_coil_address_hb_text text NOT valid')
+        return
+    if specifications_modbus_write_request_coil_address_lb_text.strip() == '':
+        print('ERR: specifications_modbus_write_request_coil_address_lb_text text NOT valid')
+        return
+    if specifications_modbus_write_request_coil_value_hb_text.strip() == '':
+        print('ERR: specifications_modbus_write_request_coil_value_hb_text text NOT valid')
+        return
+    if specifications_modbus_write_request_coil_value_lb_text.strip() == '':
+        print('ERR: specifications_modbus_write_request_coil_value_lb_text text NOT valid')
+        return
 
 # ----------------------------------------------------------
 # TKINTER FUNCTIONS COMPILE
@@ -4973,8 +5006,6 @@ specifications_modbus_register_map_range_tree.column(
     stretch=False,
 )
 
-# ;jump
-
 tk_specifications_modbus_register_map_range_view()
 
 specifications_modbus_register_map_range_tree.bind("<Delete>", tk_specifications_modbus_register_map_range_delete)
@@ -5145,6 +5176,10 @@ specifications_frame_modbus_function_fc01_col_2 = tk.LabelFrame(specifications_f
 specifications_frame_modbus_function_fc01_col_2.pack(side="left", fill="y")
 specifications_frame_modbus_function_fc01_col_2.pack_propagate(False)
 
+tk.Label(specifications_frame_modbus_function_fc01_col_2, text="Prose").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+specifications_modbus_function_fc01_request_text_intro_text = tk.Text(specifications_frame_modbus_function_fc01_col_2, wrap="word", height=5)
+specifications_modbus_function_fc01_request_text_intro_text.pack(fill="x", padx=(padx, padx))
+
 label_w = 18
 
 # specifications_modbus_function_fc01_request_frame_slave_address = tk.Frame(specifications_frame_modbus_function_fc01_col_2)
@@ -5175,19 +5210,23 @@ specifications_frame_modbus_function_fc01_col_3 = tk.LabelFrame(specifications_f
 specifications_frame_modbus_function_fc01_col_3.pack(side="left", fill="y")
 specifications_frame_modbus_function_fc01_col_3.pack_propagate(False)
 
-specifications_modbus_function_fc01_request_frame_byte_count = tk.Frame(specifications_frame_modbus_function_fc01_col_3)
-specifications_modbus_function_fc01_request_frame_byte_count.pack(side="top", anchor="nw", fill="x")
-tk.Label(specifications_modbus_function_fc01_request_frame_byte_count, text="Byte count", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
-specifications_modbus_function_fc01_request_entry_byte_count_text = tk.Entry(specifications_modbus_function_fc01_request_frame_byte_count)
-specifications_modbus_function_fc01_request_entry_byte_count_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
-specifications_modbus_function_fc01_request_entry_byte_count_text.insert(0, "0")
+tk.Label(specifications_frame_modbus_function_fc01_col_3, text="Prose").pack(anchor="w", pady=(10, 0), padx=(padx, padx))
+specifications_modbus_function_fc01_response_text_intro_text = tk.Text(specifications_frame_modbus_function_fc01_col_3, wrap="word", height=5)
+specifications_modbus_function_fc01_response_text_intro_text.pack(fill="x", padx=(padx, padx))
 
-specifications_modbus_function_fc01_request_frame_coil_status = tk.Frame(specifications_frame_modbus_function_fc01_col_3)
-specifications_modbus_function_fc01_request_frame_coil_status.pack(side="top", anchor="nw", fill="x")
-tk.Label(specifications_modbus_function_fc01_request_frame_coil_status, text="Coil status", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
-specifications_modbus_function_fc01_request_entry_coil_status_text = tk.Entry(specifications_modbus_function_fc01_request_frame_coil_status)
-specifications_modbus_function_fc01_request_entry_coil_status_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
-specifications_modbus_function_fc01_request_entry_coil_status_text.insert(0, "1")
+specifications_modbus_function_fc01_response_frame_byte_count = tk.Frame(specifications_frame_modbus_function_fc01_col_3)
+specifications_modbus_function_fc01_response_frame_byte_count.pack(side="top", anchor="nw", fill="x")
+tk.Label(specifications_modbus_function_fc01_response_frame_byte_count, text="Byte count", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_function_fc01_response_entry_byte_count_text = tk.Entry(specifications_modbus_function_fc01_response_frame_byte_count)
+specifications_modbus_function_fc01_response_entry_byte_count_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_function_fc01_response_entry_byte_count_text.insert(0, "0")
+
+specifications_modbus_function_fc01_response_frame_coil_status = tk.Frame(specifications_frame_modbus_function_fc01_col_3)
+specifications_modbus_function_fc01_response_frame_coil_status.pack(side="top", anchor="nw", fill="x")
+tk.Label(specifications_modbus_function_fc01_response_frame_coil_status, text="Coil status", width=label_w, anchor="w",).pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_function_fc01_response_entry_coil_status_text = tk.Entry(specifications_modbus_function_fc01_response_frame_coil_status)
+specifications_modbus_function_fc01_response_entry_coil_status_text.pack(side="left", padx=(padx, padx), pady=(10, 0))
+specifications_modbus_function_fc01_response_entry_coil_status_text.insert(0, "1")
 
 
 # MODBUS - FUNCTION - FC01 - ERROR (TODO: autogenerate?)
@@ -5223,7 +5262,7 @@ specifications_frame_modbus_function_fc01_col_5.pack_propagate(False)
 tk.Button(
     specifications_frame_modbus_function_fc01_col_5,
     text="Set",
-    command=tk_specifications_modbus_write_set
+    command=tk_specifications_modbus_function_fc01_set
 ).pack(fill="x", padx=(padx, padx), pady=(10, 0))
 
 tk.Button(
@@ -5231,6 +5270,7 @@ tk.Button(
     text="Delete",
     command=tk_specifications_modbus_write_delete
 ).pack(fill="x", padx=(padx, padx), pady=(10, 0))
+
 
 
 
