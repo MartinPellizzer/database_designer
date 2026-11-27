@@ -244,7 +244,7 @@ def sql_specifications_modbus_write_set(
     
     fields_items = specification_fields
 
-    cur.execute(f'''
+    query = f'''
         INSERT INTO {table_name} (
             specification_id,
             {fields_insert}
@@ -252,10 +252,12 @@ def sql_specifications_modbus_write_set(
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(specification_id) DO UPDATE SET
             {fields_update}
-    ''', (
+    '''
+    cur.execute(query, (
         specification_id,
         *fields_items,
     ))
+    print(query)
     db.commit()
     db.close()
 
@@ -974,7 +976,6 @@ specifications_modbus_register_map_range_fields = [
     'specification_modbus_register_map_range_category_text',
 ]
 
-
 def sql__drop(
     db_filepath,
     table_name,
@@ -1099,3 +1100,212 @@ def sql__get_all__by_specification_id(
     items = [dict(row) for row in rows]
     db.close()
     return items
+
+# ----------------------------------------------------------
+# SQLITE MODBUS FUNCTION FC01
+# ----------------------------------------------------------
+
+specifications_modbus_function_fc01_fields = [
+    'specification_modbus_function_fc01_id',
+    'specification_id',
+    'specification_modbus_function_fc01_request_intro_text',
+    'specification_modbus_function_fc01_request_starting_address_text',
+    'specification_modbus_function_fc01_request_quantity_of_coils_text',
+    'specification_modbus_function_fc01_response_intro_text',
+    'specification_modbus_function_fc01_response_byte_count_text',
+    'specification_modbus_function_fc01_response_coil_status_text',
+]
+
+def sql__drop__new(
+    db_filepath,
+    table_name,
+):
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    cur.execute(f'''
+        DROP TABLE IF EXISTS {table_name}
+    ''')
+    db.commit()
+    db.close()
+
+def sql__create__new(
+    db_filepath,
+    table_name,
+    fields_names,
+):
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    fields = []
+    for i, field in enumerate(fields_names):
+        if i == 0:
+            fields.append(f'{field} INTEGER PRIMARY KEY')
+        else:
+            fields.append(f'{field} TEXT')
+    fields = ',\n'.join(fields)
+    query = f'''
+        CREATE TABLE IF NOT EXISTS {table_name} (
+            {fields}
+        )
+    '''
+    # print(query)
+    # quit()
+    cur.execute(query)
+    db.commit()
+    db.close()
+
+def sql__get_all__new(
+    db_filepath,
+    table_name,
+    fields_names,
+):
+    sql__create__new(db_filepath, table_name, fields_names,)
+    db = sqlite3.connect(db_filepath)
+    db.row_factory = sqlite3.Row
+    cur = db.cursor()
+    rows = db.execute(f"SELECT * FROM {table_name}").fetchall()
+    items = [dict(row) for row in rows]
+    db.close()
+    return items
+
+def sql__insert__new(
+    db_filepath,
+    table_name,
+    fields,
+):
+    fields_names = []
+    for key, value in fields.items():
+        fields_names.append(key)
+    sql__drop__new(db_filepath, table_name,)
+    sql__create__new(db_filepath, table_name, fields_names,)
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    ###
+    fields_insert = []
+    for field in fields:
+        fields_insert.append(f'{field}')
+    fields_insert = ',\n'.join(fields_insert)
+    ###
+    question_marks = []
+    for field in fields:
+        question_marks.append('?')
+    question_marks_insert = ', '.join(question_marks)
+    ###
+    fields_values = []
+    for key, val in fields.items():
+        fields_values.append(f'{val}')
+    ###
+    sql_query = f'''
+        INSERT INTO {table_name} (
+            {fields_insert}
+        ) 
+        VALUES ({question_marks_insert})
+    '''
+    # print(fields_values)
+    # quit()
+    cur.execute(sql_query, (*fields_values,))
+    db.commit()
+    db.close()
+
+def sql__delete__new(
+    db_filepath,
+    table_name,
+):
+    field_key = ''
+    field_val = ''
+    for key, val in fields.items():
+        field_key = key
+        field_val = val
+        break
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    query = f'''
+        DELETE FROM {table_name} 
+        WHERE {field_key} = ?
+    '''
+    cur.execute(query, (field_val,))
+    db.commit()
+    db.close()
+
+def sql__get_all__by_specification_id__new(
+    db_filepath,
+    table_name,
+    specification_id,
+):
+    db = sqlite3.connect(db_filepath)
+    db.row_factory = sqlite3.Row
+    cur = db.cursor()
+    records = db.execute(f'''
+        SELECT * 
+        FROM {table_name}
+        WHERE specification_id = ?
+    ''', (specification_id,))
+    rows = records.fetchall()
+    items = [dict(row) for row in rows]
+    db.close()
+    return items
+
+def sql__update__cols__new(
+    db_filepath,
+    table_name,
+    specification_fields,
+):
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    columns = {}
+    for field in specification_fields:
+        columns[field] = 'TEXT'
+    existing = {row[1] for row in cur.execute(f"PRAGMA table_info({table_name})")}
+    for name, definition in columns.items():
+        if name not in existing:
+            cur.execute(f"ALTER TABLE {table_name} ADD COLUMN {name} {definition}")
+    db.commit()
+    db.close()
+
+def sql__set__new(
+    db_filepath,
+    table_name,
+    specification_id,
+    specification_fields,
+):
+    
+    fields_names = []
+    fields_values = []
+    for key, value in specification_fields.items():
+        fields_names.append(key)
+        fields_values.append(value)
+
+    sql__create__new(db_filepath, table_name, fields_names,)
+    sql__update__cols__new(db_filepath, table_name, specification_fields,)
+    db = sqlite3.connect(db_filepath)
+    cur = db.cursor()
+    
+    fields_insert = []
+    for field in fields_names:
+        fields_insert.append(f'{field}')
+    fields_insert = ',\n'.join(fields_insert)
+    ###
+    fields_update = []
+    for field in fields_names:
+        fields_update.append(f'{field} = excluded.{field}')
+    fields_update = ',\n'.join(fields_update)
+    ###
+    question_marks = []
+    for field in fields_names:
+        question_marks.append('?')
+    question_marks_insert = ', '.join(question_marks)
+
+    query = f'''
+        INSERT INTO {table_name} (
+            {fields_insert}
+        ) 
+        VALUES ({question_marks_insert})
+        ON CONFLICT(specification_id) DO UPDATE SET
+            {fields_update}
+    '''
+    print(query)
+    
+    cur.execute(query, (
+        *fields_values,
+    ))
+    db.commit()
+    db.close()

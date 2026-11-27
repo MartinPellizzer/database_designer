@@ -30,7 +30,7 @@ specifications_modbus_read_request_table_name = 'specifications_modbus_read_requ
 specifications_modbus_read_response_table_name = 'specifications_modbus_read_response'
 specifications_modbus_register_map_table_name = 'specifications_modbus_register_map'
 specifications_modbus_register_map_range_table_name = 'specifications_modbus_register_map_range'
-
+specifications_modbus_function_fc01_table_name = 'specifications_modbus_function_fc01'
 
 requirements_statements_list_cur = []
 
@@ -3023,34 +3023,68 @@ def tk_specifications_modbus_register_map_range_move_record(direction):
 # ;jump
 def tk_specifications_modbus_function_fc01_set():
     specifications_modbus_function_fc01_request_intro_text = specifications_modbus_function_fc01_request_text_intro_text.get("1.0", tk.END)
-    # TODO
-    specifications_modbus_write_request_slave_address_text = specifications_modbus_write_request_entry_slave_address_text.get()
-    specifications_modbus_write_request_function_code_text = specifications_modbus_write_request_entry_function_code_text.get()
-    specifications_modbus_write_request_coil_address_hb_text = specifications_modbus_write_request_entry_coil_address_hb_text.get()
-    specifications_modbus_write_request_coil_address_lb_text = specifications_modbus_write_request_entry_coil_address_lb_text.get()
-    specifications_modbus_write_request_coil_value_hb_text = specifications_modbus_write_request_entry_coil_value_hb_text.get()
-    specifications_modbus_write_request_coil_value_lb_text = specifications_modbus_write_request_entry_coil_value_lb_text.get()
-    if specifications_modbus_write_request_intro_text.strip() == '':
-        print('ERR: specifications_modbus_write_request_intro_text text NOT valid')
+    specifications_modbus_function_fc01_request_starting_address_text = specifications_modbus_function_fc01_request_entry_starting_address_text.get()
+    specifications_modbus_function_fc01_request_quantity_of_coils_text = specifications_modbus_function_fc01_request_entry_quantity_of_coils_text.get()
+    specifications_modbus_function_fc01_response_intro_text = specifications_modbus_function_fc01_response_text_intro_text.get("1.0", tk.END)
+    specifications_modbus_function_fc01_response_byte_count_text = specifications_modbus_function_fc01_response_entry_byte_count_text.get()
+    specifications_modbus_function_fc01_response_coil_status_text = specifications_modbus_function_fc01_response_entry_coil_status_text.get()
+    if specifications_modbus_function_fc01_request_intro_text.strip() == '':
+        print('ERR: specifications_modbus_function_fc01_request_intro_text text NOT valid')
         return
-    if specifications_modbus_write_request_slave_address_text.strip() == '':
-        print('ERR: specifications_modbus_write_request_slave_address_text text NOT valid')
+    if specifications_modbus_function_fc01_request_starting_address_text.strip() == '':
+        print('ERR: specifications_modbus_function_fc01_request_starting_address_text text NOT valid')
         return
-    if specifications_modbus_write_request_function_code_text.strip() == '':
-        print('ERR: specifications_modbus_write_request_function_code_text text NOT valid')
+    if specifications_modbus_function_fc01_request_quantity_of_coils_text.strip() == '':
+        print('ERR: specifications_modbus_function_fc01_request_quantity_of_coils_text text NOT valid')
         return
-    if specifications_modbus_write_request_coil_address_hb_text.strip() == '':
-        print('ERR: specifications_modbus_write_request_coil_address_hb_text text NOT valid')
+    if specifications_modbus_function_fc01_response_intro_text.strip() == '':
+        print('ERR: specifications_modbus_function_fc01_response_intro_text text NOT valid')
         return
-    if specifications_modbus_write_request_coil_address_lb_text.strip() == '':
-        print('ERR: specifications_modbus_write_request_coil_address_lb_text text NOT valid')
+    if specifications_modbus_function_fc01_response_byte_count_text.strip() == '':
+        print('ERR: specifications_modbus_function_fc01_response_byte_count_text text NOT valid')
         return
-    if specifications_modbus_write_request_coil_value_hb_text.strip() == '':
-        print('ERR: specifications_modbus_write_request_coil_value_hb_text text NOT valid')
+    if specifications_modbus_function_fc01_response_coil_status_text.strip() == '':
+        print('ERR: specifications_modbus_function_fc01_response_coil_status_text text NOT valid')
         return
-    if specifications_modbus_write_request_coil_value_lb_text.strip() == '':
-        print('ERR: specifications_modbus_write_request_coil_value_lb_text text NOT valid')
-        return
+    if not specifications_tree.selection(): return
+    item = specifications_tree.selection()[0]
+    specification_id = specifications_tree.item(item)["values"][0]
+    ###
+    # specification_fields = [
+    #     specifications_modbus_function_fc01_request_intro_text,
+    #     specifications_modbus_function_fc01_request_starting_address_text,
+    #     specifications_modbus_function_fc01_request_quantity_of_coils_text,
+    #     specifications_modbus_function_fc01_response_intro_text,
+    #     specifications_modbus_function_fc01_response_byte_count_text,
+    #     specifications_modbus_function_fc01_response_coil_status_text,
+    # ]
+    
+    fields = {
+        'specification_id': specification_id,
+        'specification_modbus_function_fc01_request_intro_text': specifications_modbus_function_fc01_request_intro_text,
+        'specification_modbus_function_fc01_request_starting_address_text': specifications_modbus_function_fc01_request_starting_address_text,
+        'specification_modbus_function_fc01_request_quantity_of_coils_text': specifications_modbus_function_fc01_request_quantity_of_coils_text,
+        'specification_modbus_function_fc01_response_intro_text': specifications_modbus_function_fc01_response_intro_text,
+        'specification_modbus_function_fc01_response_byte_count_text': specifications_modbus_function_fc01_response_byte_count_text,
+        'specification_modbus_function_fc01_response_coil_status_text': specifications_modbus_function_fc01_response_coil_status_text,
+    }
+
+    sql_utils.sql__set__new(
+        db_filepath,
+        specifications_modbus_function_fc01_table_name,
+        specification_id,
+        fields,
+    )
+    # sql_utils.sql__insert__new(
+    #     db_filepath,
+    #     specifications_modbus_function_fc01_table_name,
+    #     fields,
+    # )
+    res = sql_utils.sql_specifications_modbus_write_get_all(
+        db_filepath, 
+        specifications_modbus_function_fc01_table_name,
+    )
+    print(json.dumps(res, indent=4))
 
 # ----------------------------------------------------------
 # TKINTER FUNCTIONS COMPILE
@@ -3782,6 +3816,163 @@ def markdown_specifications_create():
             specifications_modbus_read_request_quantity_of_registers_hb_text = specification_modbus_read_request_item['specification_modbus_read_request_quantity_of_registers_hb_text']
             specifications_modbus_read_request_quantity_of_registers_lb_text = specification_modbus_read_request_item['specification_modbus_read_request_quantity_of_registers_lb_text']
             ###
+            output_text += dedent(f'''
+                {specifications_modbus_read_request_intro_text}
+            ''')
+            hex_list = [
+                specifications_modbus_read_request_slave_address_text,
+                specifications_modbus_read_request_function_code_text,
+                specifications_modbus_read_request_starting_address_hb_text,
+                specifications_modbus_read_request_starting_address_lb_text,
+                specifications_modbus_read_request_quantity_of_registers_hb_text,
+                specifications_modbus_read_request_quantity_of_registers_lb_text,
+            ]
+            print(json.dumps(specification_modbus_read_request_item, indent=4))
+            try: 
+                data = bytes(int(x, 16) for x in hex_list)
+                crc = crc16(data)
+                high_byte = (crc >> 8) & 0xFF
+                low_byte  = crc & 0xFF
+            except:
+                high_byte = 'XX'
+                low_byte  = 'XX'
+                high_byte = 0
+                low_byte  = 0
+
+            output_text += dedent(f'''
+                | Setting                           | Value (HEX)                          |
+                | --------------------------------- | ------------------------------------ |
+                | Slave Address                     | {specifications_modbus_read_request_slave_address_text} |
+                | Function Code                     | {specifications_modbus_read_request_function_code_text} |
+                | Starting Address - High Byte      | {specifications_modbus_read_request_starting_address_hb_text} |
+                | Starting Address - Low Byte       | {specifications_modbus_read_request_starting_address_lb_text} |
+                | Quantity of Registers - High Byte | {specifications_modbus_read_request_quantity_of_registers_hb_text} |
+                | Quantity of Registers - Low Byte  | {specifications_modbus_read_request_quantity_of_registers_lb_text} |
+                | CRC-16 - High Byte                | {high_byte:02X} |
+                | CRC-16 - Low Byte                 | {low_byte:02X}  |
+            ''')
+            data_frame = ' '.join([
+                specifications_modbus_read_request_slave_address_text, 
+                specifications_modbus_read_request_function_code_text, 
+                specifications_modbus_read_request_starting_address_hb_text, 
+                specifications_modbus_read_request_starting_address_lb_text, 
+                specifications_modbus_read_request_quantity_of_registers_hb_text, 
+                specifications_modbus_read_request_quantity_of_registers_lb_text, 
+                f'{low_byte:02X}',
+                f'{high_byte:02X}',
+            ])
+            print(data_frame)
+            print(specifications_modbus_read_request_slave_address_text)
+            print(specifications_modbus_read_request_function_code_text)
+            print(specifications_modbus_read_request_starting_address_hb_text)
+            print(specifications_modbus_read_request_starting_address_lb_text)
+            print(specifications_modbus_read_request_quantity_of_registers_hb_text)
+            print(specifications_modbus_read_request_quantity_of_registers_lb_text)
+            # quit()
+
+            ###
+            ###
+            ###
+
+            output_text += dedent(f'''
+                The complete response data frame is: {data_frame}
+            ''')
+
+            specification_modbus_read_response_item = sql_utils.sql_specifications_modbus_read_response_get_by_specification_id(
+                db_filepath,
+                specifications_modbus_read_response_table_name,
+                specification_id,
+            )
+            specification_modbus_read_response_intro_text = specification_modbus_read_response_item['specification_modbus_read_response_intro_text']
+            specification_modbus_read_response_slave_address_text = specification_modbus_read_response_item['specification_modbus_read_response_slave_address_text']
+            specification_modbus_read_response_function_code_text = specification_modbus_read_response_item['specification_modbus_read_response_function_code_text']
+            specification_modbus_read_response_byte_count_text = specification_modbus_read_response_item['specification_modbus_read_response_byte_count_text']
+            specification_modbus_read_response_register_data_hb_text = specification_modbus_read_response_item['specification_modbus_read_response_register_data_hb_text']
+            specification_modbus_read_response_register_data_lb_text = specification_modbus_read_response_item['specification_modbus_read_response_register_data_lb_text']
+            
+            ###
+            output_text += dedent(f'''
+                {specification_modbus_read_response_intro_text}
+            ''')
+            hex_list = [
+                specification_modbus_read_response_slave_address_text,
+                specification_modbus_read_response_function_code_text,
+                specification_modbus_read_response_byte_count_text,
+                specification_modbus_read_response_register_data_hb_text,
+                specification_modbus_read_response_register_data_lb_text,
+            ]
+            try: 
+                data = bytes(int(x, 16) for x in hex_list)
+                crc = crc16(data)
+                high_byte = (crc >> 8) & 0xFF
+                low_byte  = crc & 0xFF
+                high_byte = f'{high_byte:02X}'
+                low_byte = f'{low_byte:02X}'
+            except:
+                high_byte = 'XX'
+                low_byte  = 'XX'
+            output_text += dedent(f'''
+                | Setting                           | Value (HEX)                          |
+                | --------------------------------- | ------------------------------------ |
+                | Slave Address                     | {specification_modbus_read_response_slave_address_text} |
+                | Function Code                     | {specification_modbus_read_response_function_code_text} |
+                | Byte Count                        | {specification_modbus_read_response_byte_count_text} |
+                | Register Data - High Byte         | {specification_modbus_read_response_register_data_hb_text} |
+                | Register Data - Low Byte          | {specification_modbus_read_response_register_data_lb_text} |
+                | CRC-16 - High Byte                | {high_byte} |
+                | CRC-16 - Low Byte                 | {low_byte}  |
+            ''')
+            data_frame = ' '.join([
+                specification_modbus_read_response_slave_address_text, 
+                specification_modbus_read_response_function_code_text, 
+                specification_modbus_read_response_byte_count_text, 
+                specification_modbus_read_response_register_data_hb_text, 
+                specification_modbus_read_response_register_data_lb_text, 
+                f'{low_byte}',
+                f'{high_byte}',
+            ])
+            print(data_frame)
+            print(specification_modbus_read_response_slave_address_text)
+            print(specification_modbus_read_response_function_code_text)
+            print(specification_modbus_read_response_byte_count_text)
+            print(specification_modbus_read_response_register_data_hb_text)
+            print(specification_modbus_read_response_register_data_lb_text)
+            # quit()
+
+            output_text += dedent(f'''
+                The complete response data frame is: {data_frame}
+            ''')
+
+            # output_text += dedent(f'''
+            #     ---
+            # ''')
+            
+        # ;jump
+        elif specification_template_text.strip().lower() == 'modbus_fc01':
+
+            sql_items = sql_utils.sql__get_all__by_specification_id__new(
+                db_filepath,
+                specifications_modbus_function_fc01_table_name,
+                specification_id,
+            )
+            sql_item = sql_items[0]
+            print(json.dumps(sql_item, indent=4))
+            # quit()
+            # TODO
+            specification_modbus_function_fc01_request_intro_text = sql_item['specification_modbus_function_fc01_request_intro_text']
+            specification_modbus_function_fc01_request_starting_address_text = sql_item['specification_modbus_function_fc01_request_starting_address_text']
+            specification_modbus_function_fc01_request_quantity_of_coils_text = sql_item['specification_modbus_function_fc01_request_quantity_of_coils_text']
+            specification_modbus_function_fc01_response_intro_text = sql_item['specification_modbus_function_fc01_response_intro_text']
+            specification_modbus_function_fc01_response_byte_count_text = sql_item['specification_modbus_function_fc01_response_byte_count_text']
+            specification_modbus_function_fc01_response_coil_status_text = sql_item['specification_modbus_function_fc01_response_coil_status_text']
+            ###
+            print(specification_modbus_function_fc01_request_intro_text)
+            print(specification_modbus_function_fc01_request_starting_address_text)
+            print(specification_modbus_function_fc01_request_quantity_of_coils_text)
+            print(specification_modbus_function_fc01_response_intro_text)
+            print(specification_modbus_function_fc01_response_byte_count_text)
+            print(specification_modbus_function_fc01_response_coil_status_text)
+            quit()
             output_text += dedent(f'''
                 {specifications_modbus_read_request_intro_text}
             ''')
